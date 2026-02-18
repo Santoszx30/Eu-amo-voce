@@ -56,6 +56,18 @@
         
         .cursor { color: var(--cor-azul); animation: blink 0.8s infinite; }
         @keyframes blink { 50% { opacity: 0; } }
+
+        /* Substitua ou adicione estas classes dentro do seu <style> */
+.btn-quiz { 
+    padding: 20px; font-size: 1.3rem; font-weight: 600; 
+    background: rgba(255, 255, 255, 0.1); border: 2px solid rgba(255, 255, 255, 0.3); 
+    color: white; border-radius: 20px; cursor: pointer; 
+    transition: transform 0.6s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.5s; 
+}
+
+.sair-esquerda { transform: translateX(-150vw) rotate(-15deg); opacity: 0; }
+.sair-direita { transform: translateX(150vw) rotate(15deg); opacity: 0; }
+                            
     </style>
 </head>
 <body>
@@ -246,22 +258,59 @@
         }
 
         let ptAtual = 0;
-        function mostrarPergunta() {
-            const data = perguntas[ptAtual];
-            document.getElementById('quiz-progresso').innerText = `Pergunta ${ptAtual + 1} de ${perguntas.length}`;
-            const box = document.getElementById('alternativas-box'); box.innerHTML = "";
-            typeEffect(document.getElementById('pergunta-texto'), data.p, null, () => {
-                data.opts.forEach((opt, idx) => {
-                    const btn = document.createElement('button'); btn.className = 'btn-quiz'; btn.innerText = opt;
-                    btn.onclick = () => {
-                        if(idx === data.resp) { btn.classList.add('correto'); explode(window.innerWidth/2, window.innerHeight/2); }
-                        else btn.classList.add('errado');
-                        setTimeout(() => { ptAtual++; if(ptAtual < perguntas.length) mostrarPergunta(); else document.getElementById('page3').innerHTML = "<h1>Parabéns meu amor! ❤️</h1>"; }, 1500);
-                    };
-                    box.appendChild(btn);
-                });
-            });
+function mostrarPergunta() {
+    const data = perguntas[ptAtual];
+    document.getElementById('quiz-progresso').innerText = `Pergunta ${ptAtual + 1} de ${perguntas.length}`;
+    const box = document.getElementById('alternativas-box');
+    box.innerHTML = "";
+
+    typeEffect(document.getElementById('pergunta-texto'), data.p, null, () => {
+        data.opts.forEach((opt, idx) => {
+            const btn = document.createElement('button');
+            btn.className = 'btn-quiz';
+            btn.innerText = opt;
+            
+            // Define de qual lado o botão vem (intercalado)
+            btn.classList.add(idx % 2 === 0 ? 'sair-esquerda' : 'sair-direita');
+            box.appendChild(btn);
+
+            // Pequeno delay para eles entrarem um por um
+            setTimeout(() => {
+                btn.classList.remove('sair-esquerda', 'sair-direita');
+            }, 100 * idx);
+
+            btn.onclick = () => {
+                const botoes = document.querySelectorAll('.btn-quiz');
+                botoes.forEach(b => b.style.pointerEvents = 'none');
+
+                // Lógica de acerto/erro
+                if(idx === data.resp) { 
+                    btn.classList.add('correto'); 
+                    explode(window.innerWidth/2, window.innerHeight/2); 
+                } else { 
+                    btn.classList.add('errado'); 
+                }
+
+                // Espera um pouco e faz sumir intercalado
+                setTimeout(() => {
+                    botoes.forEach((b, i) => {
+                        b.classList.add(i % 2 === 0 ? 'sair-esquerda' : 'sair-direita');
+                    });
+
+                    setTimeout(() => {
+                        ptAtual++;
+                        if(ptAtual < perguntas.length) {
+                            mostrarPergunta();
+                        } else {
+                            document.getElementById('page3').innerHTML = "<h1>Parabéns meu amor! ❤️</h1>";
+                        }
+                    }, 600); // Tempo da animação de saída
+                }, 1000);
+            };
+        });
+    });
         }
+        
 
         const lacinhosArr = [];
         function initLacinhos() {
