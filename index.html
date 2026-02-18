@@ -24,70 +24,36 @@
         #eraser-tool { position: fixed; width: 130px; height: 65px; background: #f08080; border-radius: 8px; border-bottom: 8px solid #cd5c5c; z-index: 100; display: none; pointer-events: none; box-shadow: 0 5px 20px rgba(0,0,0,0.6); }
         
         .page { position: absolute; width: 100%; height: 100%; display: flex; justify-content: center; align-items: center; z-index: 10; transition: opacity 0.8s ease-in-out; }
-        .container { text-align: center; color: white; padding: 20px; width: 95%; max-width: 1000px; z-index: 5; }
+        .container { text-align: center; color: white; padding: 20px; width: 95%; max-width: 1000px; }
         
         h1, .final-msg { font-family: 'Great Vibes', cursive; font-size: clamp(3.5rem, 10vw, 7rem); margin-bottom: 30px; color: #f0eaff; text-shadow: 0 0 40px var(--cor-roxo); }
-        #typing-text, .legenda { font-size: clamp(1.5rem, 5vw, 2.2rem); line-height: 1.5; min-height: 120px; font-weight: 300; }
+        #typing-text, .legenda { font-size: clamp(1.5rem, 5vw, 2.5rem); line-height: 1.5; min-height: 140px; font-weight: 300; }
         
         .btn-next { 
-            margin-top: 40px; padding: 18px 45px; background: transparent; 
+            margin-top: 40px; padding: 20px 50px; background: transparent; 
             border: 2px solid var(--cor-azul); color: white; border-radius: 60px; 
-            cursor: pointer; font-size: 1.3rem; opacity: 0; transition: 0.5s; 
+            cursor: pointer; font-size: 1.5rem; opacity: 0; transition: 0.5s; 
             box-shadow: 0 0 20px var(--cor-azul); pointer-events: none; 
             visibility: hidden;
         }
         .btn-next.show { opacity: 1; pointer-events: auto; visibility: visible; }
         
         #page2, #page3 { display: none; opacity: 0; }
-        .bau-tesouro { font-size: clamp(100px, 25vw, 200px); cursor: pointer; filter: drop-shadow(0 0 30px var(--cor-roxo)); transition: transform 0.2s; user-select: none; }
+        .bau-tesouro { font-size: clamp(120px, 30vw, 220px); cursor: pointer; filter: drop-shadow(0 0 30px var(--cor-roxo)); transition: transform 0.2s; user-select: none; }
+        .frase-bau { font-family: 'Great Vibes', cursive; font-size: clamp(2.5rem, 6vw, 3.5rem); margin-top: 80px; color: var(--cor-azul); text-shadow: 0 0 15px var(--cor-azul); }
         
-        /* ESTILO EXCLUSIVO PÁGINA 3 (QUIZ) */
-        #pergunta-texto { 
-            font-family: 'Dancing Script', cursive; 
-            font-size: clamp(2rem, 7vw, 3.5rem); 
-            color: #fff; 
-            text-shadow: 0 0 25px var(--cor-rosa);
-            margin-bottom: 40px;
-        }
-        .alternativas-grid { 
-            display: grid; 
-            grid-template-columns: 1fr; 
-            gap: 15px; 
-            width: 100%; 
-            max-width: 550px; 
-            margin: 0 auto; 
-        }
-        .btn-quiz { 
-            padding: 20px; 
-            font-size: 1.3rem; 
-            font-family: 'Poppins', sans-serif;
-            font-weight: 600;
-            background: rgba(255, 255, 255, 0.1); 
-            border: 2px solid rgba(255, 255, 255, 0.3); 
-            color: white; 
-            border-radius: 20px; 
-            cursor: pointer; 
-            transition: transform 0.4s, opacity 0.4s, background 0.3s;
-            will-change: transform, opacity; /* Melhora performance */
-        }
-        .btn-quiz:active { transform: scale(0.95); }
+        #photo-area { display: none; flex-direction: column; align-items: center; }
+        .foto-moldura { width: clamp(300px, 65vw, 550px); height: auto; border: 15px solid white; box-shadow: 0 20px 50px rgba(0,0,0,0.7); border-radius: 4px; transition: opacity 0.6s ease-in-out; opacity: 0; }
         
-        /* Animações de Saída Suaves */
-        .sair-esquerda { transform: translate3d(-150vw, 0, 0) rotate(-15deg); opacity: 0; }
-        .sair-direita { transform: translate3d(150vw, 0, 0) rotate(15deg); opacity: 0; }
-        
-        .correto { background: #2ecc71 !important; border-color: #ffffff; box-shadow: 0 0 30px #2ecc71; }
-        .errado { background: #e74c3c !important; border-color: #ffffff; box-shadow: 0 0 30px #e74c3c; }
-
-        /* Lacinhos Flutuantes */
-        .lacinho {
-            position: fixed;
-            font-size: 40px;
-            pointer-events: none;
-            z-index: 2;
-            user-select: none;
-            filter: drop-shadow(0 0 10px rgba(255, 126, 185, 0.5));
-        }
+        /* --- ESTILOS EXCLUSIVOS PÁGINA 3 (QUIZ) --- */
+        #pergunta-texto { font-family: 'Dancing Script', cursive; font-size: clamp(2rem, 7vw, 3.5rem); color: #fff; text-shadow: 0 0 25px var(--cor-rosa); margin-bottom: 35px; min-height: 120px; }
+        .alternativas-grid { display: grid; grid-template-columns: 1fr; gap: 15px; width: 100%; max-width: 550px; margin: 0 auto; }
+        .btn-quiz { padding: 20px; font-size: 1.3rem; font-weight: 600; background: rgba(255, 255, 255, 0.1); border: 2px solid rgba(255, 255, 255, 0.3); color: white; border-radius: 20px; cursor: pointer; transition: all 0.5s cubic-bezier(0.68, -0.55, 0.27, 1.55); }
+        .sair-esquerda { transform: translate3d(-150vw, 0, 0) rotate(-10deg); opacity: 0; }
+        .sair-direita { transform: translate3d(150vw, 0, 0) rotate(10deg); opacity: 0; }
+        .correto { background: #2ecc71 !important; box-shadow: 0 0 30px #2ecc71; border-color: white; }
+        .errado { background: #e74c3c !important; box-shadow: 0 0 30px #e74c3c; border-color: white; }
+        .lacinho { position: fixed; font-size: 40px; pointer-events: none; z-index: 2; display: none; }
 
         .cursor { color: var(--cor-azul); animation: blink 0.8s infinite; }
         @keyframes blink { 50% { opacity: 0; } }
@@ -110,7 +76,7 @@
     <section id="page2" class="page">
         <div id="bau-container" class="container">
             <div class="bau-tesouro" id="bau-click">📦</div>
-            <p class="frase-bau" style="font-family: 'Great Vibes'; font-size: 3rem; color: var(--cor-azul);">Toque no baú...</p>
+            <p class="frase-bau">Toque no baú para revelar nossos segredos...</p>
         </div>
         <div id="photo-area" class="container">
             <img src="" id="img-display" class="foto-moldura">
@@ -123,7 +89,7 @@
         <div class="container">
             <div id="pergunta-texto"></div>
             <div class="alternativas-grid" id="alternativas-box"></div>
-            <div id="quiz-progresso" style="margin-top: 30px; font-weight: 600; color: var(--cor-rosa); text-shadow: 0 0 10px var(--cor-rosa);"></div>
+            <div id="quiz-progresso" style="margin-top: 30px; color: var(--cor-rosa); font-weight: bold;"></div>
         </div>
     </section>
 
@@ -137,129 +103,8 @@
         let currentPhoto = 0;
         let particles = [];
 
-        // --- SISTEMA DE LACINHOS (BOUNCING) ---
-        const lacinhos = [];
-        const emojiLacinho = "🎀";
-        const numLacinhos = 8;
-
-        for(let i=0; i<numLacinhos; i++) {
-            lacinhos.push({
-                x: Math.random() * window.innerWidth,
-                y: Math.random() * window.innerHeight,
-                velX: (Math.random() - 0.5) * 3,
-                velY: (Math.random() - 0.5) * 3,
-                el: null
-            });
-        }
-
-        function initLacinhos() {
-            lacinhos.forEach(l => {
-                const div = document.createElement('div');
-                div.className = 'lacinho';
-                div.innerText = emojiLacinho;
-                document.body.appendChild(div);
-                l.el = div;
-            });
-        }
-
-        function moveLacinhos() {
-            lacinhos.forEach(l => {
-                l.x += l.velX;
-                l.y += l.velY;
-
-                if(l.x <= 0 || l.x >= window.innerWidth - 40) l.velX *= -1;
-                if(l.y <= 0 || l.y >= window.innerHeight - 40) l.velY *= -1;
-
-                l.el.style.transform = `translate3d(${l.x}px, ${l.y}px, 0)`;
-            });
-            requestAnimationFrame(moveLacinhos);
-        }
-
-        // --- PARTÍCULAS E EXPLOSÕES ---
-        class Particle {
-            constructor(x, y, color, type) {
-                this.x = x; this.y = y; this.type = type; this.color = color;
-                this.opacity = 1; 
-                this.size = type === 'heart' ? 5 : 2; 
-                this.vx = (Math.random() - 0.5) * 6;
-                this.vy = (Math.random() - 0.5) * 6;
-            }
-            update() {
-                this.x += this.vx; this.y += this.vy;
-                this.opacity -= 0.012;
-            }
-            draw() {
-                ctxBg.globalAlpha = this.opacity;
-                ctxBg.fillStyle = this.color;
-                if (this.type === 'heart') {
-                    const s = this.size * 3;
-                    ctxBg.font = `${s}px serif`;
-                    ctxBg.fillText("❤️", this.x, this.y);
-                } else {
-                    ctxBg.beginPath(); ctxBg.arc(this.x, this.y, this.size, 0, Math.PI*2); ctxBg.fill();
-                }
-            }
-        }
-
-        function explode(x, y) {
-            for(let i=0; i<15; i++) particles.push(new Particle(x, y, '#ff7eb9', 'heart'));
-        }
-
-        function animate() {
-            ctxBg.clearRect(0, 0, canvasBg.width, canvasBg.height);
-            particles = particles.filter(p => p.opacity > 0);
-            particles.forEach(p => { p.update(); p.draw(); });
-            requestAnimationFrame(animate);
-        }
-
-        // --- LÓGICA DE TRANSIÇÃO E TEXTO ---
-        function typeEffect(element, text, buttonElement, callback) {
-            let i = 0;
-            if(buttonElement) buttonElement.classList.remove('show');
-            element.innerHTML = "";
-            const interval = setInterval(() => {
-                if (i < text.length) {
-                    element.innerHTML = text.substring(0, i + 1) + '<span class="cursor">|</span>';
-                    i++;
-                } else {
-                    clearInterval(interval);
-                    element.innerHTML = text;
-                    if(buttonElement) buttonElement.classList.add('show');
-                    if (callback) callback();
-                }
-            }, 45);
-        }
-
-        function transicaoGeral(idSair, idEntrar, callbackFinal) {
-            canvasTrans.style.display = 'block';
-            ctxTrans.fillStyle = '#0f051a';
-            ctxTrans.fillRect(0, 0, canvasTrans.width, canvasTrans.height);
-            document.getElementById(idSair).style.display = 'none';
-            const entrada = document.getElementById(idEntrar);
-            entrada.style.display = 'flex';
-            setTimeout(() => entrada.style.opacity = '1', 100);
-
-            eraserTool.style.display = 'block';
-            let x=0, y=0, step=window.innerWidth/15, dir=1;
-            function autoErase() {
-                ctxTrans.globalCompositeOperation = 'destination-out';
-                ctxTrans.beginPath(); ctxTrans.arc(x, y, 150, 0, Math.PI*2); ctxTrans.fill();
-                eraserTool.style.left = (x-65)+'px'; eraserTool.style.top = (y-32)+'px';
-                x += step * dir;
-                if(x > canvasTrans.width + 100 || x < -100) { dir *= -1; y += 120; }
-                if(y < canvasTrans.height + 200) requestAnimationFrame(autoErase);
-                else { 
-                    canvasTrans.style.display = 'none'; 
-                    eraserTool.style.display = 'none'; 
-                    if(callbackFinal) callbackFinal();
-                }
-            }
-            autoErase();
-        }
-
-        // --- QUESTÕES ---
+        // Configurações das legendas e perguntas (Iguais às suas)
         const legendas = ["Existem belezas...", "Cada curva...", "Em qualquer multiverso...", "Cada traço...", "O seu jeito doce...", "Você não veste roupas...", "A vista era bonita...", "Perco o sentido...", "Seus olhos...", "Existe uma força...", "O som da sua risada...", "Dizem que o mundo dela...", "Você tem esse brilho...", "Não é só o laço...", "Se o paraíso existisse..."];
-        
         const perguntas = [
             { p: "Há quanto tempo estamos juntos?", opts: ["3 meses e 15 dias", "3 meses e 22 dias", "4 meses", "3 meses e 10 dias"], resp: 1 },
             { p: "Qual é a parte de você que eu mais gosto?", opts: ["Seus olhos", "Seu cabelo", "Seu sorriso", "Seu cheiro"], resp: 2 },
@@ -273,95 +118,159 @@
             { p: "Qual foi o dia mais importante da minha vida?", opts: ["O dia do nosso primeiro beijo", "O dia do pedido de namoro", "O dia em que te conheci", "O dia que você disse 'te amo'"], resp: 2 }
         ];
 
-        // --- CONTROLES DE PÁGINA ---
+        // --- SISTEMA DE PARTÍCULAS ---
+        class Particle {
+            constructor(x, y, color, type) {
+                this.x = x; this.y = y; this.type = type; this.color = color;
+                this.opacity = 1; this.vx = (Math.random() - 0.5) * 5; this.vy = (Math.random() - 0.5) * 5;
+            }
+            update() { this.x += this.vx; this.y += this.vy; this.opacity -= 0.015; }
+            draw() {
+                ctxBg.globalAlpha = this.opacity;
+                ctxBg.fillStyle = this.color;
+                if(this.type === 'heart') { ctxBg.font = '20px serif'; ctxBg.fillText('❤️', this.x, this.y); }
+                else { ctxBg.beginPath(); ctxBg.arc(this.x, this.y, 2, 0, Math.PI*2); ctxBg.fill(); }
+            }
+        }
+        function explode(x, y) { for(let i=0; i<12; i++) particles.push(new Particle(x, y, '#ff7eb9', 'heart')); }
+        function animate() {
+            ctxBg.clearRect(0, 0, canvasBg.width, canvasBg.height);
+            particles = particles.filter(p => p.opacity > 0);
+            particles.forEach(p => { p.update(); p.draw(); });
+            requestAnimationFrame(animate);
+        }
+
+        // --- FUNÇÕES DE TEXTO ---
+        function typeEffect(element, text, button, callback) {
+            let i = 0; if(button) button.classList.remove('show');
+            element.innerHTML = "";
+            function step() {
+                if (i < text.length) {
+                    element.innerHTML = text.substring(0, i + 1) + '<span class="cursor">|</span>';
+                    i++; setTimeout(step, 45);
+                } else {
+                    element.innerHTML = text; if(button) button.classList.add('show');
+                    if(callback) callback();
+                }
+            }
+            step();
+        }
+
+        // --- INÍCIO ---
         window.onload = () => {
             canvasBg.width = window.innerWidth; canvasBg.height = window.innerHeight;
-            initLacinhos();
-            moveLacinhos();
             animate();
-            typeEffect(document.getElementById('typing-text'), "Pensei em mil formas de te dar algo único. Então, construí este lugar. Toque para descobrir.", document.getElementById('btn-to-page2'));
+            typeEffect(document.getElementById('typing-text'), "Pensei em mil formas de te dar algo único. Então, construí este lugar. Cada linha, cada cor e cada efeito foi colocado aqui pensando em você. Toque para descobrir.", document.getElementById('btn-to-page2'));
         };
 
-        document.getElementById('btn-to-page2').addEventListener('click', () => transicaoGeral('page1', 'page2', null));
+        // --- TRANSIÇÕES ---
+        document.getElementById('btn-to-page2').addEventListener('click', () => {
+            canvasTrans.style.display = 'block'; ctxTrans.fillStyle = '#0f051a'; ctxTrans.fillRect(0,0,canvasTrans.width,canvasTrans.height);
+            document.getElementById('page1').style.display = 'none';
+            document.getElementById('page2').style.display = 'flex';
+            setTimeout(() => document.getElementById('page2').style.opacity = '1', 100);
+            rodarBorracha();
+        });
 
+        function rodarBorracha(callback) {
+            eraserTool.style.display = 'block';
+            let x=0, y=0, step=100, dir=1;
+            function auto() {
+                ctxTrans.globalCompositeOperation = 'destination-out';
+                ctxTrans.beginPath(); ctxTrans.arc(x, y, 140, 0, Math.PI*2); ctxTrans.fill();
+                eraserTool.style.left = (x-65)+'px'; eraserTool.style.top = (y-32)+'px';
+                x += step * dir;
+                if(x > canvasTrans.width || x < 0) { dir *= -1; y += 110; }
+                if(y < canvasTrans.height+150) requestAnimationFrame(auto);
+                else { canvasTrans.style.display = 'none'; eraserTool.style.display = 'none'; if(callback) callback(); }
+            }
+            auto();
+        }
+
+        // --- LOGICA PÁGINA 2 ---
         let bauClicks = 0;
         document.getElementById('bau-click').addEventListener('click', function() {
-            bauClicks++;
-            this.style.transform = `scale(${1 + bauClicks*0.1}) rotate(${bauClicks%2==0?5:-5}deg)`;
-            explode(window.innerWidth/2, window.innerHeight/2);
-            if(bauClicks >= 8) {
-                document.getElementById('bau-container').style.display = 'none';
-                document.getElementById('photo-area').style.display = 'flex';
-                updatePhoto();
-            }
+            bauClicks++; explode(window.innerWidth/2, window.innerHeight/2);
+            this.style.transform = `scale(${1 + bauClicks*0.1})`;
+            if(bauClicks >= 8) { document.getElementById('bau-container').style.display = 'none'; document.getElementById('photo-area').style.display = 'flex'; updatePhoto(); }
         });
 
         function updatePhoto() {
             const img = document.getElementById('img-display');
             if(currentPhoto < 15) {
                 img.style.opacity = 0;
-                const tempImg = new Image();
-                tempImg.src = `fotos/linda${currentPhoto + 1}.jpg`;
-                tempImg.onload = () => {
-                    img.src = tempImg.src; img.style.opacity = 1;
-                    typeEffect(document.getElementById('legenda-display'), legendas[currentPhoto], document.getElementById('btn-next-photo'));
-                };
+                const temp = new Image(); temp.src = `fotos/linda${currentPhoto+1}.jpg`;
+                temp.onload = () => { img.src = temp.src; img.style.opacity = 1; typeEffect(document.getElementById('legenda-display'), legendas[currentPhoto], document.getElementById('btn-next-photo')); };
             } else {
-                document.getElementById('photo-area').innerHTML = `<h1 class="final-msg">Você é tudo para mim 💜</h1><button class="btn-next show" style="opacity:1; pointer-events:auto;" onclick="iniciarQuiz()">Ir para o Quiz ✨</button>`;
+                document.getElementById('photo-area').innerHTML = `<h1>Você é tudo para mim 💜</h1><button class="btn-next show" style="opacity:1; pointer-events:auto;" onclick="irParaQuiz()">Ir para o Quiz ✨</button>`;
             }
         }
         document.getElementById('btn-next-photo').addEventListener('click', () => { currentPhoto++; updatePhoto(); });
 
-        // --- QUIZ SISTEMA ---
-        let perguntaAtual = 0;
-        function iniciarQuiz() { transicaoGeral('page2', 'page3', mostrarPergunta); }
+        // --- PÁGINA 3: QUIZ (ONDE ESTÁ O NOVO VISUAL) ---
+        function irParaQuiz() {
+            canvasTrans.style.display = 'block'; ctxTrans.globalCompositeOperation = 'source-over'; ctxTrans.fillStyle = '#0f051a'; ctxTrans.fillRect(0,0,canvasTrans.width,canvasTrans.height);
+            document.getElementById('page2').style.display = 'none';
+            document.getElementById('page3').style.display = 'flex';
+            setTimeout(() => document.getElementById('page3').style.opacity = '1', 100);
+            rodarBorracha(() => { initLacinhos(); mostrarPergunta(); });
+        }
 
+        let perguntaAtual = 0;
         function mostrarPergunta() {
             const data = perguntas[perguntaAtual];
             const box = document.getElementById('alternativas-box');
             document.getElementById('quiz-progresso').innerText = `Pergunta ${perguntaAtual + 1} de ${perguntas.length}`;
             box.innerHTML = "";
-
             typeEffect(document.getElementById('pergunta-texto'), data.p, null, () => {
                 data.opts.forEach((opt, index) => {
                     const btn = document.createElement('button');
-                    btn.className = 'btn-quiz';
-                    btn.innerText = opt;
+                    btn.className = 'btn-quiz'; btn.innerText = opt;
                     btn.classList.add(index % 2 === 0 ? 'sair-esquerda' : 'sair-direita');
-                    btn.onclick = () => verificarResposta(index, btn);
+                    btn.onclick = () => verificar(index, btn);
                     box.appendChild(btn);
                     setTimeout(() => btn.classList.remove('sair-esquerda', 'sair-direita'), 100 * index);
                 });
             });
         }
 
-        function verificarResposta(escolha, btn) {
+        function verificar(escolha, btn) {
             const data = perguntas[perguntaAtual];
             const botoes = document.querySelectorAll('.btn-quiz');
             botoes.forEach(b => b.style.pointerEvents = 'none');
-
-            if (escolha === data.resp) {
-                btn.classList.add('correto');
-                for(let i=0; i<3; i++) setTimeout(() => explode(Math.random()*window.innerWidth, Math.random()*window.innerHeight), i*200);
-            } else {
-                btn.classList.add('errado');
-            }
+            if(escolha === data.resp) { btn.classList.add('correto'); explode(window.innerWidth/2, window.innerHeight/2); }
+            else btn.classList.add('errado');
 
             setTimeout(() => {
                 botoes.forEach((b, i) => b.classList.add(i % 2 === 0 ? 'sair-esquerda' : 'sair-direita'));
                 setTimeout(() => {
                     perguntaAtual++;
-                    if (perguntaAtual < perguntas.length) mostrarPergunta();
-                    else {
-                        document.getElementById('pergunta-texto').innerHTML = "<h1 class='final-msg'>Você é incrível! 💜</h1>";
-                        document.getElementById('alternativas-box').innerHTML = `<button class="btn-next show" style="opacity:1; pointer-events:auto;" onclick="location.reload()">Recomeçar ❤️</button>`;
-                    }
+                    if(perguntaAtual < perguntas.length) mostrarPergunta();
+                    else { document.getElementById('pergunta-texto').innerHTML = "Você é incrível! 💜"; document.getElementById('alternativas-box').innerHTML = `<button class="btn-next show" style="opacity:1; pointer-events:auto;" onclick="location.reload()">Recomeçar ❤️</button>`; }
                 }, 600);
             }, 1500);
         }
 
-        // Corações de fundo aleatórios
-        setInterval(() => explode(Math.random()*window.innerWidth, Math.random()*window.innerHeight), 2000);
+        // Lacinhos apenas para o Quiz
+        const lacinhos = [];
+        function initLacinhos() {
+            for(let i=0; i<6; i++) {
+                const div = document.createElement('div'); div.className = 'lacinho'; div.innerText = "🎀"; div.style.display = 'block';
+                document.body.appendChild(div);
+                lacinhos.push({ el: div, x: Math.random()*window.innerWidth, y: Math.random()*window.innerHeight, vx: 2, vy: 2 });
+            }
+            moveLacinhos();
+        }
+        function moveLacinhos() {
+            lacinhos.forEach(l => {
+                l.x += l.vx; l.y += l.vy;
+                if(l.x <= 0 || l.x >= window.innerWidth - 40) l.vx *= -1;
+                if(l.y <= 0 || l.y >= window.innerHeight - 40) l.vy *= -1;
+                l.el.style.transform = `translate3d(${l.x}px, ${l.y}px, 0)`;
+            });
+            requestAnimationFrame(moveLacinhos);
+        }
+        setInterval(() => { if(document.getElementById('page3').style.display === 'flex') explode(Math.random()*window.innerWidth, Math.random()*window.innerHeight); }, 2000);
     </script>
 </body>
     </html>
