@@ -3,56 +3,80 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Para Minha Garota ❤️</title>
-    <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Poppins:wght@300&display=swap" rel="stylesheet">
+    <title>Para Minha Hello Kitty ❤️</title>
+    <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Poppins:wght@300;600&family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
     
     <style>
-        :root { --cor-roxo: #a255ff; --cor-azul: #00e5ff; }
+        :root { 
+            --cor-roxo: #a255ff; 
+            --cor-azul: #00e5ff; 
+            --cor-rosa: #ff85a1;
+        }
+
         body, html { 
             margin: 0; padding: 0; width: 100%; height: 100%; 
             overflow: hidden; font-family: 'Poppins', sans-serif; 
             background: #0f051a;
-            background: linear-gradient(-45deg, #0f051a, #0a1a2e, #1a0515, #0a1a2e); 
+            background: linear-gradient(-45deg, #0f051a, #1a0a2e, #2e0a1f, #0a1a2e); 
             background-size: 400% 400%; 
             animation: gradientBG 15s ease infinite; 
         }
         
         @keyframes gradientBG { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
 
-        canvas { position: fixed; top: 0; left: 0; z-index: 1; pointer-events: none; }
-        #canvas-transition { z-index: 20; display: none; }
+        /* Camadas de Fundo */
+        canvas { position: fixed; top: 0; left: 0; pointer-events: none; }
+        #canvas-bg { z-index: 1; }
+        #canvas-transition { z-index: 50; display: none; }
         #eraser-tool { position: fixed; width: 130px; height: 65px; background: #f08080; border-radius: 8px; border-bottom: 8px solid #cd5c5c; z-index: 100; display: none; pointer-events: none; box-shadow: 0 5px 20px rgba(0,0,0,0.6); }
+
+        .page { position: absolute; width: 100%; height: 100%; display: flex; justify-content: center; align-items: center; z-index: 10; transition: opacity 0.8s; }
+        .container { text-align: center; color: white; padding: 20px; width: 95%; max-width: 1000px; z-index: 20; }
         
-        .page { position: absolute; width: 100%; height: 100%; display: flex; justify-content: center; align-items: center; z-index: 10; transition: opacity 0.8s ease-in-out; }
-        .container { text-align: center; color: white; padding: 20px; width: 95%; max-width: 1000px; }
+        h1, .final-msg { font-family: 'Great Vibes', cursive; font-size: clamp(3.5rem, 10vw, 7rem); margin-bottom: 30px; color: #fff; text-shadow: 0 0 30px var(--cor-roxo), 0 0 60px var(--cor-roxo); }
         
-        h1, .final-msg { font-family: 'Great Vibes', cursive; font-size: clamp(3.5rem, 10vw, 7rem); margin-bottom: 30px; color: #f0eaff; text-shadow: 0 0 40px var(--cor-roxo); }
-        #typing-text, .legenda, #pergunta-texto { font-size: clamp(1.5rem, 5vw, 2.5rem); line-height: 1.5; min-height: 120px; font-weight: 300; }
+        #typing-text, .legenda { font-size: clamp(1.4rem, 4vw, 2.2rem); line-height: 1.6; min-height: 120px; font-weight: 300; text-shadow: 0 2px 10px rgba(0,0,0,0.5); }
         
+        #pergunta-texto { 
+            font-family: 'Dancing Script', cursive; 
+            font-size: clamp(2rem, 6vw, 3.2rem); 
+            margin-bottom: 40px; 
+            color: var(--cor-rosa);
+            text-shadow: 0 0 15px rgba(255,133,161,0.5);
+        }
+
         .btn-next { 
-            margin-top: 40px; padding: 18px 45px; background: transparent; 
+            margin-top: 40px; padding: 18px 50px; background: rgba(255,255,255,0.05); 
             border: 2px solid var(--cor-azul); color: white; border-radius: 60px; 
-            cursor: pointer; font-size: 1.3rem; opacity: 0; transition: 0.5s; 
+            cursor: pointer; font-size: 1.4rem; opacity: 0; transition: 0.5s; 
             box-shadow: 0 0 20px var(--cor-azul); pointer-events: none; 
-            visibility: hidden;
+            visibility: hidden; font-family: 'Poppins', sans-serif;
+            backdrop-filter: blur(5px);
         }
         .btn-next.show { opacity: 1; pointer-events: auto; visibility: visible; }
+        .btn-next:hover { background: var(--cor-azul); color: #000; transform: scale(1.05); }
+
+        /* QUIZ ESTILIZADO */
+        .alternativas-grid { display: grid; grid-template-columns: 1fr; gap: 15px; width: 100%; max-width: 550px; margin: 0 auto; }
+        .btn-quiz { 
+            padding: 20px; font-size: 1.2rem; background: rgba(255, 255, 255, 0.08); 
+            border: 2px solid rgba(255, 255, 255, 0.2); color: white; border-radius: 20px; 
+            cursor: pointer; transition: transform 0.6s cubic-bezier(0.23, 1, 0.32, 1), opacity 0.6s, background 0.3s;
+            backdrop-filter: blur(10px); font-family: 'Poppins', sans-serif;
+            will-change: transform, opacity;
+        }
         
+        /* Movimentos Zigue-Zague Suaves */
+        .sair-esquerda { transform: translate3d(-150vw, 0, 0) rotate(-10deg); opacity: 0; }
+        .sair-direita { transform: translate3d(150vw, 0, 0) rotate(10deg); opacity: 0; }
+        
+        .correto { background: #2ecc71 !important; border-color: #2ecc71; box-shadow: 0 0 30px #2ecc71; transform: scale(1.05); }
+        .errado { background: #e74c3c !important; border-color: #e74c3c; box-shadow: 0 0 30px #e74c3c; }
+
         #page2, #page3 { display: none; opacity: 0; }
-        .bau-tesouro { font-size: clamp(100px, 25vw, 200px); cursor: pointer; filter: drop-shadow(0 0 30px var(--cor-roxo)); transition: transform 0.2s; user-select: none; }
-        .frase-bau { font-family: 'Great Vibes', cursive; font-size: clamp(2rem, 5vw, 3rem); margin-top: 60px; color: var(--cor-azul); text-shadow: 0 0 15px var(--cor-azul); }
-        
-        #photo-area { display: none; flex-direction: column; align-items: center; }
-        .foto-moldura { width: clamp(280px, 60vw, 500px); height: auto; border: 12px solid white; box-shadow: 0 20px 50px rgba(0,0,0,0.7); border-radius: 4px; transition: opacity 0.5s; opacity: 0; }
-        
-        /* QUIZ */
-        .alternativas-grid { display: grid; grid-template-columns: 1fr; gap: 12px; margin-top: 20px; width: 100%; max-width: 600px; margin-left: auto; margin-right: auto; }
-        .btn-quiz { padding: 18px; font-size: 1.2rem; background: rgba(255, 255, 255, 0.08); border: 2px solid rgba(255, 255, 255, 0.2); color: white; border-radius: 15px; cursor: pointer; transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
-        .sair-esquerda { transform: translateX(-150vw); opacity: 0; }
-        .sair-direita { transform: translateX(150vw); opacity: 0; }
-        .correto { background: #2ecc71 !important; border-color: #2ecc71; box-shadow: 0 0 20px #2ecc71; }
-        .errado { background: #e74c3c !important; border-color: #e74c3c; box-shadow: 0 0 20px #e74c3c; }
-        
+        .bau-tesouro { font-size: clamp(100px, 25vw, 200px); cursor: pointer; filter: drop-shadow(0 0 30px var(--cor-roxo)); transition: transform 0.3s; user-select: none; }
+        .foto-moldura { width: clamp(280px, 60vw, 500px); height: auto; border: 12px solid white; box-shadow: 0 20px 60px rgba(0,0,0,0.8); border-radius: 4px; transition: opacity 0.5s; opacity: 0; }
+
         .cursor { color: var(--cor-azul); animation: blink 0.8s infinite; }
         @keyframes blink { 50% { opacity: 0; } }
     </style>
@@ -74,11 +98,11 @@
     <section id="page2" class="page">
         <div id="bau-container" class="container">
             <div class="bau-tesouro" id="bau-click">📦</div>
-            <p class="frase-bau">Toque no baú para revelar nossos segredos...</p>
+            <p class="frase-bau" style="font-family: 'Great Vibes', cursive; font-size: 2.5rem; color: var(--cor-azul); margin-top: 30px;">Toque no baú...</p>
         </div>
         <div id="photo-area" class="container">
             <img src="" id="img-display" class="foto-moldura">
-            <div id="legenda-display" class="legenda"></div>
+            <div id="legenda-display" class="legenda" style="margin-top: 25px; font-style: italic;"></div>
             <button id="btn-next-photo" class="btn-next">Próxima ❤️</button>
         </div>
     </section>
@@ -87,7 +111,7 @@
         <div class="container">
             <div id="pergunta-texto"></div>
             <div class="alternativas-grid" id="alternativas-box"></div>
-            <div id="quiz-progresso" style="margin-top: 20px; color: var(--cor-azul);"></div>
+            <div id="quiz-progresso" style="margin-top: 30px; font-weight: 600; color: var(--cor-azul); letter-spacing: 2px;"></div>
         </div>
     </section>
 
@@ -98,39 +122,13 @@
         const ctxTrans = canvasTrans.getContext('2d');
         const eraserTool = document.getElementById('eraser-tool');
         
-        let currentPhoto = 0;
         let particles = [];
+        let bows = []; // Lacinhos da Hello Kitty
+        let currentPhoto = 0;
 
-        const legendas = [
-            "Existem belezas que cansam os olhos, mas a sua... a sua descansa a minha alma.",
-            "Cada curva dos teus cachos é um caminho onde o meu olhar adora se perder.",
-            "Em qualquer multiverso, meus sentidos sempre me guiam até você.",
-            "Cada traço seu é uma obra de arte que o destino desenhou com perfeição.",
-            "O seu jeito doce faz tudo parecer um pouco mais leve.",
-            "Você não veste roupas, você veste personalidade. Única e irresistível.",
-            "A vista era bonita, mas perto de você, o horizonte é só um detalhe.",
-            "Perco o sentido do tempo. Quando te vejo, o resto do mundo vira ruído.",
-            "Seus olhos contam histórias que eu quero passar a vida inteira lendo.",
-            "Existe uma força em você que me incendeia e me domina sem esforço.",
-            "O som da sua risada é o meu refúgio favorito.",
-            "Dizem que o mundo dela é rosa, mas o meu mundo é você!",
-            "Você tem esse brilho icônico e esse charme que me faz pensar: a Hello Kitty teria inveja de tanta fofura.",
-            "Não é só o laço ou as cores, é esse seu jeito doce e marcante que te faz a minha Hello Kitty da vida real.",
-            "Se o paraíso existisse, ele teria o formato exato desse seu sorriso definitivo."
-        ];
-
-        const perguntas = [
-            { p: "Há quanto tempo estamos juntos?", opts: ["3 meses e 15 dias", "3 meses e 22 dias", "4 meses", "3 meses e 10 dias"], resp: 1 },
-            { p: "Qual é a parte de você que eu mais gosto?", opts: ["Seus olhos", "Seu cabelo", "Seu sorriso", "Seu cheiro"], resp: 2 },
-            { p: "Qual foi o dia que eu te pedi oficialmente em namoro?", opts: ["24/11", "22/11", "24/10", "20/11"], resp: 0 },
-            { p: "O que eu escrevi no cartão das flores que te dei?", opts: ["Para a menina mais linda do mundo", "Espero que as flores não sintam inveja da sua beleza", "Flores para combinar com seu perfume", "Um detalhe para quem é perfeição"], resp: 1 },
-            { p: "Qual estilo de foto sua que eu mais gosto?", opts: ["Foto de biquíni", "Foto toda arrumada pra sair", "Foto de rosto (selfie)", "Foto toda desarrumada e bagunçada"], resp: 3 },
-            { p: "O que eu mais sinto por você além de amor?", opts: ["Ciúmes", "Proteção", "Admiração", "Saudade constante"], resp: 0 },
-            { p: "O que eu mais admiro em você?", opts: ["Sua inteligência", "Sua paciência comigo", "Sua persistência mesmo com vários problemas", "Sua forma de ver o mundo"], resp: 2 },
-            { p: "O que você faz que eu finjo que não gosto, mas amo?", opts: ["Suas crises de riso", "Suas provocações", "Seu jeito mandona", "Quando você me liga de madrugada"], resp: 1 },
-            { p: "O que eu acho mais divertido de fazer com você?", opts: ["Assistir filmes", "Sair para comer", "Te estressar", "Ficar em silêncio abraçados"], resp: 2 },
-            { p: "Qual foi o dia mais importante da minha vida?", opts: ["O dia do nosso primeiro beijo", "O dia do pedido de namoro", "O dia em que te conheci", "O dia que você disse 'te amo'"], resp: 2 }
-        ];
+        // Configurações das Partículas (Lacinhos e Corações)
+        const bowIcon = "🎀"; 
+        const heartIcons = ["❤️", "💖", "✨", "🌸"];
 
         function resize() {
             canvasBg.width = canvasTrans.width = window.innerWidth;
@@ -143,36 +141,63 @@
             constructor(x, y, color, type) {
                 this.x = x; this.y = y; this.type = type; this.color = color;
                 this.opacity = 1; 
-                this.size = type === 'heart' ? 4 : 2; 
-                this.targetSize = type === 'heart' ? Math.random() * 20 + 15 : 4;
-                this.vx = (Math.random() - 0.5) * 4;
-                this.vy = (Math.random() - 0.5) * 4;
+                this.size = type === 'heart' ? 5 : Math.random() * 3 + 1; 
+                this.vx = (Math.random() - 0.5) * 6;
+                this.vy = (Math.random() - 0.5) * 6;
             }
             update() {
                 this.x += this.vx; this.y += this.vy;
-                if (this.type === 'heart' && this.size < this.targetSize) this.size += 0.6;
-                this.opacity -= 0.01;
+                this.opacity -= 0.012;
             }
             draw() {
                 ctxBg.globalAlpha = this.opacity;
                 ctxBg.fillStyle = this.color;
                 if (this.type === 'heart') {
-                    const s = this.size;
-                    ctxBg.beginPath();
-                    ctxBg.moveTo(this.x, this.y);
-                    ctxBg.bezierCurveTo(this.x, this.y-s/1.5, this.x-s, this.y-s/1.5, this.x-s, this.y);
-                    ctxBg.bezierCurveTo(this.x-s, this.y+s/1.5, this.x, this.y+s, this.x, this.y+s*1.3);
-                    ctxBg.bezierCurveTo(this.x, this.y+s, this.x+s, this.y+s/1.5, this.x+s, this.y);
-                    ctxBg.bezierCurveTo(this.x+s, this.y-s/1.5, this.x, this.y-s/1.5, this.x, this.y);
-                    ctxBg.fill();
+                    const s = this.size * 3;
+                    ctxBg.font = `${s}px serif`;
+                    ctxBg.fillText("❤️", this.x, this.y);
                 } else {
                     ctxBg.beginPath(); ctxBg.arc(this.x, this.y, this.size, 0, Math.PI*2); ctxBg.fill();
                 }
             }
         }
 
+        class FloatingBow {
+            constructor() {
+                this.x = Math.random() * window.innerWidth;
+                this.y = Math.random() * window.innerHeight;
+                this.size = Math.random() * 20 + 20;
+                this.vx = (Math.random() - 0.5) * 3;
+                this.vy = (Math.random() - 0.5) * 3;
+                this.char = Math.random() > 0.5 ? "🎀" : "🌸";
+                this.rotation = Math.random() * 360;
+                this.rotSpeed = (Math.random() - 0.5) * 2;
+            }
+            update() {
+                this.x += this.vx; this.y += this.vy;
+                this.rotation += this.rotSpeed;
+                if (this.x < 0 || this.x > window.innerWidth) this.vx *= -1;
+                if (this.y < 0 || this.y > window.innerHeight) this.vy *= -1;
+            }
+            draw() {
+                ctxBg.globalAlpha = 0.4;
+                ctxBg.save();
+                ctxBg.translate(this.x, this.y);
+                ctxBg.rotate(this.rotation * Math.PI / 180);
+                ctxBg.font = `${this.size}px serif`;
+                ctxBg.fillText(this.char, -this.size/2, this.size/2);
+                ctxBg.restore();
+            }
+        }
+
+        // Inicializa lacinhos
+        for(let i=0; i<12; i++) bows.push(new FloatingBow());
+
         function animate() {
             ctxBg.clearRect(0, 0, canvasBg.width, canvasBg.height);
+            
+            bows.forEach(b => { b.update(); b.draw(); });
+
             for(let i = particles.length - 1; i >= 0; i--) {
                 particles[i].update();
                 particles[i].draw();
@@ -183,13 +208,12 @@
         animate();
 
         function explode(x, y) {
-            const colors = ['#a255ff', '#00e5ff', '#ffffff'];
-            for(let i=0; i<15; i++) particles.push(new Particle(x, y, colors[Math.floor(Math.random()*3)], 'heart'));
+            for(let i=0; i<15; i++) particles.push(new Particle(x, y, '#ff85a1', 'heart'));
         }
 
         function typeEffect(element, text, buttonElement, callback) {
             let i = 0;
-            if(buttonElement) { buttonElement.classList.remove('show'); }
+            if(buttonElement) buttonElement.classList.remove('show');
             element.innerHTML = "";
             function step() {
                 if (i < text.length) {
@@ -198,44 +222,38 @@
                     setTimeout(step, 40);
                 } else {
                     element.innerHTML = text;
-                    if(buttonElement) { buttonElement.classList.add('show'); }
+                    if(buttonElement) buttonElement.classList.add('show');
                     if (callback) callback();
                 }
             }
             step();
         }
 
-        // INICIALIZAÇÃO
         window.onload = () => {
             typeEffect(document.getElementById('typing-text'), 
             "Pensei em mil formas de te dar algo único. Então, construí este lugar. Cada linha, cada cor e cada efeito foi colocado aqui pensando em você. Toque para descobrir.", 
             document.getElementById('btn-to-page2'));
         };
 
-        // TRANSIÇÃO PARA PÁGINA 2
-        document.getElementById('btn-to-page2').addEventListener('click', () => {
-            transicaoGeral('page1', 'page2', null);
-        });
-
+        // TRANSICAO
         function transicaoGeral(idSair, idEntrar, callbackFinal) {
             canvasTrans.style.display = 'block';
             ctxTrans.fillStyle = '#0f051a';
             ctxTrans.fillRect(0, 0, canvasTrans.width, canvasTrans.height);
-            
             document.getElementById(idSair).style.display = 'none';
             const entrada = document.getElementById(idEntrar);
             entrada.style.display = 'flex';
             setTimeout(() => entrada.style.opacity = '1', 100);
 
             eraserTool.style.display = 'block';
-            let x=0, y=0, step=100, dir=1;
+            let x=0, y=0, step=window.innerWidth/15, dir=1;
             function autoErase() {
                 ctxTrans.globalCompositeOperation = 'destination-out';
-                ctxTrans.beginPath(); ctxTrans.arc(x, y, 140, 0, Math.PI*2); ctxTrans.fill();
+                ctxTrans.beginPath(); ctxTrans.arc(x, y, 150, 0, Math.PI*2); ctxTrans.fill();
                 eraserTool.style.left = (x-65)+'px'; eraserTool.style.top = (y-32)+'px';
                 x += step * dir;
-                if(x > canvasTrans.width || x < 0) { dir *= -1; y += 110; }
-                if(y < canvasTrans.height+150) requestAnimationFrame(autoErase);
+                if(x > canvasTrans.width + 100 || x < -100) { dir *= -1; y += 120; }
+                if(y < canvasTrans.height+200) requestAnimationFrame(autoErase);
                 else { 
                     canvasTrans.style.display = 'none'; 
                     eraserTool.style.display = 'none'; 
@@ -245,11 +263,13 @@
             autoErase();
         }
 
-        // LÓGICA DO BAÚ E FOTOS
+        document.getElementById('btn-to-page2').addEventListener('click', () => transicaoGeral('page1', 'page2'));
+
+        // GALERIA
         let bauClicks = 0;
         document.getElementById('bau-click').addEventListener('click', function() {
             bauClicks++;
-            this.style.transform = `scale(${1 + bauClicks*0.1}) rotate(${bauClicks%2==0?5:-5}deg)`;
+            this.style.transform = `scale(${1 + bauClicks*0.1}) rotate(${bauClicks%2==0?10:-10}deg)`;
             explode(window.innerWidth/2, window.innerHeight/2);
             if(bauClicks >= 8) {
                 document.getElementById('bau-container').style.display = 'none';
@@ -275,22 +295,32 @@
                 };
             } else {
                 document.getElementById('photo-area').innerHTML = `
-                    <h1 class="final-msg">Você é tudo para mim 💜</h1>
-                    <button class="btn-next show" style="opacity:1; pointer-events:auto;" onclick="iniciarQuiz()">Ir para o Quiz ✨</button>
+                    <h1 class="final-msg">Para a minha favorita 🎀</h1>
+                    <button class="btn-next show" style="opacity:1; pointer-events:auto;" onclick="iniciarQuiz()">O quanto você me conhece? ✨</button>
                 `;
             }
         }
 
-        document.getElementById('btn-next-photo').addEventListener('click', () => {
-            currentPhoto++;
-            updatePhoto();
-        });
+        document.getElementById('btn-next-photo').addEventListener('click', () => { currentPhoto++; updatePhoto(); });
 
-        // LÓGICA DO QUIZ
+        // QUIZ
+        const legendas = ["Existem belezas que cansam os olhos, mas a sua... a sua descansa a minha alma.","Cada curva dos teus cachos é um caminho onde o meu olhar adora se perder.","Em qualquer multiverso, meus sentidos sempre me guiam até você.","Cada traço seu é uma obra de arte que o destino desenhou com perfeição.","O seu jeito doce faz tudo parecer um pouco mais leve.","Você não veste roupas, você veste personalidade. Única e irresistível.","A vista era bonita, mas perto de você, o horizonte é só um detalhe.","Perco o sentido do tempo. Quando te vejo, o resto do mundo vira ruído.","Seus olhos contam histórias que eu quero passar a vida inteira lendo.","Existe uma força em você que me incendeia e me domina sem esforço.","O som da sua risada é o meu refúgio favorito.","Dizem que o mundo dela é rosa, mas o meu mundo é você!","Você tem esse brilho icônico e esse charme que me faz pensar: a Hello Kitty teria inveja de tanta fofura.","Não é só o laço ou as cores, é esse seu jeito doce e marcante que te faz a minha Hello Kitty da vida real.","Se o paraíso existisse, ele teria o formato exato desse seu sorriso definitivo."];
+        
+        const perguntas = [
+            { p: "Há quanto tempo estamos juntos?", opts: ["3 meses e 15 dias", "3 meses e 22 dias", "4 meses", "3 meses e 10 dias"], resp: 1 },
+            { p: "Qual é a parte de você que eu mais gosto?", opts: ["Seus olhos", "Seu cabelo", "Seu sorriso", "Seu cheiro"], resp: 2 },
+            { p: "Qual foi o dia que eu te pedi oficialmente em namoro?", opts: ["24/11", "22/11", "24/10", "20/11"], resp: 0 },
+            { p: "O que eu escrevi no cartão das flores que te dei?", opts: ["Para a menina mais linda do mundo", "Espero que as flores não sintam inveja da sua beleza", "Flores para combinar com seu perfume", "Um detalhe para quem é perfeição"], resp: 1 },
+            { p: "Qual estilo de foto sua que eu mais gosto?", opts: ["Foto de biquíni", "Foto toda arrumada pra sair", "Foto de rosto (selfie)", "Foto toda desarrumada e bagunçada"], resp: 3 },
+            { p: "O que eu mais sinto por você além de amor?", opts: ["Ciúmes", "Proteção", "Admiração", "Saudade constante"], resp: 0 },
+            { p: "O que eu mais admiro em você?", opts: ["Sua inteligência", "Sua paciência comigo", "Sua persistência mesmo com vários problemas", "Sua forma de ver o mundo"], resp: 2 },
+            { p: "O que você faz que eu finjo que não gosto, mas amo?", opts: ["Suas crises de riso", "Suas provocações", "Seu jeito mandona", "Quando você me liga de madrugada"], resp: 1 },
+            { p: "O que eu acho mais divertido de fazer com você?", opts: ["Assistir filmes", "Sair para comer", "Te estressar", "Ficar em silêncio abraçados"], resp: 2 },
+            { p: "Qual foi o dia mais importante da minha vida?", opts: ["O dia do nosso primeiro beijo", "O dia do pedido de namoro", "O dia em que te conheci", "O dia que você disse 'te amo'"], resp: 2 }
+        ];
+
         let perguntaAtual = 0;
-        function iniciarQuiz() {
-            transicaoGeral('page2', 'page3', mostrarPergunta);
-        }
+        function iniciarQuiz() { transicaoGeral('page2', 'page3', mostrarPergunta); }
 
         function mostrarPergunta() {
             const data = perguntas[perguntaAtual];
@@ -298,7 +328,7 @@
             const box = document.getElementById('alternativas-box');
             const progresso = document.getElementById('quiz-progresso');
 
-            progresso.innerText = `Pergunta ${perguntaAtual + 1} de ${perguntas.length}`;
+            progresso.innerText = `QUESTÃO ${perguntaAtual + 1} DE ${perguntas.length}`;
             box.innerHTML = ""; 
 
             typeEffect(textoP, data.p, null, () => {
@@ -309,7 +339,10 @@
                     btn.classList.add(index % 2 === 0 ? 'sair-esquerda' : 'sair-direita');
                     btn.onclick = () => verificarResposta(index, btn);
                     box.appendChild(btn);
-                    setTimeout(() => btn.classList.remove('sair-esquerda', 'sair-direita'), 100 * index);
+                    // Entrada suave usando rAF para garantir performance
+                    requestAnimationFrame(() => {
+                        setTimeout(() => btn.classList.remove('sair-esquerda', 'sair-direita'), 100 * index);
+                    });
                 });
             });
         }
@@ -332,19 +365,19 @@
                     perguntaAtual++;
                     if (perguntaAtual < perguntas.length) mostrarPergunta();
                     else finalizarQuiz();
-                }, 600);
-            }, 1500);
+                }, 700);
+            }, 1600);
         }
 
         function finalizarQuiz() {
             const pTexto = document.getElementById('pergunta-texto');
             pTexto.innerHTML = "";
-            typeEffect(pTexto, "Você me conhece tão bem! 💜 Amanhã tem mais...", null, () => {
-                document.getElementById('alternativas-box').innerHTML = `<button class="btn-next show" style="opacity:1; pointer-events:auto;" onclick="location.reload()">Recomeçar ❤️</button>`;
+            typeEffect(pTexto, "Você é a peça que faltava no meu quebra-cabeça. 🧩💜", null, () => {
+                document.getElementById('alternativas-box').innerHTML = `<button class="btn-next show" style="opacity:1; pointer-events:auto;" onclick="location.reload()">Recomeçar Jornada ❤️</button>`;
             });
         }
 
-        setInterval(() => explode(Math.random()*window.innerWidth, Math.random()*window.innerHeight), 2500);
+        setInterval(() => explode(Math.random()*window.innerWidth, Math.random()*window.innerHeight), 3000);
     </script>
 </body>
     </html>
