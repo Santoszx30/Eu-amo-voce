@@ -12,15 +12,8 @@
         }
 
         body, html {
-            margin: 0;
-            padding: 0;
-            width: 100%;
-            height: 100%;
-            overflow: hidden;
-            font-family: 'Segoe UI', sans-serif;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            margin: 0; padding: 0; width: 100%; height: 100%;
+            overflow: hidden; font-family: 'Segoe UI', sans-serif;
             background: linear-gradient(-45deg, #0f051a, #0a1a2e, #1a0515, #0a1a2e);
             background-size: 400% 400%;
             animation: gradientBG 15s ease infinite;
@@ -32,123 +25,127 @@
             100% { background-position: 0% 50%; }
         }
 
-        #canvas {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            z-index: 1;
-            pointer-events: none;
+        /* Camadas */
+        .page {
+            position: absolute;
+            width: 100%; height: 100%;
+            display: flex; justify-content: center; align-items: center;
+            transition: opacity 1s ease;
         }
 
+        #canvas-bg, #canvas-eraser {
+            position: fixed; top: 0; left: 0; pointer-events: none; z-index: 2;
+        }
+
+        #canvas-eraser { pointer-events: auto; z-index: 20; display: none; cursor: crosshair; }
+
         .container {
-            text-align: center;
-            z-index: 10;
-            color: white;
-            padding: 40px;
-            max-width: 1000px; /* Aumentado para comportar texto maior */
-            pointer-events: none;
+            text-align: center; z-index: 10; color: white; padding: 40px; max-width: 1000px;
         }
 
         h1 {
             font-family: 'Great Vibes', cursive;
-            font-size: clamp(3.5rem, 12vw, 6.5rem); /* Título muito maior */
-            opacity: 0;
-            animation: fadeIn 3s forwards;
-            margin-bottom: 40px;
-            color: #f0eaff;
+            font-size: clamp(3.5rem, 12vw, 6.5rem);
+            margin-bottom: 30px; color: #f0eaff;
             text-shadow: 0 0 30px rgba(162, 85, 255, 0.8);
         }
 
         #typing-text {
-            font-size: clamp(1.4rem, 5vw, 2.2rem); /* Explicação bem maior */
-            line-height: 1.6;
-            min-height: 150px;
-            font-weight: 300;
-            text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.7);
+            font-size: clamp(1.4rem, 5vw, 2.2rem); line-height: 1.6; min-height: 150px;
         }
 
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(30px); }
-            to { opacity: 1; transform: translateY(0); }
+        /* Botão Próximo */
+        .btn-next {
+            margin-top: 30px; padding: 15px 40px;
+            background: transparent; border: 2px solid var(--cor-azul);
+            color: white; border-radius: 50px; cursor: pointer;
+            font-size: 1.2rem; opacity: 0; transition: 0.5s;
+            box-shadow: 0 0 15px var(--cor-azul);
         }
 
-        .cursor {
-            display: inline-block;
-            width: 4px;
-            background-color: var(--cor-azul);
-            margin-left: 8px;
-            animation: blink 0.7s infinite;
+        .btn-next.show { opacity: 1; }
+
+        /* Estilo do Baú */
+        #bau-container { display: none; flex-direction: column; opacity: 0; transition: 2s; }
+        
+        .bau {
+            font-size: 8rem; cursor: pointer; transition: transform 0.1s;
+            filter: drop-shadow(0 0 20px var(--cor-roxo));
         }
-        @keyframes blink { 50% { opacity: 0; } }
+
+        .bau:active { transform: scale(0.9) rotate(5deg); }
+
+        .instrucao { color: white; margin-top: 20px; font-style: italic; opacity: 0.7; }
+
     </style>
 </head>
-<body onmousemove="handleInteraction(event)" ontouchmove="handleInteraction(event)">
+<body>
 
-    <canvas id="canvas"></canvas>
+    <canvas id="canvas-bg"></canvas>
+    
+    <canvas id="canvas-eraser"></canvas>
 
-    <div class="container">
-        <h1>Para quem ilumina meus dias</h1>
-        <div id="typing-text"></div>
+    <div id="page1" class="page">
+        <div class="container">
+            <h1 id="titulo">Para quem ilumina meus dias</h1>
+            <div id="typing-text"></div>
+            <button id="btn-start-eraser" class="btn-next">Limpar Caminho</button>
+        </div>
+    </div>
+
+    <div id="page2" class="page">
+        <div id="bau-container" class="container">
+            <div class="bau" id="bau-icon">🎁</div>
+            <p class="instrucao">Clique no presente para abrir...</p>
+        </div>
     </div>
 
     <script>
         const text = "Pensei em mil formas de te dar algo único. Então, construí este lugar. Cada linha, cada cor e cada efeito foi colocado aqui pensando em você. Toque para descobrir.";
         const typingElement = document.getElementById('typing-text');
-        const canvas = document.getElementById('canvas');
-        const ctx = canvas.getContext('2d');
+        const btnEraser = document.getElementById('btn-start-eraser');
+        const canvasBg = document.getElementById('canvas-bg');
+        const ctxBg = canvasBg.getContext('2d');
+        const canvasEraser = document.getElementById('canvas-eraser');
+        const ctxEraser = canvasEraser.getContext('2d');
 
+        // Configuração Inicial
         function resize() {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
+            canvasBg.width = window.innerWidth;
+            canvasBg.height = window.innerHeight;
+            canvasEraser.width = window.innerWidth;
+            canvasEraser.height = window.innerHeight;
         }
         window.addEventListener('resize', resize);
         resize();
 
+        // --- Efeito Digitação ---
         let index = 0;
         function typeWriter() {
             if (index < text.length) {
-                typingElement.innerHTML = text.substring(0, index + 1) + '<span class="cursor">|</span>';
+                typingElement.innerHTML = text.substring(0, index + 1) + '<span style="color:var(--cor-azul)">|</span>';
                 index++;
                 setTimeout(typeWriter, 40);
             } else {
-                const cursor = document.querySelector('.cursor');
-                if(cursor) cursor.style.display = 'none';
+                btnEraser.classList.add('show');
             }
         }
         setTimeout(typeWriter, 2500);
 
+        // --- Partículas (Corações e Toque) ---
         let particles = [];
-
         class Particle {
             constructor(x, y, color, type) {
-                this.x = x;
-                this.y = y;
-                this.type = type;
-                this.color = color;
-                this.opacity = 1;
-                
-                if (this.type === 'heart') {
-                    this.size = 0; // Começa em 0 para o efeito de "nascer"
-                    this.targetSize = Math.random() * 20 + 15; // Corações bem maiores
-                    this.speedX = (Math.random() - 0.5) * 6; // Explosão lateral
-                    this.speedY = (Math.random() - 0.5) * 6; // Explosão vertical
-                } else {
-                    this.size = Math.random() * 4 + 2;
-                    this.speedX = (Math.random() - 0.5) * 4;
-                    this.speedY = (Math.random() - 0.5) * 4;
-                }
+                this.x = x; this.y = y; this.type = type; this.color = color;
+                this.opacity = 1; this.size = type === 'heart' ? 0 : 3;
+                this.targetSize = Math.random() * 20 + 15;
+                this.speedX = (Math.random() - 0.5) * 5;
+                this.speedY = (Math.random() - 0.5) * 5;
             }
-
-            draw() {
-                ctx.save();
-                ctx.globalAlpha = this.opacity;
-                ctx.fillStyle = this.color;
+            draw(ctx) {
+                ctx.save(); ctx.globalAlpha = this.opacity; ctx.fillStyle = this.color;
                 if (this.type === 'heart') {
-                    // Desenho do Coração escalonado pelo size
-                    const s = this.size;
-                    ctx.beginPath();
+                    const s = this.size; ctx.beginPath();
                     ctx.moveTo(this.x, this.y);
                     ctx.bezierCurveTo(this.x, this.y - s/2, this.x - s, this.y - s/2, this.x - s, this.y);
                     ctx.bezierCurveTo(this.x - s, this.y + s, this.x, this.y + s*1.5, this.x, this.y + s*1.8);
@@ -156,73 +153,86 @@
                     ctx.bezierCurveTo(this.x + s, this.y - s/2, this.x, this.y - s/2, this.x, this.y);
                     ctx.fill();
                 } else {
-                    ctx.shadowBlur = 15;
-                    ctx.shadowColor = "white";
-                    ctx.beginPath();
-                    ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-                    ctx.fill();
+                    ctx.beginPath(); ctx.arc(this.x, this.y, this.size, 0, Math.PI*2); ctx.fill();
                 }
                 ctx.restore();
             }
-
             update() {
-                this.x += this.speedX;
-                this.y += this.speedY;
-                
-                // Atrito para o efeito de explosão suave
-                this.speedX *= 0.98;
-                this.speedY *= 0.98;
-
-                // Crescimento do coração
-                if (this.type === 'heart' && this.size < this.targetSize) {
-                    this.size += 1.5;
-                }
-
-                this.opacity -= 0.006;
-            }
-        }
-
-        function spawnExplosion() {
-            const colors = ['#a255ff', '#00e5ff', '#ff55f3', '#ffffff'];
-            let x, y;
-            const side = Math.floor(Math.random() * 4);
-            
-            // Define o ponto da explosão nas bordas
-            if (side === 0) { x = 50; y = Math.random() * canvas.height; }
-            else if (side === 1) { x = canvas.width - 50; y = Math.random() * canvas.height; }
-            else if (side === 2) { x = Math.random() * canvas.width; y = 50; }
-            else { x = Math.random() * canvas.width; y = canvas.height - 50; }
-
-            // Cria um "cluster" de corações para parecer explosão
-            for(let i = 0; i < 5; i++) {
-                particles.push(new Particle(x, y, colors[Math.floor(Math.random() * colors.length)], 'heart'));
-            }
-        }
-
-        // Intervalo de explosões nas bordas
-        setInterval(spawnExplosion, 800);
-
-        function handleInteraction(e) {
-            const posX = e.touches ? e.touches[0].clientX : e.clientX;
-            const posY = e.touches ? e.touches[0].clientY : e.clientY;
-            for (let i = 0; i < 3; i++) {
-                particles.push(new Particle(posX, posY, '#ffffff', 'light'));
+                this.x += this.speedX; this.y += this.speedY;
+                this.speedX *= 0.98; this.speedY *= 0.98;
+                if (this.type === 'heart' && this.size < this.targetSize) this.size += 1.2;
+                this.opacity -= 0.008;
             }
         }
 
         function animate() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            for (let i = 0; i < particles.length; i++) {
-                particles[i].update();
-                particles[i].draw();
-                if (particles[i].opacity <= 0) {
-                    particles.splice(i, 1);
-                    i--;
-                }
-            }
+            ctxBg.clearRect(0, 0, canvasBg.width, canvasBg.height);
+            particles.forEach((p, i) => {
+                p.update(); p.draw(ctxBg);
+                if (p.opacity <= 0) particles.splice(i, 1);
+            });
             requestAnimationFrame(animate);
         }
         animate();
+
+        setInterval(() => {
+            const side = Math.floor(Math.random() * 4);
+            let x, y;
+            if (side === 0) { x = 30; y = Math.random() * canvasBg.height; }
+            else if (side === 1) { x = canvasBg.width - 30; y = Math.random() * canvasBg.height; }
+            else if (side === 2) { x = Math.random() * canvasBg.width; y = 30; }
+            else { x = Math.random() * canvasBg.width; y = canvasBg.height - 30; }
+            for(let i=0; i<3; i++) particles.push(new Particle(x, y, '#a255ff', 'heart'));
+        }, 600);
+
+        window.addEventListener('mousemove', (e) => {
+            for(let i=0; i<2; i++) particles.push(new Particle(e.clientX, e.clientY, '#ffffff', 'light'));
+        });
+
+        // --- Lógica da Borracha ---
+        btnEraser.addEventListener('click', () => {
+            canvasEraser.style.display = 'block';
+            // Preenche o canvas da borracha com uma cor sólida para esconder o que está atrás
+            ctxEraser.fillStyle = '#0f051a';
+            ctxEraser.fillRect(0, 0, canvasEraser.width, canvasEraser.height);
+            
+            document.getElementById('page1').style.opacity = '0';
+            setTimeout(() => {
+                document.getElementById('page1').style.display = 'none';
+                document.getElementById('page2').style.display = 'flex';
+                document.getElementById('bau-container').style.opacity = '1';
+            }, 1000);
+        });
+
+        function erase(e) {
+            if (canvasEraser.style.display === 'block') {
+                const x = e.touches ? e.touches[0].clientX : e.clientX;
+                const y = e.touches ? e.touches[0].clientY : e.clientY;
+                ctxEraser.globalCompositeOperation = 'destination-out';
+                ctxEraser.beginPath();
+                ctxEraser.arc(x, y, 60, 0, Math.PI * 2); // Tamanho da borracha
+                ctxEraser.fill();
+            }
+        }
+        canvasEraser.addEventListener('mousemove', erase);
+        canvasEraser.addEventListener('touchmove', erase);
+
+        // --- Lógica do Baú ---
+        let bauClicks = 0;
+        const bauIcon = document.getElementById('bau-icon');
+        bauIcon.addEventListener('click', () => {
+            bauClicks++;
+            // Faz o baú tremer
+            bauIcon.style.transform = `scale(1.2) rotate(${bauClicks % 2 === 0 ? 10 : -10}deg)`;
+            setTimeout(() => bauIcon.style.transform = 'scale(1)', 100);
+
+            if (bauClicks >= 5) {
+                // Aqui entrará a lógica das fotos no próximo passo
+                alert("O baú está abrindo..."); 
+                // No próximo código vamos substituir o alert pelas fotos
+            }
+        });
+
     </script>
 </body>
 </html>
