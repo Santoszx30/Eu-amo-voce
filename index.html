@@ -50,73 +50,17 @@
         @keyframes blink { 50% { opacity: 0; } }
 
         /* --- ESTILOS DA PÁGINA 3 --- */
-#page3 { display: none; opacity: 0; flex-direction: column; }
-
-.quiz-container {
-    width: 95%;
-    max-width: 850px;
-    margin: 0 auto;
-}
-
-#pergunta-texto {
-    font-family: 'Great Vibes', cursive;
-    font-size: clamp(2.2rem, 6vw, 3.5rem);
-    margin-bottom: 35px;
-    min-height: 120px;
-    color: #fff;
-    text-shadow: 0 0 20px var(--cor-roxo);
-}
-
-.alternativas-grid {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 15px;
-}
-
-.btn-quiz {
-    padding: 22px;
-    font-size: clamp(1.1rem, 3vw, 1.4rem);
-    background: rgba(255, 255, 255, 0.07);
-    border: 2px solid rgba(255, 255, 255, 0.2);
-    color: white;
-    border-radius: 18px;
-    cursor: pointer;
-    transition: all 0.5s cubic-bezier(0.68, -0.55, 0.27, 1.55);
-    position: relative;
-    overflow: hidden;
-}
-
-.btn-quiz:hover {
-    background: rgba(255, 255, 255, 0.15);
-    border-color: var(--cor-azul);
-    transform: scale(1.02);
-}
-
-/* Animações de Zigue-Zague */
-.sair-esquerda { transform: translateX(-150vw) rotate(-10deg); opacity: 0; }
-.sair-direita { transform: translateX(150vw) rotate(10deg); opacity: 0; }
-
-.btn-quiz.correto { 
-    background: #2ecc71 !important; 
-    border-color: #2ecc71; 
-    box-shadow: 0 0 30px #2ecc71; 
-    color: white;
-}
-
-.btn-quiz.errado { 
-    background: #e74c3c !important; 
-    border-color: #e74c3c; 
-    box-shadow: 0 0 30px #e74c3c; 
-    color: white;
-}
-
-#quiz-progresso {
-    margin-top: 40px;
-    font-size: 1.3rem;
-    color: var(--cor-azul);
-    letter-spacing: 2px;
-            }
-            
+        #page3 { display: none; opacity: 0; flex-direction: column; }
+        .quiz-container { width: 95%; max-width: 850px; margin: 0 auto; }
+        #pergunta-texto { font-family: 'Great Vibes', cursive; font-size: clamp(2.2rem, 6vw, 3.5rem); margin-bottom: 35px; min-height: 120px; color: #fff; text-shadow: 0 0 20px var(--cor-roxo); }
+        .alternativas-grid { display: grid; grid-template-columns: 1fr; gap: 15px; }
+        .btn-quiz { padding: 22px; font-size: clamp(1.1rem, 3vw, 1.4rem); background: rgba(255, 255, 255, 0.07); border: 2px solid rgba(255, 255, 255, 0.2); color: white; border-radius: 18px; cursor: pointer; transition: all 0.5s cubic-bezier(0.68, -0.55, 0.27, 1.55); position: relative; overflow: hidden; }
+        .btn-quiz:hover { background: rgba(255, 255, 255, 0.15); border-color: var(--cor-azul); transform: scale(1.02); }
+        .sair-esquerda { transform: translateX(-150vw) rotate(-10deg); opacity: 0; }
+        .sair-direita { transform: translateX(150vw) rotate(10deg); opacity: 0; }
+        .btn-quiz.correto { background: #2ecc71 !important; border-color: #2ecc71; box-shadow: 0 0 30px #2ecc71; color: white; }
+        .btn-quiz.errado { background: #e74c3c !important; border-color: #e74c3c; box-shadow: 0 0 30px #e74c3c; color: white; }
+        #quiz-progresso { margin-top: 40px; font-size: 1.3rem; color: var(--cor-azul); letter-spacing: 2px; }
     </style>
 </head>
 <body>
@@ -144,15 +88,14 @@
             <div id="legenda-display" class="legenda"></div>
             <button id="btn-next-photo" class="btn-next">Próxima ❤️</button>
         </div>
+    </section>
 
-            <section id="page3" class="page">
+    <section id="page3" class="page">
         <div class="container quiz-container">
             <div id="pergunta-texto"></div>
             <div class="alternativas-grid" id="alternativas-box"></div>
             <div id="quiz-progresso"></div>
         </div>
-            </section>
-        
     </section>
 
     <script>
@@ -241,224 +184,9 @@
 
         function typeEffect(element, text, button, callback) {
             let i = 0;
-            button.classList.remove('show');
+            if(button && button.classList) button.classList.remove('show');
             element.innerHTML = "";
             function step() {
                 if (i < text.length) {
-                    element.innerHTML = text.substring(0, i + 1) + '<span class="cursor">|</span>';
-                    i++;
-                    setTimeout(step, 45);
-                } else {
-                    element.innerHTML = text;
-                    button.classList.add('show');
-                    if (callback) callback();
-                }
-            }
-            step();
-        }
-
-        // PÁGINA 1
-        setTimeout(() => {
-            typeEffect(document.getElementById('typing-text'), 
-            "Pensei em mil formas de te dar algo único. Então, construí este lugar. Cada linha, cada cor e cada efeito foi colocado aqui pensando em você. Toque para descobrir.", 
-            document.getElementById('btn-to-page2'));
-        }, 1500);
-
-        // TRANSIÇÃO
-        document.getElementById('btn-to-page2').addEventListener('click', function() {
-            canvasTrans.style.display = 'block';
-            ctxTrans.fillStyle = '#0f051a';
-            ctxTrans.fillRect(0, 0, canvasTrans.width, canvasTrans.height);
-            document.getElementById('page1').style.display = 'none';
-            document.getElementById('page2').style.display = 'flex';
-            setTimeout(() => document.getElementById('page2').style.opacity = '1', 100);
-            
-            eraserTool.style.display = 'block';
-            let x=0, y=0, step=100, dir=1;
-            function autoErase() {
-                ctxTrans.globalCompositeOperation = 'destination-out';
-                ctxTrans.beginPath(); ctxTrans.arc(x, y, 140, 0, Math.PI*2); ctxTrans.fill();
-                eraserTool.style.left = (x-65)+'px'; eraserTool.style.top = (y-32)+'px';
-                x += step * dir;
-                if(x > canvasTrans.width || x < 0) { dir *= -1; y += 110; }
-                if(y < canvasTrans.height+150) requestAnimationFrame(autoErase);
-                else { canvasTrans.style.display = 'none'; eraserTool.style.display = 'none'; }
-            }
-            autoErase();
-        });
-
-        // BAÚ
-        let bauClicks = 0;
-        document.getElementById('bau-click').addEventListener('click', function() {
-            bauClicks++;
-            this.style.transform = `scale(${1 + bauClicks*0.12}) rotate(${bauClicks%2==0?7:-7}deg)`;
-            explode(window.innerWidth/2, window.innerHeight/2);
-            if(bauClicks >= 8) {
-                document.getElementById('bau-container').style.display = 'none';
-                document.getElementById('photo-area').style.display = 'flex';
-                updatePhoto();
-            }
-        });
-
-        // SISTEMA DE FOTOS SEM PISCAR
-        function updatePhoto() {
-            const img = document.getElementById('img-display');
-            const legendaArea = document.getElementById('legenda-display');
-            const nextBtn = document.getElementById('btn-next-photo');
-
-            if(currentPhoto < 15) {
-                // 1. Esconde a imagem atual suavemente
-                img.style.opacity = 0;
-                
-                // 2. Pre-carregamento da próxima imagem
-                const tempImg = new Image();
-                tempImg.src = `fotos/linda${currentPhoto + 1}.jpg`;
-                
-                tempImg.onload = () => {
-                    setTimeout(() => {
-                        img.src = tempImg.src;
-                        img.style.opacity = 1;
-                        explode(window.innerWidth/2, window.innerHeight/2);
-                        typeEffect(legendaArea, legendas[currentPhoto], nextBtn);
-                    }, 400); // Pequeno atraso para o fade-out completar
-                };
-            } else {
-                document.getElementById('photo-area').innerHTML = `
-                    <h1 class="final-msg">Você é tudo para mim 💜</h1>
-                    <button class="btn-next show" style="opacity:1; pointer-events:auto;" onclick="window.location.href='proxima.html'">Continuar Jornada ✨</button>
-                `;
-            }
-        }
-
-        document.getElementById('btn-next-photo').addEventListener('click', () => {
-            currentPhoto++;
-            updatePhoto();
-        });
-
-        setInterval(() => explode(Math.random()*canvasBg.width, Math.random()*canvasBg.height), 2000);
-        window.addEventListener('mousemove', (e) => particles.push(new Particle(e.clientX, e.clientY, '#ffffff', 'light')));
-
-        // --- LÓGICA DA PÁGINA 3: QUIZ ---
-
-const perguntas = [
-    { p: "Há quanto tempo estamos juntos?", opts: ["3 meses e 15 dias", "3 meses e 22 dias", "4 meses", "3 meses e 10 dias"], resp: 1 },
-    { p: "Qual é a parte de você que eu mais gosto?", opts: ["Seus olhos", "Seu cabelo", "Seu sorriso", "Seu cheiro"], resp: 2 },
-    { p: "Qual foi o dia que eu te pedi oficialmente em namoro?", opts: ["24/11", "22/11", "24/10", "20/11"], resp: 0 },
-    { p: "O que eu escrevi no cartão das flores que te dei?", opts: ["Para a menina mais linda do mundo", "Espero que as flores não sintam inveja da sua beleza", "Flores para combinar com seu perfume", "Um detalhe para quem é perfeição"], resp: 1 },
-    { p: "Qual estilo de foto sua que eu mais gosto?", opts: ["Foto de biquíni", "Foto toda arrumada pra sair", "Foto de rosto (selfie)", "Foto toda desarrumada e bagunçada"], resp: 3 },
-    { p: "O que eu mais sinto por você além de amor?", opts: ["Ciúmes", "Proteção", "Admiração", "Saudade constante"], resp: 0 },
-    { p: "O que eu mais admiro em você?", opts: ["Sua inteligência", "Sua paciência comigo", "Sua persistência mesmo com vários problemas", "Sua forma de ver o mundo"], resp: 2 },
-    { p: "O que você faz que eu finjo que não gosto, mas amo?", opts: ["Suas crises de riso", "Suas provocações", "Seu jeito mandona", "Quando você me liga de madrugada"], resp: 1 },
-    { p: "O que eu acho mais divertido de fazer com você?", opts: ["Assistir filmes", "Sair para comer", "Te estressar", "Ficar em silêncio abraçados"], resp: 2 },
-    { p: "Qual foi o dia mais importante da minha vida?", opts: ["O dia do nosso primeiro beijo", "O dia do pedido de namoro", "O dia em que te conheci", "O dia que você disse 'te amo'"], resp: 2 }
-];
-
-let perguntaAtual = 0;
-
-function iniciarQuiz() {
-    // 1. Prepara a borracha e a transição
-    canvasTrans.style.display = 'block';
-    ctxTrans.fillStyle = '#0f051a';
-    ctxTrans.fillRect(0, 0, canvasTrans.width, canvasTrans.height);
-    
-    // 2. Troca as páginas por baixo
-    document.getElementById('page2').style.display = 'none';
-    const p3 = document.getElementById('page3');
-    p3.style.display = 'flex';
-    setTimeout(() => p3.style.opacity = '1', 100);
-
-    // 3. Animação da Borracha
-    eraserTool.style.display = 'block';
-    let x = 0, y = 0, step = 100, dir = 1;
-    function limparParaQuiz() {
-        ctxTrans.globalCompositeOperation = 'destination-out';
-        ctxTrans.beginPath(); ctxTrans.arc(x, y, 140, 0, Math.PI*2); ctxTrans.fill();
-        eraserTool.style.left = (x - 65) + 'px';
-        eraserTool.style.top = (y - 32) + 'px';
-        x += step * dir;
-        if (x > canvasTrans.width || x < 0) { dir *= -1; y += 110; }
-        if (y < canvasTrans.height + 150) requestAnimationFrame(limparParaQuiz);
-        else { 
-            canvasTrans.style.display = 'none'; 
-            eraserTool.style.display = 'none'; 
-            mostrarPergunta(); 
-        }
-    }
-    limparParaQuiz();
-}
-
-function mostrarPergunta() {
-    const data = perguntas[perguntaAtual];
-    const textoP = document.getElementById('pergunta-texto');
-    const box = document.getElementById('alternativas-box');
-    const progresso = document.getElementById('quiz-progresso');
-
-    progresso.innerText = `Pergunta ${perguntaAtual + 1} de ${perguntas.length}`;
-    box.innerHTML = ""; 
-
-    // Efeito de digitação na pergunta (usando a função que já criamos antes)
-    typeEffect(textoP, data.p, { classList: { add: () => {} } }, () => {
-        // Gera os botões após a pergunta ser escrita
-        data.opts.forEach((opt, index) => {
-            const btn = document.createElement('button');
-            btn.className = 'btn-quiz';
-            btn.innerText = opt;
-            
-            // Posição inicial (vêm de fora)
-            if (index % 2 === 0) btn.classList.add('sair-esquerda');
-            else btn.classList.add('sair-direita');
-
-            btn.onclick = () => verificarResposta(index, btn);
-            box.appendChild(btn);
-
-            // Animação de entrada suave
-            setTimeout(() => {
-                btn.classList.remove('sair-esquerda', 'sair-direita');
-            }, 100 * index);
-        });
-    });
-}
-
-function verificarResposta(escolha, btnEscolhido) {
-    const data = perguntas[perguntaAtual];
-    const botoes = document.querySelectorAll('.btn-quiz');
-    botoes.forEach(b => b.style.pointerEvents = 'none');
-
-    if (escolha === data.resp) {
-        btnEscolhido.classList.add('correto');
-        explode(window.innerWidth/2, window.innerHeight/2);
-    } else {
-        btnEscolhido.classList.add('errado');
-    }
-
-    setTimeout(() => {
-        botoes.forEach((btn, index) => {
-            if (index % 2 === 0) btn.classList.add('sair-esquerda');
-            else btn.classList.add('sair-direita');
-        });
-
-        setTimeout(() => {
-            perguntaAtual++;
-            if (perguntaAtual < perguntas.length) {
-                mostrarPergunta();
-            } else {
-                finalizarQuiz();
-            }
-        }, 600);
-    }, 1500);
-}
-
-function finalizarQuiz() {
-    const pTexto = document.getElementById('pergunta-texto');
-    pTexto.innerHTML = "";
-    typeEffect(pTexto, "Você me conhece tão bem! 💜", { classList: { add: () => {} } }, () => {
-        document.getElementById('alternativas-box').innerHTML = `
-            <button class="btn-next show" style="opacity:1; pointer-events:auto;" onclick="proximaEtapa()">Continuar Jornada ✨</button>
-        `;
-    });
-        }
-        
-    </script>
-</body>
-    </html>
+                    element.innerHTML = text.substring(0,
     
