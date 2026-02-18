@@ -39,8 +39,15 @@
         
         .correto { background: #2ecc71 !important; }
         .errado { background: #e74c3c !important; }
-        .sair-esquerda { transform: translateX(-150vw) rotate(-15deg); opacity: 0; }
+         .sair-esquerda { transform: translateX(-150vw) rotate(-15deg); opacity: 0; }
         .sair-direita { transform: translateX(150vw) rotate(15deg); opacity: 0; }
+        
+        /* Certifique-se que o btn-quiz tem a transição configurada */
+        .btn-quiz { 
+            /* ... seus outros estilos ... */
+            transition: transform 0.6s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.5s, background 0.3s; 
+        }
+        
         .lacinho { position: fixed; font-size: 25px; pointer-events: none; z-index: 2; display: block; user-select: none; opacity: 0.7; }
         .cursor { color: var(--cor-azul); animation: blink 0.8s infinite; }
         @keyframes blink { 50% { opacity: 0; } }
@@ -278,20 +285,64 @@
 
         function irParaQuiz() { document.getElementById('page2').style.display = 'none'; document.getElementById('page3').style.display = 'flex'; setTimeout(() => { document.getElementById('page3').style.opacity = '1'; mostrarPergunta(); }, 100); }
 
-        function mostrarPergunta() {
-            const data = perguntas[ptAtual]; document.getElementById('quiz-progresso').innerText = `Pergunta ${ptAtual + 1} de ${perguntas.length}`;
-            const box = document.getElementById('alternativas-box'); box.innerHTML = "";
+                function mostrarPergunta() {
+            const data = perguntas[ptAtual]; 
+            document.getElementById('quiz-progresso').innerText = `Pergunta ${ptAtual + 1} de ${perguntas.length}`;
+            const box = document.getElementById('alternativas-box'); 
+            box.innerHTML = "";
+
             typeEffect(document.getElementById('pergunta-texto'), data.p, null, () => {
                 data.opts.forEach((opt, idx) => {
-                    const btn = document.createElement('button'); btn.className = 'btn-quiz'; btn.innerText = opt; box.appendChild(btn);
+                    const btn = document.createElement('button'); 
+                    btn.className = 'btn-quiz'; 
+                    btn.innerText = opt; 
+                    
+                    // 1. Define de qual lado eles VÊM (entrada intercalada)
+                    // Se o índice for par (0, 2), vem da esquerda. Se for ímpar (1, 3), vem da direita.
+                    btn.classList.add(idx % 2 === 0 ? 'sair-esquerda' : 'sair-direita');
+                    box.appendChild(btn);
+
+                    // 2. Pequeno delay para eles deslizarem para o centro um por um
+                    setTimeout(() => {
+                        btn.classList.remove('sair-esquerda', 'sair-direita');
+                        btn.style.opacity = "1";
+                        btn.style.transform = "translateX(0) rotate(0deg)";
+                    }, 100 * idx);
+
                     btn.onclick = () => {
-                        const botoes = document.querySelectorAll('.btn-quiz'); botoes.forEach(b => b.style.pointerEvents = 'none');
-                        if(idx === data.resp) { btn.classList.add('correto'); acertos++; explode(window.innerWidth/2, window.innerHeight/2); } else { btn.classList.add('errado'); }
-                        setTimeout(() => { ptAtual++; if(ptAtual < perguntas.length) { mostrarPergunta(); } else { exibirResultadoFinal(); } }, 1000);
+                        const botoes = document.querySelectorAll('.btn-quiz'); 
+                        botoes.forEach(b => b.style.pointerEvents = 'none');
+
+                        // Lógica de acerto/erro
+                        if(idx === data.resp) { 
+                            btn.classList.add('correto'); 
+                            acertos++; 
+                            explode(window.innerWidth/2, window.innerHeight/2); 
+                        } else { 
+                            btn.classList.add('errado'); 
+                        }
+
+                        // 3. Efeito de SAÍDA intercalada (fuga para os lados)
+                        setTimeout(() => {
+                            botoes.forEach((b, i) => {
+                                b.classList.add(i % 2 === 0 ? 'sair-esquerda' : 'sair-direita');
+                            });
+
+                            // 4. Espera a animação de saída acabar para carregar a próxima
+                            setTimeout(() => {
+                                ptAtual++; 
+                                if(ptAtual < perguntas.length) { 
+                                    mostrarPergunta(); 
+                                } else { 
+                                    exibirResultadoFinal(); 
+                                }
+                            }, 600); 
+                        }, 1200); 
                     };
                 });
             });
         }
+        
 
         function exibirResultadoFinal() {
             const total = perguntas.length;
