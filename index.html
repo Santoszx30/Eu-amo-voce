@@ -19,48 +19,42 @@
         
         @keyframes gradientBG { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
 
-        canvas { position: fixed; top: 0; left: 0; z-index: 1; pointer-events: none; transform: translateZ(0); }
+        canvas { position: fixed; top: 0; left: 0; z-index: 1; pointer-events: none; }
         #canvas-transition { z-index: 20; display: none; }
         #eraser-tool { position: fixed; width: 130px; height: 65px; background: #f08080; border-radius: 8px; border-bottom: 8px solid #cd5c5c; z-index: 100; display: none; pointer-events: none; box-shadow: 0 5px 20px rgba(0,0,0,0.6); }
         
         .page { position: absolute; width: 100%; height: 100%; display: flex; justify-content: center; align-items: center; z-index: 10; transition: opacity 0.8s ease-in-out; }
         .container { text-align: center; color: white; padding: 20px; width: 95%; max-width: 1000px; }
         
-        h1, .final-msg { font-family: 'Great Vibes', cursive; font-size: clamp(4rem, 12vw, 7.5rem); margin-bottom: 30px; color: #f0eaff; text-shadow: 0 0 40px var(--cor-roxo); }
-        #typing-text, .legenda { font-size: clamp(1.6rem, 5vw, 2.5rem); line-height: 1.5; min-height: 140px; font-weight: 300; }
+        h1, .final-msg { font-family: 'Great Vibes', cursive; font-size: clamp(3.5rem, 10vw, 7rem); margin-bottom: 30px; color: #f0eaff; text-shadow: 0 0 40px var(--cor-roxo); }
+        #typing-text, .legenda, #pergunta-texto { font-size: clamp(1.5rem, 5vw, 2.5rem); line-height: 1.5; min-height: 120px; font-weight: 300; }
         
         .btn-next { 
-            margin-top: 40px; padding: 20px 50px; background: transparent; 
+            margin-top: 40px; padding: 18px 45px; background: transparent; 
             border: 2px solid var(--cor-azul); color: white; border-radius: 60px; 
-            cursor: pointer; font-size: 1.5rem; opacity: 0; transition: 0.5s; 
+            cursor: pointer; font-size: 1.3rem; opacity: 0; transition: 0.5s; 
             box-shadow: 0 0 20px var(--cor-azul); pointer-events: none; 
             visibility: hidden;
         }
         .btn-next.show { opacity: 1; pointer-events: auto; visibility: visible; }
         
-        #page2 { display: none; opacity: 0; }
-        .bau-tesouro { font-size: clamp(120px, 30vw, 220px); cursor: pointer; filter: drop-shadow(0 0 30px var(--cor-roxo)); transition: transform 0.2s; user-select: none; }
-        .frase-bau { font-family: 'Great Vibes', cursive; font-size: clamp(2.5rem, 6vw, 3.5rem); margin-top: 80px; color: var(--cor-azul); text-shadow: 0 0 15px var(--cor-azul); }
+        #page2, #page3 { display: none; opacity: 0; }
+        .bau-tesouro { font-size: clamp(100px, 25vw, 200px); cursor: pointer; filter: drop-shadow(0 0 30px var(--cor-roxo)); transition: transform 0.2s; user-select: none; }
+        .frase-bau { font-family: 'Great Vibes', cursive; font-size: clamp(2rem, 5vw, 3rem); margin-top: 60px; color: var(--cor-azul); text-shadow: 0 0 15px var(--cor-azul); }
         
         #photo-area { display: none; flex-direction: column; align-items: center; }
-        .foto-moldura { width: clamp(300px, 65vw, 550px); height: auto; border: 15px solid white; box-shadow: 0 20px 50px rgba(0,0,0,0.7); border-radius: 4px; transition: opacity 0.6s ease-in-out; opacity: 0; }
-        .legenda { margin-top: 30px; font-style: italic; color: #e0d5ff; max-width: 800px; }
+        .foto-moldura { width: clamp(280px, 60vw, 500px); height: auto; border: 12px solid white; box-shadow: 0 20px 50px rgba(0,0,0,0.7); border-radius: 4px; transition: opacity 0.5s; opacity: 0; }
+        
+        /* QUIZ */
+        .alternativas-grid { display: grid; grid-template-columns: 1fr; gap: 12px; margin-top: 20px; width: 100%; max-width: 600px; margin-left: auto; margin-right: auto; }
+        .btn-quiz { padding: 18px; font-size: 1.2rem; background: rgba(255, 255, 255, 0.08); border: 2px solid rgba(255, 255, 255, 0.2); color: white; border-radius: 15px; cursor: pointer; transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        .sair-esquerda { transform: translateX(-150vw); opacity: 0; }
+        .sair-direita { transform: translateX(150vw); opacity: 0; }
+        .correto { background: #2ecc71 !important; border-color: #2ecc71; box-shadow: 0 0 20px #2ecc71; }
+        .errado { background: #e74c3c !important; border-color: #e74c3c; box-shadow: 0 0 20px #e74c3c; }
         
         .cursor { color: var(--cor-azul); animation: blink 0.8s infinite; }
         @keyframes blink { 50% { opacity: 0; } }
-
-        /* --- ESTILOS DA PÁGINA 3 --- */
-        #page3 { display: none; opacity: 0; flex-direction: column; }
-        .quiz-container { width: 95%; max-width: 850px; margin: 0 auto; }
-        #pergunta-texto { font-family: 'Great Vibes', cursive; font-size: clamp(2.2rem, 6vw, 3.5rem); margin-bottom: 35px; min-height: 120px; color: #fff; text-shadow: 0 0 20px var(--cor-roxo); }
-        .alternativas-grid { display: grid; grid-template-columns: 1fr; gap: 15px; }
-        .btn-quiz { padding: 22px; font-size: clamp(1.1rem, 3vw, 1.4rem); background: rgba(255, 255, 255, 0.07); border: 2px solid rgba(255, 255, 255, 0.2); color: white; border-radius: 18px; cursor: pointer; transition: all 0.5s cubic-bezier(0.68, -0.55, 0.27, 1.55); position: relative; overflow: hidden; }
-        .btn-quiz:hover { background: rgba(255, 255, 255, 0.15); border-color: var(--cor-azul); transform: scale(1.02); }
-        .sair-esquerda { transform: translateX(-150vw) rotate(-10deg); opacity: 0; }
-        .sair-direita { transform: translateX(150vw) rotate(10deg); opacity: 0; }
-        .btn-quiz.correto { background: #2ecc71 !important; border-color: #2ecc71; box-shadow: 0 0 30px #2ecc71; color: white; }
-        .btn-quiz.errado { background: #e74c3c !important; border-color: #e74c3c; box-shadow: 0 0 30px #e74c3c; color: white; }
-        #quiz-progresso { margin-top: 40px; font-size: 1.3rem; color: var(--cor-azul); letter-spacing: 2px; }
     </style>
 </head>
 <body>
@@ -82,7 +76,6 @@
             <div class="bau-tesouro" id="bau-click">📦</div>
             <p class="frase-bau">Toque no baú para revelar nossos segredos...</p>
         </div>
-
         <div id="photo-area" class="container">
             <img src="" id="img-display" class="foto-moldura">
             <div id="legenda-display" class="legenda"></div>
@@ -91,10 +84,10 @@
     </section>
 
     <section id="page3" class="page">
-        <div class="container quiz-container">
+        <div class="container">
             <div id="pergunta-texto"></div>
             <div class="alternativas-grid" id="alternativas-box"></div>
-            <div id="quiz-progresso"></div>
+            <div id="quiz-progresso" style="margin-top: 20px; color: var(--cor-azul);"></div>
         </div>
     </section>
 
@@ -105,6 +98,9 @@
         const ctxTrans = canvasTrans.getContext('2d');
         const eraserTool = document.getElementById('eraser-tool');
         
+        let currentPhoto = 0;
+        let particles = [];
+
         const legendas = [
             "Existem belezas que cansam os olhos, mas a sua... a sua descansa a minha alma.",
             "Cada curva dos teus cachos é um caminho onde o meu olhar adora se perder.",
@@ -123,9 +119,18 @@
             "Se o paraíso existisse, ele teria o formato exato desse seu sorriso definitivo."
         ];
 
-        let currentPhoto = 0;
-        let particles = [];
-        const MAX_PARTICLES = 120;
+        const perguntas = [
+            { p: "Há quanto tempo estamos juntos?", opts: ["3 meses e 15 dias", "3 meses e 22 dias", "4 meses", "3 meses e 10 dias"], resp: 1 },
+            { p: "Qual é a parte de você que eu mais gosto?", opts: ["Seus olhos", "Seu cabelo", "Seu sorriso", "Seu cheiro"], resp: 2 },
+            { p: "Qual foi o dia que eu te pedi oficialmente em namoro?", opts: ["24/11", "22/11", "24/10", "20/11"], resp: 0 },
+            { p: "O que eu escrevi no cartão das flores que te dei?", opts: ["Para a menina mais linda do mundo", "Espero que as flores não sintam inveja da sua beleza", "Flores para combinar com seu perfume", "Um detalhe para quem é perfeição"], resp: 1 },
+            { p: "Qual estilo de foto sua que eu mais gosto?", opts: ["Foto de biquíni", "Foto toda arrumada pra sair", "Foto de rosto (selfie)", "Foto toda desarrumada e bagunçada"], resp: 3 },
+            { p: "O que eu mais sinto por você além de amor?", opts: ["Ciúmes", "Proteção", "Admiração", "Saudade constante"], resp: 0 },
+            { p: "O que eu mais admiro em você?", opts: ["Sua inteligência", "Sua paciência comigo", "Sua persistência mesmo com vários problemas", "Sua forma de ver o mundo"], resp: 2 },
+            { p: "O que você faz que eu finjo que não gosto, mas amo?", opts: ["Suas crises de riso", "Suas provocações", "Seu jeito mandona", "Quando você me liga de madrugada"], resp: 1 },
+            { p: "O que eu acho mais divertido de fazer com você?", opts: ["Assistir filmes", "Sair para comer", "Te estressar", "Ficar em silêncio abraçados"], resp: 2 },
+            { p: "Qual foi o dia mais importante da minha vida?", opts: ["O dia do nosso primeiro beijo", "O dia do pedido de namoro", "O dia em que te conheci", "O dia que você disse 'te amo'"], resp: 2 }
+        ];
 
         function resize() {
             canvasBg.width = canvasTrans.width = window.innerWidth;
@@ -182,11 +187,165 @@
             for(let i=0; i<15; i++) particles.push(new Particle(x, y, colors[Math.floor(Math.random()*3)], 'heart'));
         }
 
-        function typeEffect(element, text, button, callback) {
+        function typeEffect(element, text, buttonElement, callback) {
             let i = 0;
-            if(button && button.classList) button.classList.remove('show');
+            if(buttonElement) { buttonElement.classList.remove('show'); }
             element.innerHTML = "";
             function step() {
                 if (i < text.length) {
-                    element.innerHTML = text.substring(0,
+                    element.innerHTML = text.substring(0, i + 1) + '<span class="cursor">|</span>';
+                    i++;
+                    setTimeout(step, 40);
+                } else {
+                    element.innerHTML = text;
+                    if(buttonElement) { buttonElement.classList.add('show'); }
+                    if (callback) callback();
+                }
+            }
+            step();
+        }
+
+        // INICIALIZAÇÃO
+        window.onload = () => {
+            typeEffect(document.getElementById('typing-text'), 
+            "Pensei em mil formas de te dar algo único. Então, construí este lugar. Cada linha, cada cor e cada efeito foi colocado aqui pensando em você. Toque para descobrir.", 
+            document.getElementById('btn-to-page2'));
+        };
+
+        // TRANSIÇÃO PARA PÁGINA 2
+        document.getElementById('btn-to-page2').addEventListener('click', () => {
+            transicaoGeral('page1', 'page2', null);
+        });
+
+        function transicaoGeral(idSair, idEntrar, callbackFinal) {
+            canvasTrans.style.display = 'block';
+            ctxTrans.fillStyle = '#0f051a';
+            ctxTrans.fillRect(0, 0, canvasTrans.width, canvasTrans.height);
+            
+            document.getElementById(idSair).style.display = 'none';
+            const entrada = document.getElementById(idEntrar);
+            entrada.style.display = 'flex';
+            setTimeout(() => entrada.style.opacity = '1', 100);
+
+            eraserTool.style.display = 'block';
+            let x=0, y=0, step=100, dir=1;
+            function autoErase() {
+                ctxTrans.globalCompositeOperation = 'destination-out';
+                ctxTrans.beginPath(); ctxTrans.arc(x, y, 140, 0, Math.PI*2); ctxTrans.fill();
+                eraserTool.style.left = (x-65)+'px'; eraserTool.style.top = (y-32)+'px';
+                x += step * dir;
+                if(x > canvasTrans.width || x < 0) { dir *= -1; y += 110; }
+                if(y < canvasTrans.height+150) requestAnimationFrame(autoErase);
+                else { 
+                    canvasTrans.style.display = 'none'; 
+                    eraserTool.style.display = 'none'; 
+                    if(callbackFinal) callbackFinal();
+                }
+            }
+            autoErase();
+        }
+
+        // LÓGICA DO BAÚ E FOTOS
+        let bauClicks = 0;
+        document.getElementById('bau-click').addEventListener('click', function() {
+            bauClicks++;
+            this.style.transform = `scale(${1 + bauClicks*0.1}) rotate(${bauClicks%2==0?5:-5}deg)`;
+            explode(window.innerWidth/2, window.innerHeight/2);
+            if(bauClicks >= 8) {
+                document.getElementById('bau-container').style.display = 'none';
+                document.getElementById('photo-area').style.display = 'flex';
+                updatePhoto();
+            }
+        });
+
+        function updatePhoto() {
+            const img = document.getElementById('img-display');
+            const legendaArea = document.getElementById('legenda-display');
+            const nextBtn = document.getElementById('btn-next-photo');
+
+            if(currentPhoto < 15) {
+                img.style.opacity = 0;
+                const tempImg = new Image();
+                tempImg.src = `fotos/linda${currentPhoto + 1}.jpg`;
+                tempImg.onload = () => {
+                    img.src = tempImg.src;
+                    img.style.opacity = 1;
+                    explode(window.innerWidth/2, window.innerHeight/2);
+                    typeEffect(legendaArea, legendas[currentPhoto], nextBtn);
+                };
+            } else {
+                document.getElementById('photo-area').innerHTML = `
+                    <h1 class="final-msg">Você é tudo para mim 💜</h1>
+                    <button class="btn-next show" style="opacity:1; pointer-events:auto;" onclick="iniciarQuiz()">Ir para o Quiz ✨</button>
+                `;
+            }
+        }
+
+        document.getElementById('btn-next-photo').addEventListener('click', () => {
+            currentPhoto++;
+            updatePhoto();
+        });
+
+        // LÓGICA DO QUIZ
+        let perguntaAtual = 0;
+        function iniciarQuiz() {
+            transicaoGeral('page2', 'page3', mostrarPergunta);
+        }
+
+        function mostrarPergunta() {
+            const data = perguntas[perguntaAtual];
+            const textoP = document.getElementById('pergunta-texto');
+            const box = document.getElementById('alternativas-box');
+            const progresso = document.getElementById('quiz-progresso');
+
+            progresso.innerText = `Pergunta ${perguntaAtual + 1} de ${perguntas.length}`;
+            box.innerHTML = ""; 
+
+            typeEffect(textoP, data.p, null, () => {
+                data.opts.forEach((opt, index) => {
+                    const btn = document.createElement('button');
+                    btn.className = 'btn-quiz';
+                    btn.innerText = opt;
+                    btn.classList.add(index % 2 === 0 ? 'sair-esquerda' : 'sair-direita');
+                    btn.onclick = () => verificarResposta(index, btn);
+                    box.appendChild(btn);
+                    setTimeout(() => btn.classList.remove('sair-esquerda', 'sair-direita'), 100 * index);
+                });
+            });
+        }
+
+        function verificarResposta(escolha, btn) {
+            const data = perguntas[perguntaAtual];
+            const botoes = document.querySelectorAll('.btn-quiz');
+            botoes.forEach(b => b.style.pointerEvents = 'none');
+
+            if (escolha === data.resp) {
+                btn.classList.add('correto');
+                explode(window.innerWidth/2, window.innerHeight/2);
+            } else {
+                btn.classList.add('errado');
+            }
+
+            setTimeout(() => {
+                botoes.forEach((b, i) => b.classList.add(i % 2 === 0 ? 'sair-esquerda' : 'sair-direita'));
+                setTimeout(() => {
+                    perguntaAtual++;
+                    if (perguntaAtual < perguntas.length) mostrarPergunta();
+                    else finalizarQuiz();
+                }, 600);
+            }, 1500);
+        }
+
+        function finalizarQuiz() {
+            const pTexto = document.getElementById('pergunta-texto');
+            pTexto.innerHTML = "";
+            typeEffect(pTexto, "Você me conhece tão bem! 💜 Amanhã tem mais...", null, () => {
+                document.getElementById('alternativas-box').innerHTML = `<button class="btn-next show" style="opacity:1; pointer-events:auto;" onclick="location.reload()">Recomeçar ❤️</button>`;
+            });
+        }
+
+        setInterval(() => explode(Math.random()*window.innerWidth, Math.random()*window.innerHeight), 2500);
+    </script>
+</body>
+    </html>
     
