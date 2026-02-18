@@ -25,214 +25,208 @@
             100% { background-position: 0% 50%; }
         }
 
-        /* Camadas */
+        #canvas-bg, #canvas-transition {
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+        }
+
+        #canvas-bg { z-index: 1; pointer-events: none; }
+        #canvas-transition { z-index: 15; pointer-events: none; display: none; }
+
         .page {
-            position: absolute;
-            width: 100%; height: 100%;
+            position: absolute; width: 100%; height: 100%;
             display: flex; justify-content: center; align-items: center;
-            transition: opacity 1s ease;
+            z-index: 10;
         }
 
-        #canvas-bg, #canvas-eraser {
-            position: fixed; top: 0; left: 0; pointer-events: none; z-index: 2;
-        }
-
-        #canvas-eraser { pointer-events: auto; z-index: 20; display: none; cursor: crosshair; }
-
-        .container {
-            text-align: center; z-index: 10; color: white; padding: 40px; max-width: 1000px;
-        }
+        .container { text-align: center; color: white; padding: 40px; max-width: 1000px; }
 
         h1 {
             font-family: 'Great Vibes', cursive;
             font-size: clamp(3.5rem, 12vw, 6.5rem);
-            margin-bottom: 30px; color: #f0eaff;
+            margin-bottom: 40px; color: #f0eaff;
             text-shadow: 0 0 30px rgba(162, 85, 255, 0.8);
         }
 
-        #typing-text {
-            font-size: clamp(1.4rem, 5vw, 2.2rem); line-height: 1.6; min-height: 150px;
-        }
+        #typing-text { font-size: clamp(1.4rem, 5vw, 2.2rem); line-height: 1.6; min-height: 150px; }
 
-        /* Botão Próximo */
         .btn-next {
             margin-top: 30px; padding: 15px 40px;
             background: transparent; border: 2px solid var(--cor-azul);
             color: white; border-radius: 50px; cursor: pointer;
             font-size: 1.2rem; opacity: 0; transition: 0.5s;
-            box-shadow: 0 0 15px var(--cor-azul);
+            box-shadow: 0 0 15px var(--cor-azul); pointer-events: auto;
         }
 
         .btn-next.show { opacity: 1; }
 
         /* Estilo do Baú */
-        #bau-container { display: none; flex-direction: column; opacity: 0; transition: 2s; }
+        #page2 { display: none; opacity: 0; transition: opacity 2s; }
         
         .bau {
-            font-size: 8rem; cursor: pointer; transition: transform 0.1s;
-            filter: drop-shadow(0 0 20px var(--cor-roxo));
+            font-size: 10rem; cursor: pointer; user-select: none;
+            filter: drop-shadow(0 0 25px var(--cor-roxo));
+            transition: transform 0.1s;
         }
 
-        .bau:active { transform: scale(0.9) rotate(5deg); }
-
-        .instrucao { color: white; margin-top: 20px; font-style: italic; opacity: 0.7; }
+        .instrucao { margin-top: 20px; font-size: 1.5rem; color: var(--cor-azul); animation: pulse 2s infinite; }
+        
+        @keyframes pulse { 0%, 100% { opacity: 0.5; } 50% { opacity: 1; } }
 
     </style>
 </head>
 <body>
 
     <canvas id="canvas-bg"></canvas>
-    
-    <canvas id="canvas-eraser"></canvas>
+    <canvas id="canvas-transition"></canvas>
 
     <div id="page1" class="page">
         <div class="container">
-            <h1 id="titulo">Para quem ilumina meus dias</h1>
+            <h1>Para quem ilumina meus dias</h1>
             <div id="typing-text"></div>
-            <button id="btn-start-eraser" class="btn-next">Limpar Caminho</button>
+            <button id="btn-reveal" class="btn-next">Descobrir Surpresa</button>
         </div>
     </div>
 
     <div id="page2" class="page">
-        <div id="bau-container" class="container">
+        <div class="container">
             <div class="bau" id="bau-icon">🎁</div>
-            <p class="instrucao">Clique no presente para abrir...</p>
+            <p class="instrucao">Clique para abrir o baú!</p>
         </div>
     </div>
 
     <script>
-        const text = "Pensei em mil formas de te dar algo único. Então, construí este lugar. Cada linha, cada cor e cada efeito foi colocado aqui pensando em você. Toque para descobrir.";
         const typingElement = document.getElementById('typing-text');
-        const btnEraser = document.getElementById('btn-start-eraser');
+        const btnReveal = document.getElementById('btn-reveal');
         const canvasBg = document.getElementById('canvas-bg');
         const ctxBg = canvasBg.getContext('2d');
-        const canvasEraser = document.getElementById('canvas-eraser');
-        const ctxEraser = canvasEraser.getContext('2d');
+        const canvasTrans = document.getElementById('canvas-transition');
+        const ctxTrans = canvasTrans.getContext('2d');
 
-        // Configuração Inicial
+        const text = "Pensei em mil formas de te dar algo único. Então, construí este lugar. Cada linha, cada cor e cada efeito foi colocado aqui pensando em você. Toque para descobrir.";
+
+        // Redimensionar
         function resize() {
-            canvasBg.width = window.innerWidth;
-            canvasBg.height = window.innerHeight;
-            canvasEraser.width = window.innerWidth;
-            canvasEraser.height = window.innerHeight;
+            canvasBg.width = canvasTrans.width = window.innerWidth;
+            canvasBg.height = canvasTrans.height = window.innerHeight;
         }
         window.addEventListener('resize', resize);
         resize();
 
-        // --- Efeito Digitação ---
-        let index = 0;
-        function typeWriter() {
-            if (index < text.length) {
-                typingElement.innerHTML = text.substring(0, index + 1) + '<span style="color:var(--cor-azul)">|</span>';
-                index++;
-                setTimeout(typeWriter, 40);
-            } else {
-                btnEraser.classList.add('show');
-            }
+        // 1. Digitação
+        let idx = 0;
+        function type() {
+            if (idx < text.length) {
+                typingElement.innerHTML = text.substring(0, idx + 1) + '<span style="color:var(--cor-azul)">|</span>';
+                idx++; setTimeout(type, 40);
+            } else { btnReveal.classList.add('show'); }
         }
-        setTimeout(typeWriter, 2500);
+        setTimeout(type, 2500);
 
-        // --- Partículas (Corações e Toque) ---
+        // 2. Partículas e Raios (Mesmo sistema anterior)
         let particles = [];
         class Particle {
             constructor(x, y, color, type) {
                 this.x = x; this.y = y; this.type = type; this.color = color;
                 this.opacity = 1; this.size = type === 'heart' ? 0 : 3;
-                this.targetSize = Math.random() * 20 + 15;
-                this.speedX = (Math.random() - 0.5) * 5;
-                this.speedY = (Math.random() - 0.5) * 5;
+                this.targetSize = type === 'heart' ? Math.random() * 20 + 15 : 3;
+                this.speedX = (Math.random() - 0.5) * 5; this.speedY = (Math.random() - 0.5) * 5;
+            }
+            update() {
+                this.x += this.speedX; this.y += this.speedY;
+                if (this.type === 'heart' && this.size < this.targetSize) this.size += 1.2;
+                this.opacity -= 0.008;
             }
             draw(ctx) {
                 ctx.save(); ctx.globalAlpha = this.opacity; ctx.fillStyle = this.color;
                 if (this.type === 'heart') {
                     const s = this.size; ctx.beginPath();
                     ctx.moveTo(this.x, this.y);
-                    ctx.bezierCurveTo(this.x, this.y - s/2, this.x - s, this.y - s/2, this.x - s, this.y);
-                    ctx.bezierCurveTo(this.x - s, this.y + s, this.x, this.y + s*1.5, this.x, this.y + s*1.8);
-                    ctx.bezierCurveTo(this.x, this.y + s*1.5, this.x + s, this.y + s, this.x + s, this.y);
-                    ctx.bezierCurveTo(this.x + s, this.y - s/2, this.x, this.y - s/2, this.x, this.y);
+                    ctx.bezierCurveTo(this.x, this.y-s/2, this.x-s, this.y-s/2, this.x-s, this.y);
+                    ctx.bezierCurveTo(this.x-s, this.y+s, this.x, this.y+s*1.5, this.x, this.y+s*1.8);
+                    ctx.bezierCurveTo(this.x, this.y+s*1.5, this.x+s, this.y+s, this.x+s, this.y);
+                    ctx.bezierCurveTo(this.x+s, this.y-s/2, this.x, this.y-s/2, this.x, this.y);
                     ctx.fill();
-                } else {
-                    ctx.beginPath(); ctx.arc(this.x, this.y, this.size, 0, Math.PI*2); ctx.fill();
-                }
+                } else { ctx.beginPath(); ctx.arc(this.x, this.y, this.size, 0, Math.PI*2); ctx.fill(); }
                 ctx.restore();
-            }
-            update() {
-                this.x += this.speedX; this.y += this.speedY;
-                this.speedX *= 0.98; this.speedY *= 0.98;
-                if (this.type === 'heart' && this.size < this.targetSize) this.size += 1.2;
-                this.opacity -= 0.008;
             }
         }
 
         function animate() {
             ctxBg.clearRect(0, 0, canvasBg.width, canvasBg.height);
-            particles.forEach((p, i) => {
-                p.update(); p.draw(ctxBg);
-                if (p.opacity <= 0) particles.splice(i, 1);
-            });
+            particles.forEach((p, i) => { p.update(); p.draw(ctxBg); if(p.opacity<=0) particles.splice(i, 1); });
             requestAnimationFrame(animate);
         }
         animate();
 
         setInterval(() => {
-            const side = Math.floor(Math.random() * 4);
+            const side = Math.floor(Math.random()*4);
             let x, y;
-            if (side === 0) { x = 30; y = Math.random() * canvasBg.height; }
-            else if (side === 1) { x = canvasBg.width - 30; y = Math.random() * canvasBg.height; }
-            else if (side === 2) { x = Math.random() * canvasBg.width; y = 30; }
-            else { x = Math.random() * canvasBg.width; y = canvasBg.height - 30; }
-            for(let i=0; i<3; i++) particles.push(new Particle(x, y, '#a255ff', 'heart'));
-        }, 600);
+            if(side==0){x=20; y=Math.random()*canvasBg.height}
+            else if(side==1){x=canvasBg.width-20; y=Math.random()*canvasBg.height}
+            else if(side==2){x=Math.random()*canvasBg.width; y=20}
+            else{x=Math.random()*canvasBg.width; y=canvasBg.height-20}
+            for(let i=0; i<2; i++) particles.push(new Particle(x, y, '#a255ff', 'heart'));
+        }, 700);
 
         window.addEventListener('mousemove', (e) => {
             for(let i=0; i<2; i++) particles.push(new Particle(e.clientX, e.clientY, '#ffffff', 'light'));
         });
 
-        // --- Lógica da Borracha ---
-        btnEraser.addEventListener('click', () => {
-            canvasEraser.style.display = 'block';
-            // Preenche o canvas da borracha com uma cor sólida para esconder o que está atrás
-            ctxEraser.fillStyle = '#0f051a';
-            ctxEraser.fillRect(0, 0, canvasEraser.width, canvasEraser.height);
+        // 3. ANIMAÇÃO DA BORRACHA AUTOMÁTICA
+        btnReveal.addEventListener('click', () => {
+            canvasTrans.style.display = 'block';
+            ctxTrans.fillStyle = '#0f051a';
+            ctxTrans.fillRect(0, 0, canvasTrans.width, canvasTrans.height);
             
-            document.getElementById('page1').style.opacity = '0';
-            setTimeout(() => {
-                document.getElementById('page1').style.display = 'none';
-                document.getElementById('page2').style.display = 'flex';
-                document.getElementById('bau-container').style.opacity = '1';
-            }, 1000);
+            document.getElementById('page1').style.display = 'none';
+            document.getElementById('page2').style.display = 'flex';
+            setTimeout(() => { document.getElementById('page2').style.opacity = '1'; }, 100);
+
+            let x = 0; let y = 0; let step = 60;
+            let direction = 1;
+
+            function autoErase() {
+                ctxTrans.globalCompositeOperation = 'destination-out';
+                ctxTrans.beginPath();
+                ctxTrans.arc(x, y, 100, 0, Math.PI * 2);
+                ctxTrans.fill();
+
+                x += step * direction;
+                if (x > canvasTrans.width || x < 0) {
+                    direction *= -1;
+                    y += 80;
+                }
+
+                if (y < canvasTrans.height + 100) {
+                    requestAnimationFrame(autoErase);
+                } else {
+                    canvasTrans.style.display = 'none';
+                }
+            }
+            autoErase();
         });
 
-        function erase(e) {
-            if (canvasEraser.style.display === 'block') {
-                const x = e.touches ? e.touches[0].clientX : e.clientX;
-                const y = e.touches ? e.touches[0].clientY : e.clientY;
-                ctxEraser.globalCompositeOperation = 'destination-out';
-                ctxEraser.beginPath();
-                ctxEraser.arc(x, y, 60, 0, Math.PI * 2); // Tamanho da borracha
-                ctxEraser.fill();
+        // 4. Lógica do Baú
+        let clicks = 0;
+        const bau = document.getElementById('bau-icon');
+        bau.addEventListener('click', () => {
+            clicks++;
+            bau.style.transform = `scale(${1 + clicks*0.1}) rotate(${clicks % 2 == 0 ? 5 : -5}deg)`;
+            
+            // Explosão de corações ao clicar no baú
+            for(let i=0; i<8; i++) {
+                particles.push(new Particle(window.innerWidth/2, window.innerHeight/2, '#00e5ff', 'heart'));
             }
-        }
-        canvasEraser.addEventListener('mousemove', erase);
-        canvasEraser.addEventListener('touchmove', erase);
 
-        // --- Lógica do Baú ---
-        let bauClicks = 0;
-        const bauIcon = document.getElementById('bau-icon');
-        bauIcon.addEventListener('click', () => {
-            bauClicks++;
-            // Faz o baú tremer
-            bauIcon.style.transform = `scale(1.2) rotate(${bauClicks % 2 === 0 ? 10 : -10}deg)`;
-            setTimeout(() => bauIcon.style.transform = 'scale(1)', 100);
-
-            if (bauClicks >= 5) {
-                // Aqui entrará a lógica das fotos no próximo passo
-                alert("O baú está abrindo..."); 
-                // No próximo código vamos substituir o alert pelas fotos
+            if (clicks >= 10) {
+                bau.innerHTML = "🔓";
+                setTimeout(() => {
+                   // Próxima fase: Entrar as fotos
+                   alert("O baú abriu! Preparado para as fotos?");
+                }, 500);
             }
         });
-
     </script>
 </body>
-</html>
+            </html>
+                
