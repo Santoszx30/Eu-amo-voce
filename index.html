@@ -44,6 +44,24 @@
         .lacinho { position: fixed; font-size: 25px; pointer-events: none; z-index: 2; display: block; user-select: none; opacity: 0.7; }
         .cursor { color: var(--cor-azul); animation: blink 0.8s infinite; }
         @keyframes blink { 50% { opacity: 0; } }
+
+                                            #contador-namoro {
+            margin-top: 30px;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            opacity: 0;
+            transition: opacity 1s ease-in;
+        }
+        .tempo-unidade {
+            background: rgba(162, 85, 255, 0.2);
+            padding: 10px 5px;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .tempo-valor { font-size: 1.5rem; font-weight: bold; color: var(--cor-azul); display: block; }
+        .tempo-label { font-size: 0.7rem; text-transform: uppercase; color: #fff; }
+                   
     </style>
 </head>
 <body>
@@ -79,13 +97,22 @@
         </div>
     </section>
     
-    <section id="page4" class="page" style="display: none; opacity: 0;">
+        <section id="page4" class="page" style="display: none; opacity: 0;">
         <div class="container" style="max-width: 800px; background: rgba(0, 0, 0, 0.4); padding: 40px; border-radius: 30px; backdrop-filter: blur(10px); border: 1px solid rgba(162, 85, 255, 0.3);">
             <h1 class="final-msg" style="font-size: clamp(3rem, 10vw, 5rem);">Minha Promessa</h1>
             <div id="texto-final" class="legenda" style="font-style: normal; text-align: justify; font-size: clamp(1.1rem, 4vw, 1.5rem); min-height: 200px;"></div>
+            
+            <div id="contador-namoro">
+                <div class="tempo-unidade"><span id="meses" class="tempo-valor">0</span><span class="tempo-label">Meses</span></div>
+                <div class="tempo-unidade"><span id="dias" class="tempo-valor">0</span><span class="tempo-label">Dias</span></div>
+                <div class="tempo-unidade"><span id="horas" class="tempo-valor">0</span><span class="tempo-label">Horas</span></div>
+                <div class="tempo-unidade"><span id="segundos" class="tempo-valor">0</span><span class="tempo-label">Segs</span></div>
+            </div>
+
             <p style="margin-top: 30px; font-family: 'Dancing Script', cursive; font-size: 2rem; color: var(--cor-rosa);">Com todo o meu amor, Victor ❤️</p>
         </div>
-    </section>
+        </section>
+    
 
     <script>
         const canvasBg = document.getElementById('canvas-bg');
@@ -240,43 +267,76 @@
         }
 
                 function exibirResultadoFinal() {
-            const total = perguntas.length;
-            const erros = total - acertos;
+    const total = perguntas.length;
+    
+    let classificacao = "";
+    if (acertos <= 3) {
+        classificacao = "Você não me ama? 😔 Acerte mais na próxima!";
+    } else if (acertos <= 7) {
+        classificacao = "Foi bem, mas podia me conhecer melhor né chata? 🙄";
+    } else {
+        classificacao = "Você foi muito bem amorzinho, a melhor namorada do mundo 💜";
+    }
+
+    document.getElementById('page3').innerHTML = `
+        <div class="container">
+            <h1 class="final-msg" style="font-size: 3.5rem;">Resultado</h1>
+            <div class="legenda" style="font-size: 1.8rem; margin-bottom: 20px;">
+                Acertos: ${acertos} de ${total}<br><br>
+                <span style="color: var(--cor-rosa); font-weight: bold;">${classificacao}</span>
+            </div>
+            <button id="btn-ver-carta" class="btn-next show" style="opacity:1; pointer-events:auto;">Ler minha cartinha ❤️</button>
+        </div>
+    `;
+
+    document.getElementById('btn-ver-carta').onclick = () => {
+        document.getElementById('page3').style.display = 'none';
+        document.getElementById('page4').style.display = 'flex';
+        setTimeout(() => {
+            document.getElementById('page4').style.opacity = '1';
+            const minhaCarta = "Aqui é onde as palavras ganham peso. Quero que saiba que cada segundo ao seu lado é um presente que eu guardo com todo o cuidado do mundo. Você não é apenas minha namorada, é minha melhor amiga, minha maior admiração e a dona dos cachos que eu mais amo no universo. Obrigado por ser exatamente quem você é, com toda a sua doçura e até com esse seu jeito que às vezes me estressa só pra me ver rir. Meu amor por você cresce a cada detalhe, a cada risada e a cada plano que fazemos juntos. Você é, e sempre será, a minha pessoa favorita.";
             
-            // Lógica de classificação completa
-            let classificacao = "";
-            if (acertos <= 3) {
-                classificacao = "Você não me ama? 😔 Acerte mais na próxima!";
-            } else if (acertos <= 7) {
-                classificacao = "Foi bem, mas podia me conhecer melhor né chata? 🙄";
-            } else {
-                classificacao = "Você foi muito bem amorzinho, a melhor namorada do mundo 💜";
-            }
+            // Aqui passamos o callback para mostrar o contador só DEPOIS do texto
+            typeEffect(document.getElementById('texto-final'), minhaCarta, null, () => {
+                const cont = document.getElementById('contador-namoro');
+                if(cont) {
+                    cont.style.opacity = '1';
+                    setInterval(atualizarContador, 1000);
+                    atualizarContador();
+                }
+            });
+        }, 100);
+    };
 
-            document.getElementById('page3').innerHTML = `
-                <div class="container">
-                    <h1 class="final-msg" style="font-size: 3.5rem;">Resultado</h1>
-                    <div class="legenda" style="font-size: 1.8rem; margin-bottom: 20px;">
-                        Acertos: ${acertos} de ${total}<br><br>
-                        <span style="color: var(--cor-rosa); font-weight: bold;">${classificacao}</span>
-                    </div>
-                    <button id="btn-ver-carta" class="btn-next show" style="opacity:1; pointer-events:auto;">Ler minha cartinha ❤️</button>
-                </div>
-            `;
+    setInterval(() => explode(Math.random()*window.innerWidth, Math.random()*window.innerHeight), 500);
+}
 
-            document.getElementById('btn-ver-carta').onclick = () => {
-                document.getElementById('page3').style.display = 'none';
-                document.getElementById('page4').style.display = 'flex';
-                setTimeout(() => {
-                    document.getElementById('page4').style.opacity = '1';
-                    const minhaCarta = "Aqui é onde as palavras ganham peso. Quero que saiba que cada segundo ao seu lado é um presente que eu guardo com todo o cuidado do mundo. Você não é apenas minha namorada, é minha melhor amiga, minha maior admiração e a dona dos cachos que eu mais amo no universo. Obrigado por ser exatamente quem você é, com toda a sua doçura e até com esse seu jeito que às vezes me estressa só pra me ver rir. Meu amor por você cresce a cada detalhe, a cada risada e a cada plano que fazemos juntos. Você é, e sempre será, a minha pessoa favorita.";
-                    typeEffect(document.getElementById('texto-final'), minhaCarta);
-                }, 100);
-            };
+// Não esqueça de colar a função atualizarContador abaixo também!
+function atualizarContador() {
+    const dataInicio = new Date('2025-10-31T00:00:00');
+    const agora = new Date();
+    let diff = agora - dataInicio;
 
-            setInterval(() => explode(Math.random()*window.innerWidth, Math.random()*window.innerHeight), 500);
-        }
-                // Classe para o rastro de glitter
+    const meses = Math.floor(diff / (1000 * 60 * 60 * 24 * 30.44));
+    diff -= meses * (1000 * 60 * 60 * 24 * 30.44);
+    
+    const dias = Math.floor(diff / (1000 * 60 * 60 * 24));
+    diff -= dias * (1000 * 60 * 60 * 24);
+
+    const horas = Math.floor(diff / (1000 * 60 * 60));
+    diff -= horas * (1000 * 60 * 60);
+
+    const segundos = Math.floor(diff / 1000);
+
+    if(document.getElementById('meses')) {
+        document.getElementById('meses').innerText = meses;
+        document.getElementById('dias').innerText = dias;
+        document.getElementById('horas').innerText = horas;
+        document.getElementById('segundos').innerText = segundos;
+    }
+                }
+                              
+                        // 1. Classe para o rastro de glitter
         class Glitter {
             constructor(x, y) {
                 this.x = x;
@@ -284,7 +344,7 @@
                 this.size = Math.random() * 3 + 1;
                 this.speedX = (Math.random() - 0.5) * 2;
                 this.speedY = (Math.random() - 0.5) * 2;
-                this.color = `hsl(${Math.random() * 60 + 280}, 100%, 70%)`; // Tons de roxo/rosa brilhante
+                this.color = `hsl(${Math.random() * 60 + 280}, 100%, 70%)`; 
                 this.opacity = 1;
             }
             update() {
@@ -301,22 +361,20 @@
                 ctxBg.beginPath();
                 ctxBg.arc(this.x, this.y, this.size, 0, Math.PI * 2);
                 ctxBg.fill();
-                ctxBg.shadowBlur = 0; // Reseta o brilho para não afetar outros desenhos
+                ctxBg.shadowBlur = 0;
             }
         }
 
         let glitterArray = [];
 
-        // Captura o movimento do mouse
+        // 2. Eventos de movimento (Mouse e Touch)
         window.addEventListener('mousemove', (e) => {
             for (let i = 0; i < 3; i++) {
                 glitterArray.push(new Glitter(e.clientX, e.clientY));
             }
-            // Também dispara os corações aleatórios se clicar/mover
-            if(Math.random() > 0.9) explode(e.clientX, e.clientY);
+            if(Math.random() > 0.98) explode(e.clientX, e.clientY); // Coração aleatório raro ao mover
         });
 
-        // Captura o movimento do dedo no celular
         window.addEventListener('touchmove', (e) => {
             const touch = e.touches[0];
             for (let i = 0; i < 3; i++) {
@@ -324,21 +382,29 @@
             }
         });
 
-        // Modifique sua função animate() para incluir o glitter:
-        const originalAnimate = animate;
-        animate = function() {
-            originalAnimate(); // Chama o que já existia
-            for (let i = 0; i < glitterArray.length; i++) {
+        // 3. A ÚNICA FUNÇÃO ANIMATE (Substitua a antiga por esta)
+        function animate() {
+            ctxBg.clearRect(0, 0, canvasBg.width, canvasBg.height);
+            
+            // Desenha Partículas (Corações)
+            for(let i = particles.length - 1; i >= 0; i--) { 
+                particles[i].update(); 
+                particles[i].draw(); 
+                if(particles[i].opacity <= 0) particles.splice(i, 1); 
+            }
+
+            // Desenha Glitter
+            for (let i = glitterArray.length - 1; i >= 0; i--) {
                 glitterArray[i].update();
                 glitterArray[i].draw();
                 if (glitterArray[i].opacity <= 0) {
                     glitterArray.splice(i, 1);
-                    i--;
                 }
             }
+            
             requestAnimationFrame(animate);
-        };
-        
+            }
+            
 </script>
 </body>
 </html>
