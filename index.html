@@ -228,11 +228,26 @@
             autoErase();
         });
 
+                // Substitua a lógica do baú por esta:
         let bauClicks = 0;
         document.getElementById('bau-click').addEventListener('click', function() {
-            bauClicks++; explode(window.innerWidth/2, window.innerHeight/2);
-            if(bauClicks >= 8) { document.getElementById('bau-container').style.display = 'none'; document.getElementById('photo-area').style.display = 'flex'; updatePhoto(); }
+            bauClicks++;
+            
+            // Faz o baú crescer 20% a cada clique e balançar levemente
+            const escala = 1 + (bauClicks * 0.2);
+            const rotacao = bauClicks % 2 === 0 ? 5 : -5;
+            this.style.transform = `scale(${escala}) rotate(${rotacao}deg)`;
+            this.style.transition = "transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275)";
+
+            explode(window.innerWidth/2, window.innerHeight/2);
+
+            if(bauClicks >= 8) { 
+                document.getElementById('bau-container').style.display = 'none'; 
+                document.getElementById('photo-area').style.display = 'flex'; 
+                updatePhoto(); 
+            }
         });
+        
 
         function updatePhoto() {
             const img = document.getElementById('img-display');
