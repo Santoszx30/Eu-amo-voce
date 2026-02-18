@@ -8,23 +8,48 @@
     
     <style>
         :root { --cor-roxo: #a255ff; --cor-azul: #00e5ff; }
-        body, html { margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden; font-family: 'Poppins', sans-serif; background: linear-gradient(-45deg, #0f051a, #0a1a2e, #1a0515, #0a1a2e); background-size: 400% 400%; animation: gradientBG 15s ease infinite; }
-        @keyframes gradientBG { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
-        canvas { position: fixed; top: 0; left: 0; z-index: 1; pointer-events: none; will-change: transform; }
+        body, html { 
+            margin: 0; padding: 0; width: 100%; height: 100%; 
+            overflow: hidden; font-family: 'Poppins', sans-serif; 
+            background: #0f051a; /* Cor base para evitar flashes */
+            background: linear-gradient(-45deg, #0f051a, #0a1a2e, #1a0515, #0a1a2e); 
+            background-size: 400% 400%; 
+            animation: gradientBG 15s ease infinite; 
+        }
+        
+        @keyframes gradientBG { 
+            0% { background-position: 0% 50%; } 
+            50% { background-position: 100% 50%; } 
+            100% { background-position: 0% 50%; } 
+        }
+
+        /* Melhora performance de renderização */
+        canvas { 
+            position: fixed; top: 0; left: 0; z-index: 1; 
+            pointer-events: none; 
+            transform: translateZ(0); 
+            backface-visibility: hidden;
+        }
+
         #canvas-transition { z-index: 20; display: none; }
         #eraser-tool { position: fixed; width: 100px; height: 50px; background: #f08080; border-radius: 8px; border-bottom: 6px solid #cd5c5c; z-index: 100; display: none; pointer-events: none; box-shadow: 0 5px 15px rgba(0,0,0,0.5); }
+        
         .page { position: absolute; width: 100%; height: 100%; display: flex; justify-content: center; align-items: center; z-index: 10; transition: opacity 0.8s ease-in-out; }
         .container { text-align: center; color: white; padding: 20px; width: 90%; max-width: 900px; }
+        
         h1, .final-msg { font-family: 'Great Vibes', cursive; font-size: clamp(3.5rem, 10vw, 6rem); margin-bottom: 30px; color: #f0eaff; text-shadow: 0 0 30px var(--cor-roxo); }
         #typing-text { font-size: clamp(1.2rem, 4vw, 2rem); line-height: 1.6; min-height: 120px; }
+        
         .btn-next { margin-top: 30px; padding: 15px 40px; background: transparent; border: 2px solid var(--cor-azul); color: white; border-radius: 50px; cursor: pointer; font-size: 1.2rem; opacity: 0; transition: 0.5s; box-shadow: 0 0 15px var(--cor-azul); pointer-events: none; }
         .btn-next.show { opacity: 1; pointer-events: auto; }
+        
         #page2 { display: none; opacity: 0; }
-        .bau-tesouro { font-size: 150px; cursor: pointer; filter: drop-shadow(0 0 20px var(--cor-roxo)); transition: transform 0.2s; user-select: none; }
-        .frase-bau { font-family: 'Great Vibes', cursive; font-size: 2.8rem; margin-top: 100px; color: var(--cor-azul); text-shadow: 0 0 10px var(--cor-azul); }
+        .bau-tesouro { font-size: clamp(80px, 20vw, 150px); cursor: pointer; filter: drop-shadow(0 0 20px var(--cor-roxo)); transition: transform 0.2s; user-select: none; }
+        .frase-bau { font-family: 'Great Vibes', cursive; font-size: clamp(1.8rem, 5vw, 2.8rem); margin-top: 60px; color: var(--cor-azul); text-shadow: 0 0 10px var(--cor-azul); }
+        
         #photo-area { display: none; flex-direction: column; align-items: center; transition: opacity 0.5s ease-in-out; }
         .foto-moldura { width: clamp(250px, 50vw, 400px); height: auto; border: 12px solid white; box-shadow: 0 15px 40px rgba(0,0,0,0.6); border-radius: 4px; }
-        .legenda { font-size: 1.4rem; margin-top: 20px; font-style: italic; color: #e0d5ff; max-width: 600px; min-height: 3em; }
+        .legenda { font-size: clamp(1rem, 3vw, 1.4rem); margin-top: 20px; font-style: italic; color: #e0d5ff; max-width: 600px; min-height: 3em; }
     </style>
 </head>
 <body>
@@ -84,6 +109,7 @@
 
         let currentPhoto = 0;
         let particles = [];
+        const MAX_PARTICLES = 100; // Evita travamentos limitando o número de objetos
 
         function resize() {
             canvasBg.width = canvasTrans.width = window.innerWidth;
@@ -95,15 +121,17 @@
         class Particle {
             constructor(x, y, color, type) {
                 this.x = x; this.y = y; this.type = type; this.color = color;
-                this.opacity = 1; this.size = type === 'heart' ? 2 : 3;
-                this.targetSize = type === 'heart' ? Math.random() * 15 + 10 : 3;
-                this.vx = (Math.random() - 0.5) * 4;
-                this.vy = (Math.random() - 0.5) * 4;
+                this.opacity = 1; 
+                this.size = type === 'heart' ? 2 : 2;
+                this.targetSize = type === 'heart' ? Math.random() * 12 + 10 : 3;
+                this.vx = (Math.random() - 0.5) * 3;
+                this.vy = (Math.random() - 0.5) * 3;
             }
             update() {
-                this.x += this.vx; this.y += this.vy;
-                if (this.type === 'heart' && this.size < this.targetSize) this.size += 0.8;
-                this.opacity -= 0.015;
+                this.x += this.vx; 
+                this.y += this.vy;
+                if (this.type === 'heart' && this.size < this.targetSize) this.size += 0.5;
+                this.opacity -= 0.012;
             }
             draw() {
                 ctxBg.globalAlpha = this.opacity;
@@ -111,43 +139,55 @@
                 if (this.type === 'heart') {
                     const s = this.size;
                     ctxBg.beginPath();
+                    // Desenho otimizado do coração
                     ctxBg.moveTo(this.x, this.y);
-                    ctxBg.bezierCurveTo(this.x, this.y-s/2, this.x-s, this.y-s/2, this.x-s, this.y);
-                    ctxBg.bezierCurveTo(this.x-s, this.y+s, this.x, this.y+s*1.5, this.x, this.y+s*1.8);
-                    ctxBg.bezierCurveTo(this.x, this.y+s*1.5, this.x+s, this.y+s, this.x+s, this.y);
-                    ctxBg.bezierCurveTo(this.x+s, this.y-s/2, this.x, this.y-s/2, this.x, this.y);
+                    ctxBg.bezierCurveTo(this.x, this.y-s/1.5, this.x-s, this.y-s/1.5, this.x-s, this.y);
+                    ctxBg.bezierCurveTo(this.x-s, this.y+s/1.5, this.x, this.y+s, this.x, this.y+s*1.3);
+                    ctxBg.bezierCurveTo(this.x, this.y+s, this.x+s, this.y+s/1.5, this.x+s, this.y);
+                    ctxBg.bezierCurveTo(this.x+s, this.y-s/1.5, this.x, this.y-s/1.5, this.x, this.y);
                     ctxBg.fill();
                 } else {
-                    ctxBg.beginPath(); ctxBg.arc(this.x, this.y, this.size, 0, Math.PI*2); ctxBg.fill();
+                    ctxBg.beginPath(); 
+                    ctxBg.arc(this.x, this.y, this.size, 0, Math.PI*2); 
+                    ctxBg.fill();
                 }
             }
         }
 
         function animate() {
+            // Limpeza rápida do canvas
             ctxBg.clearRect(0, 0, canvasBg.width, canvasBg.height);
+            
             for(let i = particles.length - 1; i >= 0; i--) {
-                particles[i].update();
-                particles[i].draw();
-                if(particles[i].opacity <= 0) particles.splice(i, 1);
+                const p = particles[i];
+                p.update();
+                p.draw();
+                if(p.opacity <= 0) particles.splice(i, 1);
             }
             requestAnimationFrame(animate);
         }
         animate();
 
         function explode(x, y) {
+            if (particles.length > MAX_PARTICLES) return; // Proteção contra lag
             const colors = ['#a255ff', '#00e5ff', '#ffffff'];
-            for(let i=0; i<10; i++) particles.push(new Particle(x, y, colors[Math.floor(Math.random()*3)], 'heart'));
+            for(let i=0; i<8; i++) {
+                particles.push(new Particle(x, y, colors[Math.floor(Math.random()*3)], 'heart'));
+            }
         }
 
+        // Corações ambiente mais espaçados para performance
         setInterval(() => {
             explode(Math.random()*canvasBg.width, Math.random() < 0.5 ? 20 : canvasBg.height-20);
-        }, 800);
+        }, 1000);
 
         window.addEventListener('mousemove', (e) => {
-            particles.push(new Particle(e.clientX, e.clientY, '#ffffff', 'light'));
+            if (particles.length < MAX_PARTICLES) {
+                particles.push(new Particle(e.clientX, e.clientY, '#ffffff', 'light'));
+            }
         });
 
-        // PÁGINA 1
+        // PÁGINA 1 - Digitação
         let charIdx = 0;
         const texto1 = "Pensei em mil formas de te dar algo único. Então, construí este lugar. Cada linha, cada cor e cada efeito foi colocado aqui pensando em você. Toque para descobrir.";
         function type() {
@@ -158,7 +198,7 @@
         }
         setTimeout(type, 2000);
 
-        // TRANSIÇÃO
+        // TRANSIÇÃO BORRACHA
         document.getElementById('btn-to-page2').addEventListener('click', function() {
             canvasTrans.style.display = 'block';
             ctxTrans.fillStyle = '#0f051a';
@@ -166,15 +206,17 @@
             document.getElementById('page1').style.display = 'none';
             document.getElementById('page2').style.display = 'flex';
             setTimeout(() => document.getElementById('page2').style.opacity = '1', 100);
+            
             eraserTool.style.display = 'block';
-            let x=0, y=0, step=80, dir=1;
+            let x=0, y=0, step=85, dir=1;
+            
             function autoErase() {
                 ctxTrans.globalCompositeOperation = 'destination-out';
-                ctxTrans.beginPath(); ctxTrans.arc(x, y, 100, 0, Math.PI*2); ctxTrans.fill();
+                ctxTrans.beginPath(); ctxTrans.arc(x, y, 110, 0, Math.PI*2); ctxTrans.fill();
                 eraserTool.style.left = (x-50)+'px'; eraserTool.style.top = (y-25)+'px';
                 x += step * dir;
-                if(x > canvasTrans.width || x < 0) { dir *= -1; y += 90; }
-                if(y < canvasTrans.height+100) requestAnimationFrame(autoErase);
+                if(x > canvasTrans.width || x < 0) { dir *= -1; y += 100; }
+                if(y < canvasTrans.height+120) requestAnimationFrame(autoErase);
                 else { canvasTrans.style.display = 'none'; eraserTool.style.display = 'none'; }
             }
             autoErase();
@@ -207,7 +249,7 @@
             } else {
                 document.getElementById('photo-area').innerHTML = `
                     <h1 class="final-msg">Você é tudo para mim 💜</h1>
-                    <button class="btn-next show" style="opacity:1; pointer-events:auto;" onclick="alert('Indo para a próxima parte...')">Continuar Jornada ✨</button>
+                    <button class="btn-next show" style="opacity:1; pointer-events:auto;" onclick="window.location.href='proxima_pagina.html'">Continuar Jornada ✨</button>
                 `;
             }
         }
@@ -219,4 +261,4 @@
     </script>
 </body>
     </html>
-    
+                
