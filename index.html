@@ -7,83 +7,24 @@
     <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Poppins:wght@300&display=swap" rel="stylesheet">
     
     <style>
-        :root {
-            --cor-roxo: #a255ff;
-            --cor-azul: #00e5ff;
-        }
-
-        /* RESET E FUNDO */
-        body, html {
-            margin: 0; padding: 0; width: 100%; height: 100%;
-            overflow: hidden; font-family: 'Poppins', sans-serif;
-            background: linear-gradient(-45deg, #0f051a, #0a1a2e, #1a0515, #0a1a2e);
-            background-size: 400% 400%;
-            animation: gradientBG 15s ease infinite;
-        }
-
-        @keyframes gradientBG {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
-        }
-
-        /* CANVASES */
-        #canvas-bg { position: fixed; top: 0; left: 0; z-index: 1; pointer-events: none; }
-        #canvas-transition { position: fixed; top: 0; left: 0; z-index: 20; display: none; pointer-events: none; }
-
-        /* BORRACHA VISUAL */
-        #eraser-tool {
-            position: fixed; width: 100px; height: 50px;
-            background: #f08080; border-radius: 8px;
-            border-bottom: 6px solid #cd5c5c; z-index: 100;
-            display: none; pointer-events: none;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.5);
-        }
-
-        /* ESTRUTURA DE PÁGINAS */
-        .page {
-            position: absolute; width: 100%; height: 100%;
-            display: flex; justify-content: center; align-items: center;
-            z-index: 10; transition: opacity 1s;
-        }
-
+        :root { --cor-roxo: #a255ff; --cor-azul: #00e5ff; }
+        body, html { margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden; font-family: 'Poppins', sans-serif; background: linear-gradient(-45deg, #0f051a, #0a1a2e, #1a0515, #0a1a2e); background-size: 400% 400%; animation: gradientBG 15s ease infinite; }
+        @keyframes gradientBG { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+        canvas { position: fixed; top: 0; left: 0; z-index: 1; pointer-events: none; will-change: transform; }
+        #canvas-transition { z-index: 20; display: none; }
+        #eraser-tool { position: fixed; width: 100px; height: 50px; background: #f08080; border-radius: 8px; border-bottom: 6px solid #cd5c5c; z-index: 100; display: none; pointer-events: none; box-shadow: 0 5px 15px rgba(0,0,0,0.5); }
+        .page { position: absolute; width: 100%; height: 100%; display: flex; justify-content: center; align-items: center; z-index: 10; transition: opacity 0.8s ease-in-out; }
         .container { text-align: center; color: white; padding: 20px; width: 90%; max-width: 900px; }
-
-        /* PÁGINA 1 */
-        h1 {
-            font-family: 'Great Vibes', cursive;
-            font-size: clamp(3.5rem, 10vw, 6rem);
-            margin-bottom: 30px; color: #f0eaff;
-            text-shadow: 0 0 30px var(--cor-roxo);
-        }
-
+        h1, .final-msg { font-family: 'Great Vibes', cursive; font-size: clamp(3.5rem, 10vw, 6rem); margin-bottom: 30px; color: #f0eaff; text-shadow: 0 0 30px var(--cor-roxo); }
         #typing-text { font-size: clamp(1.2rem, 4vw, 2rem); line-height: 1.6; min-height: 120px; }
-
-        .btn-next {
-            margin-top: 30px; padding: 15px 40px;
-            background: transparent; border: 2px solid var(--cor-azul);
-            color: white; border-radius: 50px; cursor: pointer;
-            font-size: 1.2rem; opacity: 0; transition: 0.5s;
-            box-shadow: 0 0 15px var(--cor-azul); pointer-events: none;
-        }
+        .btn-next { margin-top: 30px; padding: 15px 40px; background: transparent; border: 2px solid var(--cor-azul); color: white; border-radius: 50px; cursor: pointer; font-size: 1.2rem; opacity: 0; transition: 0.5s; box-shadow: 0 0 15px var(--cor-azul); pointer-events: none; }
         .btn-next.show { opacity: 1; pointer-events: auto; }
-
-        /* PÁGINA 2: BAÚ */
         #page2 { display: none; opacity: 0; }
         .bau-tesouro { font-size: 150px; cursor: pointer; filter: drop-shadow(0 0 20px var(--cor-roxo)); transition: transform 0.2s; user-select: none; }
         .frase-bau { font-family: 'Great Vibes', cursive; font-size: 2.8rem; margin-top: 100px; color: var(--cor-azul); text-shadow: 0 0 10px var(--cor-azul); }
-
-        /* SISTEMA DE FOTOS */
-        #photo-area { display: none; flex-direction: column; align-items: center; opacity: 0; transition: 1s; }
-        .foto-moldura {
-            width: clamp(250px, 50vw, 400px);
-            height: auto; border: 12px solid white;
-            box-shadow: 0 15px 40px rgba(0,0,0,0.6);
-            border-radius: 4px; animation: photoEnter 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        }
-        @keyframes photoEnter { from { transform: scale(0.5) rotate(-5deg); opacity: 0; } to { transform: scale(1) rotate(0); opacity: 1; } }
-        .legenda { font-size: 1.4rem; margin-top: 20px; font-style: italic; color: #e0d5ff; max-width: 600px; }
-
+        #photo-area { display: none; flex-direction: column; align-items: center; transition: opacity 0.5s ease-in-out; }
+        .foto-moldura { width: clamp(250px, 50vw, 400px); height: auto; border: 12px solid white; box-shadow: 0 15px 40px rgba(0,0,0,0.6); border-radius: 4px; }
+        .legenda { font-size: 1.4rem; margin-top: 20px; font-style: italic; color: #e0d5ff; max-width: 600px; min-height: 3em; }
     </style>
 </head>
 <body>
@@ -107,8 +48,10 @@
         </div>
 
         <div id="photo-area" class="container">
-            <img src="" id="img-display" class="foto-moldura">
-            <p id="legenda-display" class="legenda"></p>
+            <div id="fade-wrapper" style="transition: opacity 0.5s;">
+                <img src="" id="img-display" class="foto-moldura">
+                <p id="legenda-display" class="legenda"></p>
+            </div>
             <button id="btn-next-photo" class="btn-next show" style="opacity:1; pointer-events:auto;">Próxima ❤️</button>
         </div>
     </section>
@@ -119,6 +62,7 @@
         const canvasTrans = document.getElementById('canvas-transition');
         const ctxTrans = canvasTrans.getContext('2d');
         const eraserTool = document.getElementById('eraser-tool');
+        const fadeWrapper = document.getElementById('fade-wrapper');
         
         const legendas = [
             "Existem belezas que cansam os olhos, mas a sua... a sua descansa a minha alma.",
@@ -148,123 +92,123 @@
         window.addEventListener('resize', resize);
         resize();
 
-        // PARTÍCULAS (Corações e Brilho)
         class Particle {
             constructor(x, y, color, type) {
                 this.x = x; this.y = y; this.type = type; this.color = color;
-                this.opacity = 1; this.size = type === 'heart' ? 0 : 3;
-                this.targetSize = type === 'heart' ? Math.random() * 20 + 10 : 3;
-                this.speedX = (Math.random() - 0.5) * 5; this.speedY = (Math.random() - 0.5) * 5;
+                this.opacity = 1; this.size = type === 'heart' ? 2 : 3;
+                this.targetSize = type === 'heart' ? Math.random() * 15 + 10 : 3;
+                this.vx = (Math.random() - 0.5) * 4;
+                this.vy = (Math.random() - 0.5) * 4;
             }
             update() {
-                this.x += this.speedX; this.y += this.speedY;
-                if (this.type === 'heart' && this.size < this.targetSize) this.size += 1.5;
-                this.opacity -= 0.01;
+                this.x += this.vx; this.y += this.vy;
+                if (this.type === 'heart' && this.size < this.targetSize) this.size += 0.8;
+                this.opacity -= 0.015;
             }
-            draw(ctx) {
-                ctx.save(); ctx.globalAlpha = this.opacity; ctx.fillStyle = this.color;
+            draw() {
+                ctxBg.globalAlpha = this.opacity;
+                ctxBg.fillStyle = this.color;
                 if (this.type === 'heart') {
-                    const s = this.size; ctx.beginPath(); ctx.moveTo(this.x, this.y);
-                    ctx.bezierCurveTo(this.x, this.y-s/2, this.x-s, this.y-s/2, this.x-s, this.y);
-                    ctx.bezierCurveTo(this.x-s, this.y+s, this.x, this.y+s*1.5, this.x, this.y+s*1.8);
-                    ctx.bezierCurveTo(this.x, this.y+s*1.5, this.x+s, this.y+s, this.x+s, this.y);
-                    ctx.bezierCurveTo(this.x+s, this.y-s/2, this.x, this.y-s/2, this.x, this.y); ctx.fill();
-                } else { ctx.beginPath(); ctx.arc(this.x, this.y, this.size, 0, Math.PI*2); ctx.fill(); }
-                ctx.restore();
+                    const s = this.size;
+                    ctxBg.beginPath();
+                    ctxBg.moveTo(this.x, this.y);
+                    ctxBg.bezierCurveTo(this.x, this.y-s/2, this.x-s, this.y-s/2, this.x-s, this.y);
+                    ctxBg.bezierCurveTo(this.x-s, this.y+s, this.x, this.y+s*1.5, this.x, this.y+s*1.8);
+                    ctxBg.bezierCurveTo(this.x, this.y+s*1.5, this.x+s, this.y+s, this.x+s, this.y);
+                    ctxBg.bezierCurveTo(this.x+s, this.y-s/2, this.x, this.y-s/2, this.x, this.y);
+                    ctxBg.fill();
+                } else {
+                    ctxBg.beginPath(); ctxBg.arc(this.x, this.y, this.size, 0, Math.PI*2); ctxBg.fill();
+                }
             }
-        }
-
-        function explode(x, y, color) {
-            for(let i=0; i<12; i++) particles.push(new Particle(x, y, color, 'heart'));
         }
 
         function animate() {
             ctxBg.clearRect(0, 0, canvasBg.width, canvasBg.height);
-            particles.forEach((p, i) => {
-                p.update(); p.draw(ctxBg);
-                if (p.opacity <= 0) particles.splice(i, 1);
-            });
+            for(let i = particles.length - 1; i >= 0; i--) {
+                particles[i].update();
+                particles[i].draw();
+                if(particles[i].opacity <= 0) particles.splice(i, 1);
+            }
             requestAnimationFrame(animate);
         }
         animate();
 
+        function explode(x, y) {
+            const colors = ['#a255ff', '#00e5ff', '#ffffff'];
+            for(let i=0; i<10; i++) particles.push(new Particle(x, y, colors[Math.floor(Math.random()*3)], 'heart'));
+        }
+
         setInterval(() => {
-            const side = Math.floor(Math.random() * 4);
-            let x, y;
-            if (side === 0) { x = 30; y = Math.random() * canvasBg.height; }
-            else if (side === 1) { x = canvasBg.width - 30; y = Math.random() * canvasBg.height; }
-            else if (side === 2) { x = Math.random() * canvasBg.width; y = 30; }
-            else { x = Math.random() * canvasBg.width; y = canvasBg.height - 30; }
-            explode(x, y, Math.random() > 0.5 ? '#a255ff' : '#00e5ff');
+            explode(Math.random()*canvasBg.width, Math.random() < 0.5 ? 20 : canvasBg.height-20);
         }, 800);
 
         window.addEventListener('mousemove', (e) => {
-            for(let i=0; i<2; i++) particles.push(new Particle(e.clientX, e.clientY, '#ffffff', 'light'));
+            particles.push(new Particle(e.clientX, e.clientY, '#ffffff', 'light'));
         });
 
-        // DIGITAÇÃO PÁGINA 1
-        const texto1 = "Pensei em mil formas de te dar algo único. Então, construí este lugar. Cada linha, cada cor e cada efeito foi colocado aqui pensando em você. Toque para descobrir.";
+        // PÁGINA 1
         let charIdx = 0;
+        const texto1 = "Pensei em mil formas de te dar algo único. Então, construí este lugar. Cada linha, cada cor e cada efeito foi colocado aqui pensando em você. Toque para descobrir.";
         function type() {
             if (charIdx < texto1.length) {
-                document.getElementById('typing-text').innerHTML = texto1.substring(0, charIdx + 1) + '<span style="color:var(--cor-azul)">|</span>';
+                document.getElementById('typing-text').innerHTML = texto1.substring(0, charIdx+1) + '<span style="color:var(--cor-azul)">|</span>';
                 charIdx++; setTimeout(type, 40);
             } else { document.getElementById('btn-to-page2').classList.add('show'); }
         }
         setTimeout(type, 2000);
 
-        // TRANSIÇÃO BORRACHA
-        document.getElementById('btn-to-page2').addEventListener('click', () => {
+        // TRANSIÇÃO
+        document.getElementById('btn-to-page2').addEventListener('click', function() {
             canvasTrans.style.display = 'block';
             ctxTrans.fillStyle = '#0f051a';
             ctxTrans.fillRect(0, 0, canvasTrans.width, canvasTrans.height);
-            
             document.getElementById('page1').style.display = 'none';
             document.getElementById('page2').style.display = 'flex';
-            setTimeout(() => { document.getElementById('page2').style.opacity = '1'; }, 100);
-
+            setTimeout(() => document.getElementById('page2').style.opacity = '1', 100);
             eraserTool.style.display = 'block';
-            let x = 0, y = 0, step = 70, dir = 1;
-
+            let x=0, y=0, step=80, dir=1;
             function autoErase() {
                 ctxTrans.globalCompositeOperation = 'destination-out';
                 ctxTrans.beginPath(); ctxTrans.arc(x, y, 100, 0, Math.PI*2); ctxTrans.fill();
-                eraserTool.style.left = (x - 50) + 'px';
-                eraserTool.style.top = (y - 25) + 'px';
+                eraserTool.style.left = (x-50)+'px'; eraserTool.style.top = (y-25)+'px';
                 x += step * dir;
                 if(x > canvasTrans.width || x < 0) { dir *= -1; y += 90; }
-                if(y < canvasTrans.height + 100) requestAnimationFrame(autoErase);
+                if(y < canvasTrans.height+100) requestAnimationFrame(autoErase);
                 else { canvasTrans.style.display = 'none'; eraserTool.style.display = 'none'; }
             }
             autoErase();
         });
 
-        // LÓGICA DO BAÚ
+        // BAÚ
         let bauClicks = 0;
-        const bau = document.getElementById('bau-click');
-        bau.addEventListener('click', () => {
+        document.getElementById('bau-click').addEventListener('click', function() {
             bauClicks++;
-            bau.style.transform = `scale(${1 + bauClicks * 0.08}) rotate(${bauClicks % 2 == 0 ? 5 : -5}deg)`;
-            explode(window.innerWidth/2, window.innerHeight/2, '#a255ff');
-
+            this.style.transform = `scale(${1 + bauClicks*0.1}) rotate(${bauClicks%2==0?5:-5}deg)`;
+            explode(window.innerWidth/2, window.innerHeight/2);
             if(bauClicks >= 8) {
                 document.getElementById('bau-container').style.display = 'none';
-                const photoArea = document.getElementById('photo-area');
-                photoArea.style.display = 'flex';
-                setTimeout(() => { photoArea.style.opacity = '1'; }, 100);
+                document.getElementById('photo-area').style.display = 'flex';
+                setTimeout(() => document.getElementById('photo-area').style.opacity = '1', 100);
                 updatePhoto();
             }
         });
 
-        // SISTEMA DE FOTOS
+        // FOTOS COM FADE
         function updatePhoto() {
             if(currentPhoto < 15) {
-                const img = document.getElementById('img-display');
-                img.src = `fotos/linda${currentPhoto + 1}.jpg`;
-                document.getElementById('legenda-display').innerText = legendas[currentPhoto];
-                explode(window.innerWidth/2, window.innerHeight/2, '#00e5ff');
+                fadeWrapper.style.opacity = 0;
+                setTimeout(() => {
+                    document.getElementById('img-display').src = `fotos/linda${currentPhoto + 1}.jpg`;
+                    document.getElementById('legenda-display').innerText = legendas[currentPhoto];
+                    fadeWrapper.style.opacity = 1;
+                    explode(window.innerWidth/2, window.innerHeight/2);
+                }, 500);
             } else {
-                document.getElementById('photo-area').innerHTML = "<h1>És o meu tudo! ❤️</h1>";
+                document.getElementById('photo-area').innerHTML = `
+                    <h1 class="final-msg">Você é tudo para mim 💜</h1>
+                    <button class="btn-next show" style="opacity:1; pointer-events:auto;" onclick="alert('Indo para a próxima parte...')">Continuar Jornada ✨</button>
+                `;
             }
         }
 
