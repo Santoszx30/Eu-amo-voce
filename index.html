@@ -3,17 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Para Você ❤️</title>
-    <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&display=swap" rel="stylesheet">
+    <title>Para Minha Garota ❤️</title>
+    <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Poppins:wght@300&display=swap" rel="stylesheet">
+    
     <style>
         :root {
             --cor-roxo: #a255ff;
             --cor-azul: #00e5ff;
         }
 
+        /* Reset e Fundo Gradiente */
         body, html {
             margin: 0; padding: 0; width: 100%; height: 100%;
-            overflow: hidden; font-family: 'Segoe UI', sans-serif;
+            overflow: hidden; font-family: 'Poppins', sans-serif;
             background: linear-gradient(-45deg, #0f051a, #0a1a2e, #1a0515, #0a1a2e);
             background-size: 400% 400%;
             animation: gradientBG 15s ease infinite;
@@ -25,208 +27,175 @@
             100% { background-position: 0% 50%; }
         }
 
-        #canvas-bg, #canvas-transition {
-            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+        /* Canvas de Fundo (Corações e Brilho) */
+        #canvas-bg {
+            position: fixed; top: 0; left: 0;
+            width: 100vw; height: 100vh;
+            z-index: 1; pointer-events: none;
         }
 
-        #canvas-bg { z-index: 1; pointer-events: none; }
-        #canvas-transition { z-index: 15; pointer-events: none; display: none; }
-
+        /* Gerenciamento de Páginas */
         .page {
-            position: absolute; width: 100%; height: 100%;
+            position: absolute;
+            width: 100%; height: 100%;
             display: flex; justify-content: center; align-items: center;
             z-index: 10;
         }
 
-        .container { text-align: center; color: white; padding: 40px; max-width: 1000px; }
+        #page2 { display: none; opacity: 0; } /* Escondida por enquanto */
 
+        /* Estilos Página 1 */
+        .container { text-align: center; color: white; padding: 40px; max-width: 1000px; }
+        
         h1 {
             font-family: 'Great Vibes', cursive;
             font-size: clamp(3.5rem, 12vw, 6.5rem);
             margin-bottom: 40px; color: #f0eaff;
             text-shadow: 0 0 30px rgba(162, 85, 255, 0.8);
+            opacity: 0;
+            animation: fadeIn 3s forwards;
         }
 
-        #typing-text { font-size: clamp(1.4rem, 5vw, 2.2rem); line-height: 1.6; min-height: 150px; }
+        #typing-text {
+            font-size: clamp(1.4rem, 5vw, 2.2rem);
+            line-height: 1.6;
+            min-height: 150px;
+            font-weight: 300;
+            text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.7);
+        }
 
         .btn-next {
             margin-top: 30px; padding: 15px 40px;
             background: transparent; border: 2px solid var(--cor-azul);
             color: white; border-radius: 50px; cursor: pointer;
             font-size: 1.2rem; opacity: 0; transition: 0.5s;
-            box-shadow: 0 0 15px var(--cor-azul); pointer-events: auto;
+            box-shadow: 0 0 15px var(--cor-azul);
         }
 
-        .btn-next.show { opacity: 1; }
+        .btn-next.show { opacity: 1; pointer-events: auto; }
 
-        /* Estilo do Baú */
-        #page2 { display: none; opacity: 0; transition: opacity 2s; }
-        
-        .bau {
-            font-size: 10rem; cursor: pointer; user-select: none;
-            filter: drop-shadow(0 0 25px var(--cor-roxo));
-            transition: transform 0.1s;
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
-        .instrucao { margin-top: 20px; font-size: 1.5rem; color: var(--cor-azul); animation: pulse 2s infinite; }
-        
-        @keyframes pulse { 0%, 100% { opacity: 0.5; } 50% { opacity: 1; } }
+        .cursor { display: inline-block; width: 4px; background-color: var(--cor-azul); margin-left: 8px; animation: blink 0.7s infinite; }
+        @keyframes blink { 50% { opacity: 0; } }
 
     </style>
 </head>
 <body>
 
     <canvas id="canvas-bg"></canvas>
-    <canvas id="canvas-transition"></canvas>
 
-    <div id="page1" class="page">
+    <section id="page1" class="page">
         <div class="container">
             <h1>Para quem ilumina meus dias</h1>
             <div id="typing-text"></div>
-            <button id="btn-reveal" class="btn-next">Descobrir Surpresa</button>
+            <button id="btn-to-page2" class="btn-next">Descobrir Surpresa</button>
         </div>
-    </div>
+    </section>
 
-    <div id="page2" class="page">
+    <section id="page2" class="page">
         <div class="container">
-            <div class="bau" id="bau-icon">🎁</div>
-            <p class="instrucao">Clique para abrir o baú!</p>
-        </div>
-    </div>
+            </div>
+    </section>
 
     <script>
+        const canvas = document.getElementById('canvas-bg');
+        const ctx = canvas.getContext('2d');
         const typingElement = document.getElementById('typing-text');
-        const btnReveal = document.getElementById('btn-reveal');
-        const canvasBg = document.getElementById('canvas-bg');
-        const ctxBg = canvasBg.getContext('2d');
-        const canvasTrans = document.getElementById('canvas-transition');
-        const ctxTrans = canvasTrans.getContext('2d');
+        const btnNext = document.getElementById('btn-to-page2');
 
-        const text = "Pensei em mil formas de te dar algo único. Então, construí este lugar. Cada linha, cada cor e cada efeito foi colocado aqui pensando em você. Toque para descobrir.";
+        const textoExplica = "Pensei em mil formas de te dar algo único. Então, construí este lugar. Cada linha, cada cor e cada efeito foi colocado aqui pensando em você. Toque para descobrir.";
 
-        // Redimensionar
         function resize() {
-            canvasBg.width = canvasTrans.width = window.innerWidth;
-            canvasBg.height = canvasTrans.height = window.innerHeight;
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
         }
         window.addEventListener('resize', resize);
         resize();
 
-        // 1. Digitação
-        let idx = 0;
-        function type() {
-            if (idx < text.length) {
-                typingElement.innerHTML = text.substring(0, idx + 1) + '<span style="color:var(--cor-azul)">|</span>';
-                idx++; setTimeout(type, 40);
-            } else { btnReveal.classList.add('show'); }
+        // --- Sistema de Digitação ---
+        let charIdx = 0;
+        function typeWriter() {
+            if (charIdx < textoExplica.length) {
+                typingElement.innerHTML = textoExplica.substring(0, charIdx + 1) + '<span class="cursor">|</span>';
+                charIdx++;
+                setTimeout(typeWriter, 40);
+            } else {
+                document.querySelector('.cursor').style.display = 'none';
+                btnNext.classList.add('show');
+            }
         }
-        setTimeout(type, 2500);
+        setTimeout(typeWriter, 2500); // Inicia após o fade do título
 
-        // 2. Partículas e Raios (Mesmo sistema anterior)
+        // --- Sistema de Partículas (Corações e Rastro de Luz) ---
         let particles = [];
         class Particle {
             constructor(x, y, color, type) {
                 this.x = x; this.y = y; this.type = type; this.color = color;
-                this.opacity = 1; this.size = type === 'heart' ? 0 : 3;
+                this.opacity = 1;
+                this.size = type === 'heart' ? 0 : 3;
                 this.targetSize = type === 'heart' ? Math.random() * 20 + 15 : 3;
-                this.speedX = (Math.random() - 0.5) * 5; this.speedY = (Math.random() - 0.5) * 5;
+                this.speedX = (Math.random() - 0.5) * 5;
+                this.speedY = (Math.random() - 0.5) * 5;
             }
             update() {
                 this.x += this.speedX; this.y += this.speedY;
+                this.speedX *= 0.98; this.speedY *= 0.98;
                 if (this.type === 'heart' && this.size < this.targetSize) this.size += 1.2;
                 this.opacity -= 0.008;
             }
-            draw(ctx) {
+            draw() {
                 ctx.save(); ctx.globalAlpha = this.opacity; ctx.fillStyle = this.color;
                 if (this.type === 'heart') {
                     const s = this.size; ctx.beginPath();
                     ctx.moveTo(this.x, this.y);
-                    ctx.bezierCurveTo(this.x, this.y-s/2, this.x-s, this.y-s/2, this.x-s, this.y);
-                    ctx.bezierCurveTo(this.x-s, this.y+s, this.x, this.y+s*1.5, this.x, this.y+s*1.8);
-                    ctx.bezierCurveTo(this.x, this.y+s*1.5, this.x+s, this.y+s, this.x+s, this.y);
-                    ctx.bezierCurveTo(this.x+s, this.y-s/2, this.x, this.y-s/2, this.x, this.y);
+                    ctx.bezierCurveTo(this.x, this.y - s/2, this.x - s, this.y - s/2, this.x - s, this.y);
+                    ctx.bezierCurveTo(this.x - s, this.y + s, this.x, this.y + s*1.5, this.x, this.y + s*1.8);
+                    ctx.bezierCurveTo(this.x, this.y + s*1.5, this.x + s, this.y + s, this.x + s, this.y);
+                    ctx.bezierCurveTo(this.x + s, this.y - s/2, this.x, this.y - s/2, this.x, this.y);
                     ctx.fill();
-                } else { ctx.beginPath(); ctx.arc(this.x, this.y, this.size, 0, Math.PI*2); ctx.fill(); }
+                } else {
+                    ctx.beginPath(); ctx.arc(this.x, this.y, this.size, 0, Math.PI*2); ctx.fill();
+                }
                 ctx.restore();
             }
         }
 
         function animate() {
-            ctxBg.clearRect(0, 0, canvasBg.width, canvasBg.height);
-            particles.forEach((p, i) => { p.update(); p.draw(ctxBg); if(p.opacity<=0) particles.splice(i, 1); });
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            particles.forEach((p, i) => {
+                p.update(); p.draw();
+                if (p.opacity <= 0) particles.splice(i, 1);
+            });
             requestAnimationFrame(animate);
         }
         animate();
 
+        // Corações nas bordas
         setInterval(() => {
-            const side = Math.floor(Math.random()*4);
+            const side = Math.floor(Math.random() * 4);
             let x, y;
-            if(side==0){x=20; y=Math.random()*canvasBg.height}
-            else if(side==1){x=canvasBg.width-20; y=Math.random()*canvasBg.height}
-            else if(side==2){x=Math.random()*canvasBg.width; y=20}
-            else{x=Math.random()*canvasBg.width; y=canvasBg.height-20}
+            if (side === 0) { x = 30; y = Math.random() * canvas.height; }
+            else if (side === 1) { x = canvas.width - 30; y = Math.random() * canvas.height; }
+            else if (side === 2) { x = Math.random() * canvas.width; y = 30; }
+            else { x = Math.random() * canvas.width; y = canvas.height - 30; }
             for(let i=0; i<2; i++) particles.push(new Particle(x, y, '#a255ff', 'heart'));
-        }, 700);
+        }, 600);
 
+        // Toque de luz
         window.addEventListener('mousemove', (e) => {
             for(let i=0; i<2; i++) particles.push(new Particle(e.clientX, e.clientY, '#ffffff', 'light'));
         });
-
-        // 3. ANIMAÇÃO DA BORRACHA AUTOMÁTICA
-        btnReveal.addEventListener('click', () => {
-            canvasTrans.style.display = 'block';
-            ctxTrans.fillStyle = '#0f051a';
-            ctxTrans.fillRect(0, 0, canvasTrans.width, canvasTrans.height);
-            
-            document.getElementById('page1').style.display = 'none';
-            document.getElementById('page2').style.display = 'flex';
-            setTimeout(() => { document.getElementById('page2').style.opacity = '1'; }, 100);
-
-            let x = 0; let y = 0; let step = 60;
-            let direction = 1;
-
-            function autoErase() {
-                ctxTrans.globalCompositeOperation = 'destination-out';
-                ctxTrans.beginPath();
-                ctxTrans.arc(x, y, 100, 0, Math.PI * 2);
-                ctxTrans.fill();
-
-                x += step * direction;
-                if (x > canvasTrans.width || x < 0) {
-                    direction *= -1;
-                    y += 80;
-                }
-
-                if (y < canvasTrans.height + 100) {
-                    requestAnimationFrame(autoErase);
-                } else {
-                    canvasTrans.style.display = 'none';
-                }
-            }
-            autoErase();
+        window.addEventListener('touchmove', (e) => {
+            const touch = e.touches[0];
+            for(let i=0; i<2; i++) particles.push(new Particle(touch.clientX, touch.clientY, '#ffffff', 'light'));
         });
 
-        // 4. Lógica do Baú
-        let clicks = 0;
-        const bau = document.getElementById('bau-icon');
-        bau.addEventListener('click', () => {
-            clicks++;
-            bau.style.transform = `scale(${1 + clicks*0.1}) rotate(${clicks % 2 == 0 ? 5 : -5}deg)`;
-            
-            // Explosão de corações ao clicar no baú
-            for(let i=0; i<8; i++) {
-                particles.push(new Particle(window.innerWidth/2, window.innerHeight/2, '#00e5ff', 'heart'));
-            }
-
-            if (clicks >= 10) {
-                bau.innerHTML = "🔓";
-                setTimeout(() => {
-                   // Próxima fase: Entrar as fotos
-                   alert("O baú abriu! Preparado para as fotos?");
-                }, 500);
-            }
-        });
     </script>
 </body>
-            </html>
+    </html>
+
                 
