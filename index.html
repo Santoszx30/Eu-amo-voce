@@ -33,13 +33,12 @@
         .foto-moldura { width: clamp(300px, 65vw, 550px); height: auto; border: 15px solid white; box-shadow: 0 20px 50px rgba(0,0,0,0.7); border-radius: 4px; transition: opacity 0.6s ease-in-out; opacity: 0; }
         .legenda { margin-top: 30px; font-style: italic; color: #e0d5ff; max-width: 800px; }
         
-        /* ESTILO DO QUIZ ATUALIZADO */
         #pergunta-texto { font-family: 'Great Vibes', cursive; font-size: clamp(3rem, 8vw, 5.5rem); color: #fff; text-shadow: 0 0 25px var(--cor-rosa); margin-bottom: 40px; line-height: 1.1; }
         .alternativas-grid { display: flex; flex-direction: column; gap: 12px; width: 100%; max-width: 500px; margin: 0 auto; }
-        .btn-quiz { padding: 18px; font-size: 1.2rem; font-weight: 600; background: rgba(255, 255, 255, 0.05); border: 2px solid rgba(255, 255, 255, 0.2); color: white; border-radius: 20px; cursor: pointer; transition: transform 0.6s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.5s; }
+        .btn-quiz { padding: 18px; font-size: 1.2rem; font-weight: 600; background: rgba(255, 255, 255, 0.05); border: 2px solid rgba(255, 255, 255, 0.2); color: white; border-radius: 20px; cursor: pointer; transition: transform 0.6s; }
         
-        .correto { background: #2ecc71 !important; border-color: #2ecc71; }
-        .errado { background: #e74c3c !important; border-color: #e74c3c; }
+        .correto { background: #2ecc71 !important; }
+        .errado { background: #e74c3c !important; }
         .sair-esquerda { transform: translateX(-150vw) rotate(-15deg); opacity: 0; }
         .sair-direita { transform: translateX(150vw) rotate(15deg); opacity: 0; }
         .lacinho { position: fixed; font-size: 25px; pointer-events: none; z-index: 2; display: block; user-select: none; opacity: 0.7; }
@@ -80,15 +79,15 @@
         </div>
     </section>
     
-        <section id="page4" class="page" style="display: none; opacity: 0;">
+    <section id="page4" class="page" style="display: none; opacity: 0;">
         <div class="container" style="max-width: 800px; background: rgba(0, 0, 0, 0.4); padding: 40px; border-radius: 30px; backdrop-filter: blur(10px); border: 1px solid rgba(162, 85, 255, 0.3);">
             <h1 class="final-msg" style="font-size: clamp(3rem, 10vw, 5rem);">Minha Promessa</h1>
             <div id="texto-final" class="legenda" style="font-style: normal; text-align: justify; font-size: clamp(1.1rem, 4vw, 1.5rem); min-height: 200px;"></div>
-            <p style="margin-top: 30px; font-family: 'Dancing Script', cursive; font-size: 2rem; color: var(--cor-rosa);">Com todo o meu amor, [Seu Nome] ❤️</p>
+            <p style="margin-top: 30px; font-family: 'Dancing Script', cursive; font-size: 2rem; color: var(--cor-rosa);">Com todo o meu amor, Seu Nome ❤️</p>
         </div>
-        </section>
-    
-        <script>
+    </section>
+
+    <script>
         const canvasBg = document.getElementById('canvas-bg');
         const ctxBg = canvasBg.getContext('2d');
         const canvasTrans = document.getElementById('canvas-transition');
@@ -114,7 +113,7 @@
         ];
 
         const perguntas = [
-            { p: "Há quanto tempo estamos juntos?", opts: ["3 meses e 15 dias", "3 meses e 22 dias", "4 meses", "3 meses e 10 dias"], resp: 1 },
+            { p: "Há quanto tempo estamos juntos?", opts: ["3 meses e 15 dias", "3 meses e 18 dias", "4 meses", "3 meses e 10 dias"], resp: 1 },
             { p: "Qual é a parte de você que eu mais gosto?", opts: ["Seus olhos", "Seu cabelo", "Seu sorriso", "Seu cheiro"], resp: 2 },
             { p: "Qual foi o dia que eu te pedi oficialmente em namoro?", opts: ["24/11", "22/11", "24/10", "20/11"], resp: 0 },
             { p: "O que eu escrevi no cartão das flores que te dei?", opts: ["Para a menina mais linda do mundo", "Espero que as flores não sintam inveja da sua beleza", "Flores para combinar com seu perfume", "Um detalhe para quem é perfeição"], resp: 1 },
@@ -134,7 +133,7 @@
             constructor(x, y, color, type) {
                 this.x = x; this.y = y; this.type = type; this.color = color;
                 this.opacity = 1; this.size = type === 'heart' ? 2 : 1.5; 
-                this.targetSize = type === 'heart' ? Math.random() * 12 + 8 : 3; // Diminuído
+                this.targetSize = type === 'heart' ? Math.random() * 12 + 8 : 3;
                 this.vx = (Math.random() - 0.5) * 3; this.vy = (Math.random() - 0.5) * 3;
             }
             update() { this.x += this.vx; this.y += this.vy; if (this.type === 'heart' && this.size < this.targetSize) this.size += 0.4; this.opacity -= 0.01; }
@@ -162,6 +161,17 @@
             for(let i=0; i<12; i++) particles.push(new Particle(x, y, colors[Math.floor(Math.random()*colors.length)], 'heart'));
         }
 
+        const lacinhosArr = [];
+        function initLacinhos() {
+            for(let i=0; i<6; i++) {
+                const div = document.createElement('div'); div.className = 'lacinho'; div.innerText = "🎀"; 
+                document.body.appendChild(div);
+                lacinhosArr.push({ el: div, x: Math.random()*window.innerWidth, y: Math.random()*window.innerHeight, vx: 1.5, vy: 1.5 });
+            }
+            function move() { lacinhosArr.forEach(l => { l.x += l.vx; l.y += l.vy; if(l.x <= 0 || l.x >= window.innerWidth - 30) l.vx *= -1; if(l.y <= 0 || l.y >= window.innerHeight - 30) l.vy *= -1; l.el.style.transform = `translate3d(${l.x}px, ${l.y}px, 0)`; }); requestAnimationFrame(move); }
+            move();
+        }
+
         function typeEffect(element, text, button, callback) {
             let i = 0; if(button) button.classList.remove('show');
             element.innerHTML = "";
@@ -173,7 +183,7 @@
         }
 
         window.onload = () => { 
-            initLacinhos(); // Agora os laços começam na primeira página
+            initLacinhos();
             setTimeout(() => { typeEffect(document.getElementById('typing-text'), "Pensei em mil formas de te dar algo único. Então, construí este lugar. Cada linha, cada cor e cada efeito foi colocado aqui pensando em você. Toque para descobrir.", document.getElementById('btn-to-page2')); }, 1000); 
         };
 
@@ -206,7 +216,7 @@
                 tempImg.onload = () => { setTimeout(() => { img.src = tempImg.src; img.style.opacity = 1; explode(window.innerWidth/2, window.innerHeight/2); typeEffect(document.getElementById('legenda-display'), legendas[currentPhoto], document.getElementById('btn-next-photo')); }, 400); };
             } else {
                 document.getElementById('photo-area').innerHTML = `<h1 class="final-msg">Você é tudo para mim 💜</h1><div id="intro-quiz-text" class="legenda" style="min-height: 100px; margin-bottom: 20px;"></div><button id="btn-start-quiz" class="btn-next">Estou Pronta! ✨</button>`;
-                const introTexto = "Agora, um pequeno desafio... Preparei um quiz para ver se você presta atenção nos nossos detalhes. Acerte para provar que é a dona do meu coração! (Dica: sua nota define meu nível de carinho hoje 👀)";
+                const introTexto = "Agora, um pequeno desafio... Preparei um quiz para ver se você presta atenção nos nossos detalhes. Acerte para provar que é a dona do meu coração!";
                 typeEffect(document.getElementById('intro-quiz-text'), introTexto, document.getElementById('btn-start-quiz'), () => { document.getElementById('btn-start-quiz').onclick = irParaQuiz; });
             }
         }
@@ -219,12 +229,11 @@
             const box = document.getElementById('alternativas-box'); box.innerHTML = "";
             typeEffect(document.getElementById('pergunta-texto'), data.p, null, () => {
                 data.opts.forEach((opt, idx) => {
-                    const btn = document.createElement('button'); btn.className = 'btn-quiz'; btn.innerText = opt; btn.classList.add(idx % 2 === 0 ? 'sair-esquerda' : 'sair-direita'); box.appendChild(btn);
-                    setTimeout(() => { btn.classList.remove('sair-esquerda', 'sair-direita'); }, 100 * idx);
+                    const btn = document.createElement('button'); btn.className = 'btn-quiz'; btn.innerText = opt; box.appendChild(btn);
                     btn.onclick = () => {
                         const botoes = document.querySelectorAll('.btn-quiz'); botoes.forEach(b => b.style.pointerEvents = 'none');
                         if(idx === data.resp) { btn.classList.add('correto'); acertos++; explode(window.innerWidth/2, window.innerHeight/2); } else { btn.classList.add('errado'); }
-                        setTimeout(() => { botoes.forEach((b, i) => { b.classList.add(i % 2 === 0 ? 'sair-esquerda' : 'sair-direita'); }); setTimeout(() => { ptAtual++; if(ptAtual < perguntas.length) { mostrarPergunta(); } else { exibirResultadoFinal(); } }, 600); }, 1000);
+                        setTimeout(() => { ptAtual++; if(ptAtual < perguntas.length) { mostrarPergunta(); } else { exibirResultadoFinal(); } }, 1000);
                     };
                 });
             });
@@ -233,13 +242,22 @@
                 function exibirResultadoFinal() {
             const total = perguntas.length;
             const erros = total - acertos;
-            let classificacao = (acertos <= 3) ? "Você não me ama 😔" : (acertos <= 6) ? "Foi bem, mas podia me conhecer melhor né chata? 🙄" : "Você foi muito bem amorzinho, a melhor namorada do mundo 💜";
+            
+            // Lógica de classificação completa
+            let classificacao = "";
+            if (acertos <= 3) {
+                classificacao = "Você não me ama? 😔 Acerte mais na próxima!";
+            } else if (acertos <= 7) {
+                classificacao = "Foi bem, mas podia me conhecer melhor né chata? 🙄";
+            } else {
+                classificacao = "Você foi muito bem amorzinho, a melhor namorada do mundo 💜";
+            }
 
             document.getElementById('page3').innerHTML = `
                 <div class="container">
                     <h1 class="final-msg" style="font-size: 3.5rem;">Resultado</h1>
                     <div class="legenda" style="font-size: 1.8rem; margin-bottom: 20px;">
-                        Acertos: ${acertos} | Erros: ${erros}<br><br>
+                        Acertos: ${acertos} de ${total}<br><br>
                         <span style="color: var(--cor-rosa); font-weight: bold;">${classificacao}</span>
                     </div>
                     <button id="btn-ver-carta" class="btn-next show" style="opacity:1; pointer-events:auto;">Ler minha cartinha ❤️</button>
@@ -257,9 +275,7 @@
             };
 
             setInterval(() => explode(Math.random()*window.innerWidth, Math.random()*window.innerHeight), 500);
-            }
-            
-    </script>
+        }
+</script>
 </body>
-    </html>
-    
+</html>
