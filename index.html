@@ -16,6 +16,7 @@
             background-size: 400% 400%; 
             animation: gradientBG 15s ease infinite; 
         }
+        
         @keyframes gradientBG { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
 
         canvas { position: fixed; top: 0; left: 0; z-index: 1; pointer-events: none; transform: translateZ(0); }
@@ -32,7 +33,8 @@
             margin-top: 40px; padding: 20px 50px; background: transparent; 
             border: 2px solid var(--cor-azul); color: white; border-radius: 60px; 
             cursor: pointer; font-size: 1.5rem; opacity: 0; transition: 0.5s; 
-            box-shadow: 0 0 20px var(--cor-azul); pointer-events: none; visibility: hidden;
+            box-shadow: 0 0 20px var(--cor-azul); pointer-events: none; 
+            visibility: hidden;
         }
         .btn-next.show { opacity: 1; pointer-events: auto; visibility: visible; }
         
@@ -44,20 +46,20 @@
         .foto-moldura { width: clamp(300px, 65vw, 550px); height: auto; border: 15px solid white; box-shadow: 0 20px 50px rgba(0,0,0,0.7); border-radius: 4px; transition: opacity 0.6s ease-in-out; opacity: 0; }
         .legenda { margin-top: 30px; font-style: italic; color: #e0d5ff; max-width: 800px; }
 
-        /* ESTILO DO QUIZ */
+        /* QUIZ - PÁGINA 3 */
         #pergunta-texto { font-family: 'Dancing Script', cursive; font-size: clamp(2.2rem, 7vw, 3.8rem); color: #fff; text-shadow: 0 0 25px var(--cor-rosa); margin-bottom: 35px; }
         .alternativas-grid { display: grid; grid-template-columns: 1fr; gap: 15px; width: 100%; max-width: 550px; margin: 0 auto; }
         .btn-quiz { padding: 20px; font-size: 1.3rem; font-weight: 600; background: rgba(255, 255, 255, 0.1); border: 2px solid rgba(255, 255, 255, 0.3); color: white; border-radius: 20px; cursor: pointer; transition: 0.3s; }
         .correto { background: #2ecc71 !important; }
         .errado { background: #e74c3c !important; }
-        .sair-esquerda { transform: translate3d(-150vw, 0, 0); opacity: 0; transition: 0.6s; }
-        .sair-direita { transform: translate3d(150vw, 0, 0); opacity: 0; transition: 0.6s; }
-        .lacinho { position: fixed; font-size: 40px; pointer-events: none; z-index: 2; display: none; }
+        .lacinho { position: fixed; font-size: 40px; pointer-events: none; z-index: 2; display: none; user-select: none; }
+        
         .cursor { color: var(--cor-azul); animation: blink 0.8s infinite; }
         @keyframes blink { 50% { opacity: 0; } }
     </style>
 </head>
 <body>
+
     <canvas id="canvas-bg"></canvas>
     <canvas id="canvas-transition"></canvas>
     <div id="eraser-tool"></div>
@@ -90,14 +92,31 @@
         </div>
     </section>
 
-        <script>
+    <script>
         const canvasBg = document.getElementById('canvas-bg');
         const ctxBg = canvasBg.getContext('2d');
         const canvasTrans = document.getElementById('canvas-transition');
         const ctxTrans = canvasTrans.getContext('2d');
         const eraserTool = document.getElementById('eraser-tool');
         
-        const legendas = ["Existem belezas...", "Cada curva...", "Em qualquer multiverso...", "Cada traço...", "O seu jeito doce...", "Você não veste roupas...", "A vista era bonita...", "Perco o sentido...", "Seus olhos...", "Existe uma força...", "O som da sua risada...", "Dizem que o mundo dela...", "Você tem esse brilho...", "Não é só o laço...", "Se o paraíso existisse..."];
+        const legendas = [
+            "Existem belezas que cansam os olhos, mas a sua... a sua descansa a minha alma.",
+            "Cada curva dos teus cachos é um caminho onde o meu olhar adora se perder.",
+            "Em qualquer multiverso, meus sentidos sempre me guiam até você.",
+            "Cada traço seu é uma obra de arte que o destino desenhou com perfeição.",
+            "O seu jeito doce faz tudo parecer um pouco mais leve.",
+            "Você não veste roupas, você veste personalidade. Única e irresistível.",
+            "A vista era bonita, mas perto de você, o horizonte é só um detalhe.",
+            "Perco o sentido do tempo. Quando te vejo, o resto do mundo vira ruído.",
+            "Seus olhos contam histórias que eu quero passar a vida inteira lendo.",
+            "Existe uma força em você que me incendeia e me domina sem esforço.",
+            "O som da sua risada é o meu refúgio favorito.",
+            "Dizem que o mundo dela é rosa, mas o meu mundo é você!",
+            "Você tem esse brilho icônico e esse charme que me faz pensar: a Hello Kitty teria inveja de tanta fofura.",
+            "Não é só o laço ou as cores, é esse seu jeito doce e marcante que te faz a minha Hello Kitty da vida real.",
+            "Se o paraíso existisse, ele teria o formato exato desse seu sorriso definitivo."
+        ];
+
         const perguntas = [
             { p: "Há quanto tempo estamos juntos?", opts: ["3 meses e 15 dias", "3 meses e 22 dias", "4 meses", "3 meses e 10 dias"], resp: 1 },
             { p: "Qual é a parte de você que eu mais gosto?", opts: ["Seus olhos", "Seu cabelo", "Seu sorriso", "Seu cheiro"], resp: 2 },
@@ -177,7 +196,7 @@
 
         window.onload = () => {
             setTimeout(() => {
-                typeEffect(document.getElementById('typing-text'), "Pensei em mil formas de te dar algo único. Então, construí este lugar...", document.getElementById('btn-to-page2'));
+                typeEffect(document.getElementById('typing-text'), "Pensei em mil formas de te dar algo único. Então, construí este lugar. Cada linha, cada cor e cada efeito foi colocado aqui pensando em você. Toque para descobrir.", document.getElementById('btn-to-page2'));
             }, 1000);
         };
 
@@ -210,12 +229,13 @@
                 const tempImg = new Image();
                 tempImg.src = `fotos/linda${currentPhoto + 1}.jpg`;
                 tempImg.onload = () => {
-                    setTimeout(() => { img.src = tempImg.src; img.style.opacity = 1; explode(window.innerWidth/2, window.innerHeight/2);
+                    setTimeout(() => { 
+                        img.src = tempImg.src; img.style.opacity = 1; explode(window.innerWidth/2, window.innerHeight/2);
                         typeEffect(document.getElementById('legenda-display'), legendas[currentPhoto], document.getElementById('btn-next-photo'));
                     }, 400);
                 };
             } else {
-                document.getElementById('photo-area').innerHTML = `<h1>Você é tudo para mim 💜</h1><button class="btn-next show" style="opacity:1; pointer-events:auto;" onclick="irParaQuiz()">Ir para o Quiz ✨</button>`;
+                document.getElementById('photo-area').innerHTML = `<h1 class="final-msg">Você é tudo para mim 💜</h1><button class="btn-next show" style="opacity:1; pointer-events:auto;" onclick="irParaQuiz()">Ir para o Quiz ✨</button>`;
             }
         }
         document.getElementById('btn-next-photo').addEventListener('click', () => { currentPhoto++; updatePhoto(); });
