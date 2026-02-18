@@ -79,6 +79,15 @@
             <div id="quiz-progresso" style="margin-top: 30px; color: var(--cor-rosa); font-weight: bold;"></div>
         </div>
     </section>
+    
+        <section id="page4" class="page" style="display: none; opacity: 0;">
+        <div class="container" style="max-width: 800px; background: rgba(0, 0, 0, 0.4); padding: 40px; border-radius: 30px; backdrop-filter: blur(10px); border: 1px solid rgba(162, 85, 255, 0.3);">
+            <h1 class="final-msg" style="font-size: clamp(3rem, 10vw, 5rem);">Minha Promessa</h1>
+            <div id="texto-final" class="legenda" style="font-style: normal; text-align: justify; font-size: clamp(1.1rem, 4vw, 1.5rem); min-height: 200px;"></div>
+            <p style="margin-top: 30px; font-family: 'Dancing Script', cursive; font-size: 2rem; color: var(--cor-rosa);">Com todo o meu amor, [Seu Nome] ❤️</p>
+        </div>
+        </section>
+    
         <script>
         const canvasBg = document.getElementById('canvas-bg');
         const ctxBg = canvasBg.getContext('2d');
@@ -221,23 +230,35 @@
             });
         }
 
-        function exibirResultadoFinal() {
-            const erros = perguntas.length - acertos; let classificacao = (acertos <= 3) ? "Você não me ama 😔" : (acertos <= 6) ? "Foi bem, mas podia me conhecer melhor né chata? 🙄" : "Você foi muito bem amorzinho, a melhor namorada do mundo 💜";
-            document.getElementById('page3').innerHTML = `<div class="container"><h1 class="final-msg" style="font-size: 3.5rem;">Resultado</h1><div class="legenda" style="font-size: 1.8rem; margin-bottom: 20px;">Acertos: ${acertos} | Erros: ${erros}<br><br><span style="color: var(--cor-rosa); font-weight: bold;">${classificacao}</span></div><button class="btn-next show" style="opacity:1; pointer-events:auto;" onclick="location.reload()">Recomeçar ❤️</button></div>`;
-            setInterval(() => explode(Math.random()*window.innerWidth, Math.random()*window.innerHeight), 500);
-        }
+                function exibirResultadoFinal() {
+            const total = perguntas.length;
+            const erros = total - acertos;
+            let classificacao = (acertos <= 3) ? "Você não me ama 😔" : (acertos <= 6) ? "Foi bem, mas podia me conhecer melhor né chata? 🙄" : "Você foi muito bem amorzinho, a melhor namorada do mundo 💜";
 
-        const lacinhosArr = [];
-        function initLacinhos() {
-            for(let i=0; i<6; i++) { // Reduzi a quantidade para não poluir
-                const div = document.createElement('div'); div.className = 'lacinho'; div.innerText = "🎀"; 
-                document.body.appendChild(div);
-                lacinhosArr.push({ el: div, x: Math.random()*window.innerWidth, y: Math.random()*window.innerHeight, vx: 1.5, vy: 1.5 });
+            document.getElementById('page3').innerHTML = `
+                <div class="container">
+                    <h1 class="final-msg" style="font-size: 3.5rem;">Resultado</h1>
+                    <div class="legenda" style="font-size: 1.8rem; margin-bottom: 20px;">
+                        Acertos: ${acertos} | Erros: ${erros}<br><br>
+                        <span style="color: var(--cor-rosa); font-weight: bold;">${classificacao}</span>
+                    </div>
+                    <button id="btn-ver-carta" class="btn-next show" style="opacity:1; pointer-events:auto;">Ler minha cartinha ❤️</button>
+                </div>
+            `;
+
+            document.getElementById('btn-ver-carta').onclick = () => {
+                document.getElementById('page3').style.display = 'none';
+                document.getElementById('page4').style.display = 'flex';
+                setTimeout(() => {
+                    document.getElementById('page4').style.opacity = '1';
+                    const minhaCarta = "Aqui é onde as palavras ganham peso. Quero que saiba que cada segundo ao seu lado é um presente que eu guardo com todo o cuidado do mundo. Você não é apenas minha namorada, é minha melhor amiga, minha maior admiração e a dona dos cachos que eu mais amo no universo. Obrigado por ser exatamente quem você é, com toda a sua doçura e até com esse seu jeito que às vezes me estressa só pra me ver rir. Meu amor por você cresce a cada detalhe, a cada risada e a cada plano que fazemos juntos. Você é, e sempre será, a minha pessoa favorita.";
+                    typeEffect(document.getElementById('texto-final'), minhaCarta);
+                }, 100);
+            };
+
+            setInterval(() => explode(Math.random()*window.innerWidth, Math.random()*window.innerHeight), 500);
             }
-            function move() { lacinhosArr.forEach(l => { l.x += l.vx; l.y += l.vy; if(l.x <= 0 || l.x >= window.innerWidth - 30) l.vx *= -1; if(l.y <= 0 || l.y >= window.innerHeight - 30) l.vy *= -1; l.el.style.transform = `translate3d(${l.x}px, ${l.y}px, 0)`; }); requestAnimationFrame(move); }
-            move();
-        }
-        setInterval(() => explode(Math.random()*canvasBg.width, Math.random()*canvasBg.height), 2500);
+            
     </script>
 </body>
     </html>
