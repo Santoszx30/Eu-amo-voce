@@ -4,77 +4,33 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Para Você ❤️</title>
-    <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Poppins:wght@300&display=swap" rel="stylesheet">
     <style>
-        :root {
-            --cor-roxo: #a255ff;
-            --cor-azul: #00e5ff;
-        }
-
-        body, html {
-            margin: 0; padding: 0; width: 100%; height: 100%;
-            overflow: hidden; font-family: 'Segoe UI', sans-serif;
-            background: linear-gradient(-45deg, #0f051a, #0a1a2e, #1a0515, #0a1a2e);
-            background-size: 400% 400%;
-            animation: gradientBG 15s ease infinite;
-        }
-
-        @keyframes gradientBG {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
-        }
-
-        #canvas-bg, #canvas-transition {
-            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-        }
-
+        :root { --cor-roxo: #a255ff; --cor-azul: #00e5ff; }
+        body, html { margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden; font-family: 'Poppins', sans-serif; background: linear-gradient(-45deg, #0f051a, #0a1a2e, #1a0515, #0a1a2e); background-size: 400% 400%; animation: gradientBG 15s ease infinite; color: white; }
+        @keyframes gradientBG { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+        canvas { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; }
         #canvas-bg { z-index: 1; pointer-events: none; }
         #canvas-transition { z-index: 15; pointer-events: none; display: none; }
-
-        .page {
-            position: absolute; width: 100%; height: 100%;
-            display: flex; justify-content: center; align-items: center;
-            z-index: 10;
-        }
-
-        .container { text-align: center; color: white; padding: 40px; max-width: 1000px; }
-
-        h1 {
-            font-family: 'Great Vibes', cursive;
-            font-size: clamp(3.5rem, 12vw, 6.5rem);
-            margin-bottom: 40px; color: #f0eaff;
-            text-shadow: 0 0 30px rgba(162, 85, 255, 0.8);
-        }
-
-        #typing-text { font-size: clamp(1.4rem, 5vw, 2.2rem); line-height: 1.6; min-height: 150px; }
-
-        .btn-next {
-            margin-top: 30px; padding: 15px 40px;
-            background: transparent; border: 2px solid var(--cor-azul);
-            color: white; border-radius: 50px; cursor: pointer;
-            font-size: 1.2rem; opacity: 0; transition: 0.5s;
-            box-shadow: 0 0 15px var(--cor-azul); pointer-events: auto;
-        }
-
-        .btn-next.show { opacity: 1; }
-
-        /* Estilo do Baú */
-        #page2 { display: none; opacity: 0; transition: opacity 2s; }
+        .page { position: absolute; width: 100%; height: 100%; display: flex; justify-content: center; align-items: center; z-index: 10; transition: opacity 1s; }
+        .container { text-align: center; padding: 20px; width: 90%; max-width: 800px; }
+        h1 { font-family: 'Great Vibes', cursive; font-size: clamp(3rem, 10vw, 5rem); margin-bottom: 20px; text-shadow: 0 0 20px var(--cor-roxo); }
+        #typing-text { font-size: clamp(1.2rem, 4vw, 1.8rem); line-height: 1.6; min-height: 100px; }
+        .btn { margin-top: 30px; padding: 12px 35px; background: transparent; border: 2px solid var(--cor-azul); color: white; border-radius: 50px; cursor: pointer; font-size: 1.1rem; box-shadow: 0 0 15px var(--cor-azul); opacity: 0; transition: 0.5s; pointer-events: none; }
+        .btn.show { opacity: 1; pointer-events: auto; }
         
-        .bau {
-            font-size: 10rem; cursor: pointer; user-select: none;
-            filter: drop-shadow(0 0 25px var(--cor-roxo));
-            transition: transform 0.1s;
-        }
-
-        .instrucao { margin-top: 20px; font-size: 1.5rem; color: var(--cor-azul); animation: pulse 2s infinite; }
+        /* Baú e Fotos */
+        #page2 { display: none; opacity: 0; }
+        .bau { font-size: 8rem; cursor: pointer; transition: transform 0.2s; filter: drop-shadow(0 0 20px var(--cor-roxo)); user-select: none; }
+        .frase-enfeitada { font-family: 'Great Vibes', cursive; font-size: 2.2rem; margin-top: 100px; color: var(--cor-azul); text-shadow: 0 0 10px var(--cor-azul); opacity: 0.8; }
         
-        @keyframes pulse { 0%, 100% { opacity: 0.5; } 50% { opacity: 1; } }
-
+        #photo-display { display: none; flex-direction: column; align-items: center; }
+        .foto-moldura { width: 300px; height: 400px; border: 10px solid white; box-shadow: 0 10px 30px rgba(0,0,0,0.5); object-fit: cover; border-radius: 5px; margin-bottom: 20px; animation: photoIn 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        @keyframes photoIn { from { transform: scale(0) rotate(-10deg); opacity: 0; } to { transform: scale(1) rotate(0); opacity: 1; } }
+        .legenda { font-size: 1.3rem; margin-top: 15px; font-style: italic; max-width: 500px; min-height: 60px; }
     </style>
 </head>
-<body>
+<body onmousemove="handleMove(event)" ontouchmove="handleMove(event)">
 
     <canvas id="canvas-bg"></canvas>
     <canvas id="canvas-transition"></canvas>
@@ -83,150 +39,165 @@
         <div class="container">
             <h1>Para quem ilumina meus dias</h1>
             <div id="typing-text"></div>
-            <button id="btn-reveal" class="btn-next">Descobrir Surpresa</button>
+            <button id="btn-reveal" class="btn">Descobrir Surpresa</button>
         </div>
     </div>
 
     <div id="page2" class="page">
-        <div class="container">
-            <div class="bau" id="bau-icon">🎁</div>
-            <p class="instrucao">Clique para abrir o baú!</p>
+        <div class="container" id="content-p2">
+            <div id="bau-box">
+                <div class="bau" id="bau-icon">📦</div>
+                <p class="frase-enfeitada">Toque no baú para revelar nossos segredos...</p>
+            </div>
+            
+            <div id="photo-display">
+                <img src="" id="current-img" class="foto-moldura">
+                <p class="legenda" id="current-legenda"></p>
+                <button id="btn-next-photo" class="btn show" style="margin-top: 10px;">Próxima ❤️</button>
+            </div>
         </div>
     </div>
 
     <script>
-        const typingElement = document.getElementById('typing-text');
-        const btnReveal = document.getElementById('btn-reveal');
+        const legendas = [
+            "Existem belezas que cansam os olhos, mas a sua... a sua descansa a minha alma.",
+            "Cada curva dos teus cachos é um caminho onde o meu olhar adora se perder.",
+            "Em qualquer multiverso, meus sentidos sempre me guiam até você.",
+            "Cada traço seu é uma obra de arte que o destino desenhou com perfeição.",
+            "O seu jeito doce faz tudo parecer um pouco mais leve.",
+            "Você não veste roupas, você veste personalidade. Única e irresistível.",
+            "A vista era bonita, mas perto de você, o horizonte é só um detalhe.",
+            "Perco o sentido do tempo. Quando te vejo, o resto do mundo vira ruído.",
+            "Seus olhos contam histórias que eu quero passar a vida inteira lendo.",
+            "Existe uma força em você que me atrai e me domina sem esforço.",
+            "O som da sua risada é o meu refúgio favorito.",
+            "Dizem que o mundo dela é rosa, mas o meu mundo é você!",
+            "Não sei quem é mais fofa, você ou a Hello Kitty.",
+            "Eu te admiro por ser exatamente quem você é.",
+            "Se o paraíso existisse, ele teria o formato exato desse seu sorriso."
+        ];
+
+        let currentIdx = 0;
+        let clicksBau = 0;
+
         const canvasBg = document.getElementById('canvas-bg');
         const ctxBg = canvasBg.getContext('2d');
         const canvasTrans = document.getElementById('canvas-transition');
         const ctxTrans = canvasTrans.getContext('2d');
 
-        const text = "Pensei em mil formas de te dar algo único. Então, construí este lugar. Cada linha, cada cor e cada efeito foi colocado aqui pensando em você. Toque para descobrir.";
-
-        // Redimensionar
-        function resize() {
-            canvasBg.width = canvasTrans.width = window.innerWidth;
-            canvasBg.height = canvasTrans.height = window.innerHeight;
-        }
+        function resize() { canvasBg.width = canvasTrans.width = window.innerWidth; canvasBg.height = canvasTrans.height = window.innerHeight; }
         window.addEventListener('resize', resize);
         resize();
 
-        // 1. Digitação
-        let idx = 0;
+        // Digitação
+        let idxType = 0;
+        const text = "Pensei em mil formas de te dar algo único. Então, construí este lugar. Cada linha, cada cor e cada efeito foi colocado aqui pensando em você. Toque para descobrir.";
         function type() {
-            if (idx < text.length) {
-                typingElement.innerHTML = text.substring(0, idx + 1) + '<span style="color:var(--cor-azul)">|</span>';
-                idx++; setTimeout(type, 40);
-            } else { btnReveal.classList.add('show'); }
+            if (idxType < text.length) {
+                document.getElementById('typing-text').innerHTML = text.substring(0, idxType + 1) + '<span>|</span>';
+                idxType++; setTimeout(type, 40);
+            } else { document.getElementById('btn-reveal').classList.add('show'); }
         }
-        setTimeout(type, 2500);
+        setTimeout(type, 2000);
 
-        // 2. Partículas e Raios (Mesmo sistema anterior)
+        // Partículas
         let particles = [];
         class Particle {
             constructor(x, y, color, type) {
                 this.x = x; this.y = y; this.type = type; this.color = color;
                 this.opacity = 1; this.size = type === 'heart' ? 0 : 3;
-                this.targetSize = type === 'heart' ? Math.random() * 20 + 15 : 3;
-                this.speedX = (Math.random() - 0.5) * 5; this.speedY = (Math.random() - 0.5) * 5;
+                this.targetSize = type === 'heart' ? Math.random() * 20 + 10 : 3;
+                this.speedX = (Math.random() - 0.5) * 6; this.speedY = (Math.random() - 0.5) * 6;
             }
             update() {
-                this.x += this.speedX; this.y += this.speedY;
-                if (this.type === 'heart' && this.size < this.targetSize) this.size += 1.2;
-                this.opacity -= 0.008;
+                this.x += this.speedX; this.y += this.speedY; this.speedX *= 0.98; this.speedY *= 0.98;
+                if (this.type === 'heart' && this.size < this.targetSize) this.size += 1.5;
+                this.opacity -= 0.01;
             }
             draw(ctx) {
                 ctx.save(); ctx.globalAlpha = this.opacity; ctx.fillStyle = this.color;
                 if (this.type === 'heart') {
-                    const s = this.size; ctx.beginPath();
-                    ctx.moveTo(this.x, this.y);
+                    const s = this.size; ctx.beginPath(); ctx.moveTo(this.x, this.y);
                     ctx.bezierCurveTo(this.x, this.y-s/2, this.x-s, this.y-s/2, this.x-s, this.y);
                     ctx.bezierCurveTo(this.x-s, this.y+s, this.x, this.y+s*1.5, this.x, this.y+s*1.8);
                     ctx.bezierCurveTo(this.x, this.y+s*1.5, this.x+s, this.y+s, this.x+s, this.y);
-                    ctx.bezierCurveTo(this.x+s, this.y-s/2, this.x, this.y-s/2, this.x, this.y);
-                    ctx.fill();
+                    ctx.bezierCurveTo(this.x+s, this.y-s/2, this.x, this.y-s/2, this.x, this.y); ctx.fill();
                 } else { ctx.beginPath(); ctx.arc(this.x, this.y, this.size, 0, Math.PI*2); ctx.fill(); }
                 ctx.restore();
             }
         }
 
+        function explode(x, y, color) { for(let i=0; i<15; i++) particles.push(new Particle(x, y, color, 'heart')); }
+
         function animate() {
             ctxBg.clearRect(0, 0, canvasBg.width, canvasBg.height);
-            particles.forEach((p, i) => { p.update(); p.draw(ctxBg); if(p.opacity<=0) particles.splice(i, 1); });
+            particles.forEach((p, i) => { p.update(); p.draw(ctxBg); if(p.opacity <= 0) particles.splice(i, 1); });
             requestAnimationFrame(animate);
         }
         animate();
 
         setInterval(() => {
-            const side = Math.floor(Math.random()*4);
-            let x, y;
-            if(side==0){x=20; y=Math.random()*canvasBg.height}
-            else if(side==1){x=canvasBg.width-20; y=Math.random()*canvasBg.height}
-            else if(side==2){x=Math.random()*canvasBg.width; y=20}
-            else{x=Math.random()*canvasBg.width; y=canvasBg.height-20}
-            for(let i=0; i<2; i++) particles.push(new Particle(x, y, '#a255ff', 'heart'));
-        }, 700);
+            const colors = ['#a255ff', '#00e5ff'];
+            explode(Math.random() * canvasBg.width, Math.random() < 0.5 ? 20 : canvasBg.height - 20, colors[Math.floor(Math.random()*2)]);
+        }, 1500);
 
-        window.addEventListener('mousemove', (e) => {
-            for(let i=0; i<2; i++) particles.push(new Particle(e.clientX, e.clientY, '#ffffff', 'light'));
-        });
+        function handleMove(e) {
+            const x = e.touches ? e.touches[0].clientX : e.clientX;
+            const y = e.touches ? e.touches[0].clientY : e.clientY;
+            for(let i=0; i<2; i++) particles.push(new Particle(x, y, '#ffffff', 'light'));
+        }
 
-        // 3. ANIMAÇÃO DA BORRACHA AUTOMÁTICA
-        btnReveal.addEventListener('click', () => {
+        // Transição Borracha
+        document.getElementById('btn-reveal').addEventListener('click', () => {
             canvasTrans.style.display = 'block';
             ctxTrans.fillStyle = '#0f051a';
             ctxTrans.fillRect(0, 0, canvasTrans.width, canvasTrans.height);
-            
             document.getElementById('page1').style.display = 'none';
             document.getElementById('page2').style.display = 'flex';
             setTimeout(() => { document.getElementById('page2').style.opacity = '1'; }, 100);
 
-            let x = 0; let y = 0; let step = 60;
-            let direction = 1;
-
+            let x = 0, y = 0, step = 80, dir = 1;
             function autoErase() {
                 ctxTrans.globalCompositeOperation = 'destination-out';
-                ctxTrans.beginPath();
-                ctxTrans.arc(x, y, 100, 0, Math.PI * 2);
-                ctxTrans.fill();
-
-                x += step * direction;
-                if (x > canvasTrans.width || x < 0) {
-                    direction *= -1;
-                    y += 80;
-                }
-
-                if (y < canvasTrans.height + 100) {
-                    requestAnimationFrame(autoErase);
-                } else {
-                    canvasTrans.style.display = 'none';
-                }
+                ctxTrans.beginPath(); ctxTrans.arc(x, y, 120, 0, Math.PI*2); ctxTrans.fill();
+                x += step * dir;
+                if(x > canvasTrans.width || x < 0) { dir *= -1; y += 100; }
+                if(y < canvasTrans.height + 100) requestAnimationFrame(autoErase);
+                else canvasTrans.style.display = 'none';
             }
             autoErase();
         });
 
-        // 4. Lógica do Baú
-        let clicks = 0;
+        // Lógica Baú
         const bau = document.getElementById('bau-icon');
         bau.addEventListener('click', () => {
-            clicks++;
-            bau.style.transform = `scale(${1 + clicks*0.1}) rotate(${clicks % 2 == 0 ? 5 : -5}deg)`;
+            clicksBau++;
+            bau.style.transform = `scale(${1 + clicksBau*0.1}) rotate(${clicksBau%2==0?5:-5}deg)`;
+            explode(window.innerWidth/2, window.innerHeight/2, '#a255ff');
             
-            // Explosão de corações ao clicar no baú
-            for(let i=0; i<8; i++) {
-                particles.push(new Particle(window.innerWidth/2, window.innerHeight/2, '#00e5ff', 'heart'));
+            if(clicksBau >= 7) {
+                document.getElementById('bau-box').style.display = 'none';
+                document.getElementById('photo-display').style.display = 'flex';
+                showPhoto();
             }
+        });
 
-            if (clicks >= 10) {
-                bau.innerHTML = "🔓";
-                setTimeout(() => {
-                   // Próxima fase: Entrar as fotos
-                   alert("O baú abriu! Preparado para as fotos?");
-                }, 500);
+        function showPhoto() {
+            if(currentIdx < 15) {
+                const img = document.getElementById('current-img');
+                img.src = `fotos/linda${currentIdx + 1}.jpg`;
+                document.getElementById('current-legenda').innerText = legendas[currentIdx];
+                explode(window.innerWidth/2, window.innerHeight/2, '#00e5ff');
+            } else {
+                document.getElementById('photo-display').innerHTML = "<h1>Você é tudo para mim! ❤️</h1>";
             }
+        }
+
+        document.getElementById('btn-next-photo').addEventListener('click', () => {
+            currentIdx++;
+            showPhoto();
         });
     </script>
 </body>
-            </html>
-                
+                </html>
+                    
