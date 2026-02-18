@@ -32,12 +32,17 @@
         #photo-area { display: none; flex-direction: column; align-items: center; }
         .foto-moldura { width: clamp(300px, 65vw, 550px); height: auto; border: 15px solid white; box-shadow: 0 20px 50px rgba(0,0,0,0.7); border-radius: 4px; transition: opacity 0.6s ease-in-out; opacity: 0; }
         .legenda { margin-top: 30px; font-style: italic; color: #e0d5ff; max-width: 800px; }
-        .btn-quiz { padding: 20px; font-size: 1.3rem; font-weight: 600; background: rgba(255, 255, 255, 0.1); border: 2px solid rgba(255, 255, 255, 0.3); color: white; border-radius: 20px; cursor: pointer; transition: transform 0.6s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.5s; }
-        .correto { background: #2ecc71 !important; }
-        .errado { background: #e74c3c !important; }
+        
+        /* ESTILO DO QUIZ ATUALIZADO */
+        #pergunta-texto { font-family: 'Great Vibes', cursive; font-size: clamp(3rem, 8vw, 5.5rem); color: #fff; text-shadow: 0 0 25px var(--cor-rosa); margin-bottom: 40px; line-height: 1.1; }
+        .alternativas-grid { display: flex; flex-direction: column; gap: 12px; width: 100%; max-width: 500px; margin: 0 auto; }
+        .btn-quiz { padding: 18px; font-size: 1.2rem; font-weight: 600; background: rgba(255, 255, 255, 0.05); border: 2px solid rgba(255, 255, 255, 0.2); color: white; border-radius: 20px; cursor: pointer; transition: transform 0.6s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.5s; }
+        
+        .correto { background: #2ecc71 !important; border-color: #2ecc71; }
+        .errado { background: #e74c3c !important; border-color: #e74c3c; }
         .sair-esquerda { transform: translateX(-150vw) rotate(-15deg); opacity: 0; }
         .sair-direita { transform: translateX(150vw) rotate(15deg); opacity: 0; }
-        .lacinho { position: fixed; font-size: 40px; pointer-events: none; z-index: 2; display: none; user-select: none; }
+        .lacinho { position: fixed; font-size: 25px; pointer-events: none; z-index: 2; display: block; user-select: none; opacity: 0.7; }
         .cursor { color: var(--cor-azul); animation: blink 0.8s infinite; }
         @keyframes blink { 50% { opacity: 0; } }
     </style>
@@ -74,8 +79,7 @@
             <div id="quiz-progresso" style="margin-top: 30px; color: var(--cor-rosa); font-weight: bold;"></div>
         </div>
     </section>
-
-    <script>
+        <script>
         const canvasBg = document.getElementById('canvas-bg');
         const ctxBg = canvasBg.getContext('2d');
         const canvasTrans = document.getElementById('canvas-transition');
@@ -112,18 +116,19 @@
             { p: "O que eu acho mais divertido de fazer com você?", opts: ["Assistir filmes", "Sair para comer", "Te estressar", "Ficar em silêncio abraçados"], resp: 2 },
             { p: "Qual foi o dia mais importante da minha vida?", opts: ["O dia do nosso primeiro beijo", "O dia do pedido de namoro", "O dia em que te conheci", "O dia que você disse 'te amo'"], resp: 2 }
         ];
-                let currentPhoto = 0; let particles = []; let ptAtual = 0; let acertos = 0;
+
+        let currentPhoto = 0; let particles = []; let ptAtual = 0; let acertos = 0;
         function resize() { canvasBg.width = canvasTrans.width = window.innerWidth; canvasBg.height = canvasTrans.height = window.innerHeight; }
         window.addEventListener('resize', resize); resize();
 
         class Particle {
             constructor(x, y, color, type) {
                 this.x = x; this.y = y; this.type = type; this.color = color;
-                this.opacity = 1; this.size = type === 'heart' ? 4 : 2; 
-                this.targetSize = type === 'heart' ? Math.random() * 20 + 15 : 4;
-                this.vx = (Math.random() - 0.5) * 4; this.vy = (Math.random() - 0.5) * 4;
+                this.opacity = 1; this.size = type === 'heart' ? 2 : 1.5; 
+                this.targetSize = type === 'heart' ? Math.random() * 12 + 8 : 3; // Diminuído
+                this.vx = (Math.random() - 0.5) * 3; this.vy = (Math.random() - 0.5) * 3;
             }
-            update() { this.x += this.vx; this.y += this.vy; if (this.type === 'heart' && this.size < this.targetSize) this.size += 0.6; this.opacity -= 0.01; }
+            update() { this.x += this.vx; this.y += this.vy; if (this.type === 'heart' && this.size < this.targetSize) this.size += 0.4; this.opacity -= 0.01; }
             draw() {
                 ctxBg.globalAlpha = this.opacity; ctxBg.fillStyle = this.color;
                 if (this.type === 'heart') {
@@ -145,7 +150,7 @@
 
         function explode(x, y) {
             const colors = ['#a255ff', '#00e5ff', '#ffffff', '#ff7eb9'];
-            for(let i=0; i<15; i++) particles.push(new Particle(x, y, colors[Math.floor(Math.random()*colors.length)], 'heart'));
+            for(let i=0; i<12; i++) particles.push(new Particle(x, y, colors[Math.floor(Math.random()*colors.length)], 'heart'));
         }
 
         function typeEffect(element, text, button, callback) {
@@ -158,7 +163,10 @@
             step();
         }
 
-        window.onload = () => { setTimeout(() => { typeEffect(document.getElementById('typing-text'), "Pensei em mil formas de te dar algo único. Então, construí este lugar. Cada linha, cada cor e cada efeito foi colocado aqui pensando em você. Toque para descobrir.", document.getElementById('btn-to-page2')); }, 1000); };
+        window.onload = () => { 
+            initLacinhos(); // Agora os laços começam na primeira página
+            setTimeout(() => { typeEffect(document.getElementById('typing-text'), "Pensei em mil formas de te dar algo único. Então, construí este lugar. Cada linha, cada cor e cada efeito foi colocado aqui pensando em você. Toque para descobrir.", document.getElementById('btn-to-page2')); }, 1000); 
+        };
 
         document.getElementById('btn-to-page2').addEventListener('click', function() {
             canvasTrans.style.display = 'block'; ctxTrans.fillStyle = '#0f051a'; ctxTrans.fillRect(0, 0, canvasTrans.width, canvasTrans.height);
@@ -176,7 +184,7 @@
 
         let bauClicks = 0;
         document.getElementById('bau-click').addEventListener('click', function() {
-            bauClicks++; const escala = 1 + (bauClicks * 0.2); const rotacao = bauClicks % 2 === 0 ? 5 : -5;
+            bauClicks++; const escala = 1 + (bauClicks * 0.15); const rotacao = bauClicks % 2 === 0 ? 5 : -5;
             this.style.transform = `scale(${escala}) rotate(${rotacao}deg)`; this.style.transition = "transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275)";
             explode(window.innerWidth/2, window.innerHeight/2);
             if(bauClicks >= 8) { document.getElementById('bau-container').style.display = 'none'; document.getElementById('photo-area').style.display = 'flex'; updatePhoto(); }
@@ -195,7 +203,7 @@
         }
         document.getElementById('btn-next-photo').addEventListener('click', () => { currentPhoto++; updatePhoto(); });
 
-        function irParaQuiz() { document.getElementById('page2').style.display = 'none'; document.getElementById('page3').style.display = 'flex'; setTimeout(() => { document.getElementById('page3').style.opacity = '1'; initLacinhos(); mostrarPergunta(); }, 100); }
+        function irParaQuiz() { document.getElementById('page2').style.display = 'none'; document.getElementById('page3').style.display = 'flex'; setTimeout(() => { document.getElementById('page3').style.opacity = '1'; mostrarPergunta(); }, 100); }
 
         function mostrarPergunta() {
             const data = perguntas[ptAtual]; document.getElementById('quiz-progresso').innerText = `Pergunta ${ptAtual + 1} de ${perguntas.length}`;
@@ -216,16 +224,21 @@
         function exibirResultadoFinal() {
             const erros = perguntas.length - acertos; let classificacao = (acertos <= 3) ? "Você não me ama 😔" : (acertos <= 6) ? "Foi bem, mas podia me conhecer melhor né chata? 🙄" : "Você foi muito bem amorzinho, a melhor namorada do mundo 💜";
             document.getElementById('page3').innerHTML = `<div class="container"><h1 class="final-msg" style="font-size: 3.5rem;">Resultado</h1><div class="legenda" style="font-size: 1.8rem; margin-bottom: 20px;">Acertos: ${acertos} | Erros: ${erros}<br><br><span style="color: var(--cor-rosa); font-weight: bold;">${classificacao}</span></div><button class="btn-next show" style="opacity:1; pointer-events:auto;" onclick="location.reload()">Recomeçar ❤️</button></div>`;
-            initLacinhos(); setInterval(() => explode(Math.random()*window.innerWidth, Math.random()*window.innerHeight), 500);
+            setInterval(() => explode(Math.random()*window.innerWidth, Math.random()*window.innerHeight), 500);
         }
 
         const lacinhosArr = [];
         function initLacinhos() {
-            for(let i=0; i<8; i++) { const div = document.createElement('div'); div.className = 'lacinho'; div.innerText = "🎀"; div.style.display = 'block'; document.body.appendChild(div); lacinhosArr.push({ el: div, x: Math.random()*window.innerWidth, y: Math.random()*window.innerHeight, vx: 2, vy: 2 }); }
-            function move() { lacinhosArr.forEach(l => { l.x += l.vx; l.y += l.vy; if(l.x <= 0 || l.x >= window.innerWidth - 40) l.vx *= -1; if(l.y <= 0 || l.y >= window.innerHeight - 40) l.vy *= -1; l.el.style.transform = `translate3d(${l.x}px, ${l.y}px, 0)`; }); requestAnimationFrame(move); }
+            for(let i=0; i<6; i++) { // Reduzi a quantidade para não poluir
+                const div = document.createElement('div'); div.className = 'lacinho'; div.innerText = "🎀"; 
+                document.body.appendChild(div);
+                lacinhosArr.push({ el: div, x: Math.random()*window.innerWidth, y: Math.random()*window.innerHeight, vx: 1.5, vy: 1.5 });
+            }
+            function move() { lacinhosArr.forEach(l => { l.x += l.vx; l.y += l.vy; if(l.x <= 0 || l.x >= window.innerWidth - 30) l.vx *= -1; if(l.y <= 0 || l.y >= window.innerHeight - 30) l.vy *= -1; l.el.style.transform = `translate3d(${l.x}px, ${l.y}px, 0)`; }); requestAnimationFrame(move); }
             move();
         }
-        setInterval(() => explode(Math.random()*canvasBg.width, Math.random()*canvasBg.height), 2000);
+        setInterval(() => explode(Math.random()*canvasBg.width, Math.random()*canvasBg.height), 2500);
     </script>
 </body>
-</html>
+    </html>
+    
