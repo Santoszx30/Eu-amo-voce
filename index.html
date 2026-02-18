@@ -16,62 +16,33 @@
             background-size: 400% 400%; 
             animation: gradientBG 15s ease infinite; 
         }
-        
         @keyframes gradientBG { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
-
         canvas { position: fixed; top: 0; left: 0; z-index: 1; pointer-events: none; transform: translateZ(0); }
         #canvas-transition { z-index: 20; display: none; }
         #eraser-tool { position: fixed; width: 130px; height: 65px; background: #f08080; border-radius: 8px; border-bottom: 8px solid #cd5c5c; z-index: 100; display: none; pointer-events: none; box-shadow: 0 5px 20px rgba(0,0,0,0.6); }
-        
         .page { position: absolute; width: 100%; height: 100%; display: flex; justify-content: center; align-items: center; z-index: 10; transition: opacity 0.8s ease-in-out; }
         .container { text-align: center; color: white; padding: 20px; width: 95%; max-width: 1000px; }
-        
         h1, .final-msg { font-family: 'Great Vibes', cursive; font-size: clamp(4rem, 12vw, 7.5rem); margin-bottom: 30px; color: #f0eaff; text-shadow: 0 0 40px var(--cor-roxo); }
         #typing-text, .legenda { font-size: clamp(1.6rem, 5vw, 2.5rem); line-height: 1.5; min-height: 140px; font-weight: 300; }
-        
-        .btn-next { 
-            margin-top: 40px; padding: 20px 50px; background: transparent; 
-            border: 2px solid var(--cor-azul); color: white; border-radius: 60px; 
-            cursor: pointer; font-size: 1.5rem; opacity: 0; transition: 0.5s; 
-            box-shadow: 0 0 20px var(--cor-azul); pointer-events: none; 
-            visibility: hidden;
-        }
+        .btn-next { margin-top: 40px; padding: 20px 50px; background: transparent; border: 2px solid var(--cor-azul); color: white; border-radius: 60px; cursor: pointer; font-size: 1.5rem; opacity: 0; transition: 0.5s; box-shadow: 0 0 20px var(--cor-azul); pointer-events: none; visibility: hidden; }
         .btn-next.show { opacity: 1; pointer-events: auto; visibility: visible; }
-        
         #page2, #page3 { display: none; opacity: 0; }
         .bau-tesouro { font-size: clamp(120px, 30vw, 220px); cursor: pointer; filter: drop-shadow(0 0 30px var(--cor-roxo)); transition: transform 0.2s; user-select: none; }
         .frase-bau { font-family: 'Great Vibes', cursive; font-size: clamp(2.5rem, 6vw, 3.5rem); margin-top: 80px; color: var(--cor-azul); text-shadow: 0 0 15px var(--cor-azul); }
-        
         #photo-area { display: none; flex-direction: column; align-items: center; }
         .foto-moldura { width: clamp(300px, 65vw, 550px); height: auto; border: 15px solid white; box-shadow: 0 20px 50px rgba(0,0,0,0.7); border-radius: 4px; transition: opacity 0.6s ease-in-out; opacity: 0; }
         .legenda { margin-top: 30px; font-style: italic; color: #e0d5ff; max-width: 800px; }
-
-        /* QUIZ - PÁGINA 3 */
-        #pergunta-texto { font-family: 'Dancing Script', cursive; font-size: clamp(2.2rem, 7vw, 3.8rem); color: #fff; text-shadow: 0 0 25px var(--cor-rosa); margin-bottom: 35px; }
-        .alternativas-grid { display: grid; grid-template-columns: 1fr; gap: 15px; width: 100%; max-width: 550px; margin: 0 auto; }
-        .btn-quiz { padding: 20px; font-size: 1.3rem; font-weight: 600; background: rgba(255, 255, 255, 0.1); border: 2px solid rgba(255, 255, 255, 0.3); color: white; border-radius: 20px; cursor: pointer; transition: 0.3s; }
+        .btn-quiz { padding: 20px; font-size: 1.3rem; font-weight: 600; background: rgba(255, 255, 255, 0.1); border: 2px solid rgba(255, 255, 255, 0.3); color: white; border-radius: 20px; cursor: pointer; transition: transform 0.6s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.5s; }
         .correto { background: #2ecc71 !important; }
         .errado { background: #e74c3c !important; }
+        .sair-esquerda { transform: translateX(-150vw) rotate(-15deg); opacity: 0; }
+        .sair-direita { transform: translateX(150vw) rotate(15deg); opacity: 0; }
         .lacinho { position: fixed; font-size: 40px; pointer-events: none; z-index: 2; display: none; user-select: none; }
-        
         .cursor { color: var(--cor-azul); animation: blink 0.8s infinite; }
         @keyframes blink { 50% { opacity: 0; } }
-
-        /* Substitua ou adicione estas classes dentro do seu <style> */
-.btn-quiz { 
-    padding: 20px; font-size: 1.3rem; font-weight: 600; 
-    background: rgba(255, 255, 255, 0.1); border: 2px solid rgba(255, 255, 255, 0.3); 
-    color: white; border-radius: 20px; cursor: pointer; 
-    transition: transform 0.6s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.5s; 
-}
-
-.sair-esquerda { transform: translateX(-150vw) rotate(-15deg); opacity: 0; }
-.sair-direita { transform: translateX(150vw) rotate(15deg); opacity: 0; }
-                            
     </style>
 </head>
 <body>
-
     <canvas id="canvas-bg"></canvas>
     <canvas id="canvas-transition"></canvas>
     <div id="eraser-tool"></div>
@@ -97,7 +68,7 @@
     </section>
 
     <section id="page3" class="page">
-        <div class="container">
+        <div class="container" id="quiz-container">
             <div id="pergunta-texto"></div>
             <div class="alternativas-grid" id="alternativas-box"></div>
             <div id="quiz-progresso" style="margin-top: 30px; color: var(--cor-rosa); font-weight: bold;"></div>
@@ -141,16 +112,9 @@
             { p: "O que eu acho mais divertido de fazer com você?", opts: ["Assistir filmes", "Sair para comer", "Te estressar", "Ficar em silêncio abraçados"], resp: 2 },
             { p: "Qual foi o dia mais importante da minha vida?", opts: ["O dia do nosso primeiro beijo", "O dia do pedido de namoro", "O dia em que te conheci", "O dia que você disse 'te amo'"], resp: 2 }
         ];
-
-        let currentPhoto = 0;
-        let particles = [];
-
-        function resize() {
-            canvasBg.width = canvasTrans.width = window.innerWidth;
-            canvasBg.height = canvasTrans.height = window.innerHeight;
-        }
-        window.addEventListener('resize', resize);
-        resize();
+                let currentPhoto = 0; let particles = []; let ptAtual = 0; let acertos = 0;
+        function resize() { canvasBg.width = canvasTrans.width = window.innerWidth; canvasBg.height = canvasTrans.height = window.innerHeight; }
+        window.addEventListener('resize', resize); resize();
 
         class Particle {
             constructor(x, y, color, type) {
@@ -159,11 +123,7 @@
                 this.targetSize = type === 'heart' ? Math.random() * 20 + 15 : 4;
                 this.vx = (Math.random() - 0.5) * 4; this.vy = (Math.random() - 0.5) * 4;
             }
-            update() {
-                this.x += this.vx; this.y += this.vy;
-                if (this.type === 'heart' && this.size < this.targetSize) this.size += 0.6;
-                this.opacity -= 0.01;
-            }
+            update() { this.x += this.vx; this.y += this.vy; if (this.type === 'heart' && this.size < this.targetSize) this.size += 0.6; this.opacity -= 0.01; }
             draw() {
                 ctxBg.globalAlpha = this.opacity; ctxBg.fillStyle = this.color;
                 if (this.type === 'heart') {
@@ -178,10 +138,7 @@
 
         function animate() {
             ctxBg.clearRect(0, 0, canvasBg.width, canvasBg.height);
-            for(let i = particles.length - 1; i >= 0; i--) {
-                particles[i].update(); particles[i].draw();
-                if(particles[i].opacity <= 0) particles.splice(i, 1);
-            }
+            for(let i = particles.length - 1; i >= 0; i--) { particles[i].update(); particles[i].draw(); if(particles[i].opacity <= 0) particles.splice(i, 1); }
             requestAnimationFrame(animate);
         }
         animate();
@@ -195,194 +152,77 @@
             let i = 0; if(button) button.classList.remove('show');
             element.innerHTML = "";
             function step() {
-                if (i < text.length) {
-                    element.innerHTML = text.substring(0, i + 1) + '<span class="cursor">|</span>';
-                    i++; setTimeout(step, 45);
-                } else {
-                    element.innerHTML = text; if(button) button.classList.add('show');
-                    if (callback) callback();
-                }
+                if (i < text.length) { element.innerHTML = text.substring(0, i + 1) + '<span class="cursor">|</span>'; i++; setTimeout(step, 45); } 
+                else { element.innerHTML = text; if(button) button.classList.add('show'); if (callback) callback(); }
             }
             step();
         }
 
-        window.onload = () => {
-            setTimeout(() => {
-                typeEffect(document.getElementById('typing-text'), "Pensei em mil formas de te dar algo único. Então, construí este lugar. Cada linha, cada cor e cada efeito foi colocado aqui pensando em você. Toque para descobrir.", document.getElementById('btn-to-page2'));
-            }, 1000);
-        };
+        window.onload = () => { setTimeout(() => { typeEffect(document.getElementById('typing-text'), "Pensei em mil formas de te dar algo único. Então, construí este lugar. Cada linha, cada cor e cada efeito foi colocado aqui pensando em você. Toque para descobrir.", document.getElementById('btn-to-page2')); }, 1000); };
 
         document.getElementById('btn-to-page2').addEventListener('click', function() {
             canvasTrans.style.display = 'block'; ctxTrans.fillStyle = '#0f051a'; ctxTrans.fillRect(0, 0, canvasTrans.width, canvasTrans.height);
             document.getElementById('page1').style.display = 'none'; document.getElementById('page2').style.display = 'flex';
             setTimeout(() => document.getElementById('page2').style.opacity = '1', 100);
-            
             eraserTool.style.display = 'block'; let x=0, y=0, step=100, dir=1;
             function autoErase() {
                 ctxTrans.globalCompositeOperation = 'destination-out'; ctxTrans.beginPath(); ctxTrans.arc(x, y, 140, 0, Math.PI*2); ctxTrans.fill();
                 eraserTool.style.left = (x-65)+'px'; eraserTool.style.top = (y-32)+'px';
                 x += step * dir; if(x > canvasTrans.width || x < 0) { dir *= -1; y += 110; }
-                if(y < canvasTrans.height+150) requestAnimationFrame(autoErase);
-                else { canvasTrans.style.display = 'none'; eraserTool.style.display = 'none'; }
+                if(y < canvasTrans.height+150) requestAnimationFrame(autoErase); else { canvasTrans.style.display = 'none'; eraserTool.style.display = 'none'; }
             }
             autoErase();
         });
 
-                // Substitua a lógica do baú por esta:
         let bauClicks = 0;
         document.getElementById('bau-click').addEventListener('click', function() {
-            bauClicks++;
-            
-            // Faz o baú crescer 20% a cada clique e balançar levemente
-            const escala = 1 + (bauClicks * 0.2);
-            const rotacao = bauClicks % 2 === 0 ? 5 : -5;
-            this.style.transform = `scale(${escala}) rotate(${rotacao}deg)`;
-            this.style.transition = "transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275)";
-
+            bauClicks++; const escala = 1 + (bauClicks * 0.2); const rotacao = bauClicks % 2 === 0 ? 5 : -5;
+            this.style.transform = `scale(${escala}) rotate(${rotacao}deg)`; this.style.transition = "transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275)";
             explode(window.innerWidth/2, window.innerHeight/2);
-
-            if(bauClicks >= 8) { 
-                document.getElementById('bau-container').style.display = 'none'; 
-                document.getElementById('photo-area').style.display = 'flex'; 
-                updatePhoto(); 
-            }
+            if(bauClicks >= 8) { document.getElementById('bau-container').style.display = 'none'; document.getElementById('photo-area').style.display = 'flex'; updatePhoto(); }
         });
-        
 
         function updatePhoto() {
             const img = document.getElementById('img-display');
             if(currentPhoto < 15) {
-                img.style.opacity = 0;
-                const tempImg = new Image();
-                tempImg.src = `fotos/linda${currentPhoto + 1}.jpg`;
-                tempImg.onload = () => {
-                    setTimeout(() => { 
-                        img.src = tempImg.src; img.style.opacity = 1; explode(window.innerWidth/2, window.innerHeight/2);
-                        typeEffect(document.getElementById('legenda-display'), legendas[currentPhoto], document.getElementById('btn-next-photo'));
-                    }, 400);
-                };
-            // Substitua o 'else' da função updatePhoto por este:
-} else {
-    document.getElementById('photo-area').innerHTML = `
-        <h1 class="final-msg">Você é tudo para mim 💜</h1>
-        <div id="intro-quiz-text" class="legenda" style="min-height: 100px; margin-bottom: 20px;"></div>
-        <button id="btn-start-quiz" class="btn-next">Estou Pronta! ✨</button>
-    `;
-    
-    const introTexto = "Agora, um pequeno desafio... Preparei um quiz para ver se você presta atenção nos nossos detalhes. Acerte para provar que é a dona do meu coração! (Dica: sua nota define meu nível de carinho hoje 👀)";
-    
-    typeEffect(document.getElementById('intro-quiz-text'), introTexto, document.getElementById('btn-start-quiz'), () => {
-        document.getElementById('btn-start-quiz').onclick = irParaQuiz;
-    });
+                img.style.opacity = 0; const tempImg = new Image(); tempImg.src = `fotos/linda${currentPhoto + 1}.jpg`;
+                tempImg.onload = () => { setTimeout(() => { img.src = tempImg.src; img.style.opacity = 1; explode(window.innerWidth/2, window.innerHeight/2); typeEffect(document.getElementById('legenda-display'), legendas[currentPhoto], document.getElementById('btn-next-photo')); }, 400); };
+            } else {
+                document.getElementById('photo-area').innerHTML = `<h1 class="final-msg">Você é tudo para mim 💜</h1><div id="intro-quiz-text" class="legenda" style="min-height: 100px; margin-bottom: 20px;"></div><button id="btn-start-quiz" class="btn-next">Estou Pronta! ✨</button>`;
+                const introTexto = "Agora, um pequeno desafio... Preparei um quiz para ver se você presta atenção nos nossos detalhes. Acerte para provar que é a dona do meu coração! (Dica: sua nota define meu nível de carinho hoje 👀)";
+                typeEffect(document.getElementById('intro-quiz-text'), introTexto, document.getElementById('btn-start-quiz'), () => { document.getElementById('btn-start-quiz').onclick = irParaQuiz; });
+            }
         }
-        
+        document.getElementById('btn-next-photo').addEventListener('click', () => { currentPhoto++; updatePhoto(); });
 
-        function irParaQuiz() {
-            document.getElementById('page2').style.display = 'none'; document.getElementById('page3').style.display = 'flex';
-            setTimeout(() => { document.getElementById('page3').style.opacity = '1'; initLacinhos(); mostrarPergunta(); }, 100);
+        function irParaQuiz() { document.getElementById('page2').style.display = 'none'; document.getElementById('page3').style.display = 'flex'; setTimeout(() => { document.getElementById('page3').style.opacity = '1'; initLacinhos(); mostrarPergunta(); }, 100); }
+
+        function mostrarPergunta() {
+            const data = perguntas[ptAtual]; document.getElementById('quiz-progresso').innerText = `Pergunta ${ptAtual + 1} de ${perguntas.length}`;
+            const box = document.getElementById('alternativas-box'); box.innerHTML = "";
+            typeEffect(document.getElementById('pergunta-texto'), data.p, null, () => {
+                data.opts.forEach((opt, idx) => {
+                    const btn = document.createElement('button'); btn.className = 'btn-quiz'; btn.innerText = opt; btn.classList.add(idx % 2 === 0 ? 'sair-esquerda' : 'sair-direita'); box.appendChild(btn);
+                    setTimeout(() => { btn.classList.remove('sair-esquerda', 'sair-direita'); }, 100 * idx);
+                    btn.onclick = () => {
+                        const botoes = document.querySelectorAll('.btn-quiz'); botoes.forEach(b => b.style.pointerEvents = 'none');
+                        if(idx === data.resp) { btn.classList.add('correto'); acertos++; explode(window.innerWidth/2, window.innerHeight/2); } else { btn.classList.add('errado'); }
+                        setTimeout(() => { botoes.forEach((b, i) => { b.classList.add(i % 2 === 0 ? 'sair-esquerda' : 'sair-direita'); }); setTimeout(() => { ptAtual++; if(ptAtual < perguntas.length) { mostrarPergunta(); } else { exibirResultadoFinal(); } }, 600); }, 1000);
+                    };
+                });
+            });
         }
 
-        let ptAtual = 0;
-let acertos = 0; // Adicionamos o contador aqui
-
-function mostrarPergunta() {
-    const data = perguntas[ptAtual];
-    document.getElementById('quiz-progresso').innerText = `Pergunta ${ptAtual + 1} de ${perguntas.length}`;
-    const box = document.getElementById('alternativas-box');
-    box.innerHTML = "";
-
-    typeEffect(document.getElementById('pergunta-texto'), data.p, null, () => {
-        data.opts.forEach((opt, idx) => {
-            const btn = document.createElement('button');
-            btn.className = 'btn-quiz';
-            btn.innerText = opt;
-            
-            // Entrada intercalada
-            btn.classList.add(idx % 2 === 0 ? 'sair-esquerda' : 'sair-direita');
-            box.appendChild(btn);
-
-            setTimeout(() => {
-                btn.classList.remove('sair-esquerda', 'sair-direita');
-            }, 100 * idx);
-
-            btn.onclick = () => {
-                const botoes = document.querySelectorAll('.btn-quiz');
-                botoes.forEach(b => b.style.pointerEvents = 'none');
-
-                // Lógica de acerto/erro com contador
-                if(idx === data.resp) { 
-                    btn.classList.add('correto'); 
-                    acertos++; // <--- Contando o acerto
-                    explode(window.innerWidth/2, window.innerHeight/2); 
-                } else { 
-                    btn.classList.add('errado'); 
-                }
-
-                // Saída intercalada
-                setTimeout(() => {
-                    botoes.forEach((b, i) => {
-                        b.classList.add(i % 2 === 0 ? 'sair-esquerda' : 'sair-direita');
-                    });
-
-                    setTimeout(() => {
-                        ptAtual++;
-                        if(ptAtual < perguntas.length) {
-                            mostrarPergunta();
-                        } else {
-                            // Chama a função de resultado que criamos
-                            exibirResultadoFinal();
-                        }
-                    }, 600);
-                }, 1000);
-            };
-        });
-    });
-}
-
-function exibirResultadoFinal() {
-    const total = perguntas.length;
-    const erros = total - acertos;
-    let classificacao = "";
-    
-    // Suas frases de classificação
-    if (acertos <= 3) classificacao = "Você não me ama 😔";
-    else if (acertos <= 6) classificacao = "Foi bem, mas podia me conhecer melhor né chata? 🙄";
-    else classificacao = "Você foi muito bem amorzinho, a melhor namorada do mundo 💜";
-
-    document.getElementById('page3').innerHTML = `
-        <div class="container">
-            <h1 class="final-msg" style="font-size: 3.5rem;">Resultado</h1>
-            <div class="legenda" style="font-size: 1.8rem; margin-bottom: 20px;">
-                Acertos: ${acertos} | Erros: ${erros}<br><br>
-                <span style="color: var(--cor-rosa); font-weight: bold;">${classificacao}</span>
-            </div>
-            <button class="btn-next show" style="opacity:1; pointer-events:auto;" onclick="location.reload()">Recomeçar ❤️</button>
-        </div>
-    `;
-    
-    // Chuva de corações e laços infinita no final
-    initLacinhos(); 
-    setInterval(() => explode(Math.random()*window.innerWidth, Math.random()*window.innerHeight), 500);
+        function exibirResultadoFinal() {
+            const erros = perguntas.length - acertos; let classificacao = (acertos <= 3) ? "Você não me ama 😔" : (acertos <= 6) ? "Foi bem, mas podia me conhecer melhor né chata? 🙄" : "Você foi muito bem amorzinho, a melhor namorada do mundo 💜";
+            document.getElementById('page3').innerHTML = `<div class="container"><h1 class="final-msg" style="font-size: 3.5rem;">Resultado</h1><div class="legenda" style="font-size: 1.8rem; margin-bottom: 20px;">Acertos: ${acertos} | Erros: ${erros}<br><br><span style="color: var(--cor-rosa); font-weight: bold;">${classificacao}</span></div><button class="btn-next show" style="opacity:1; pointer-events:auto;" onclick="location.reload()">Recomeçar ❤️</button></div>`;
+            initLacinhos(); setInterval(() => explode(Math.random()*window.innerWidth, Math.random()*window.innerHeight), 500);
         }
-        
-        
 
         const lacinhosArr = [];
         function initLacinhos() {
-            for(let i=0; i<8; i++) {
-                const div = document.createElement('div'); div.className = 'lacinho'; div.innerText = "🎀"; div.style.display = 'block';
-                document.body.appendChild(div);
-                lacinhosArr.push({ el: div, x: Math.random()*window.innerWidth, y: Math.random()*window.innerHeight, vx: 2, vy: 2 });
-            }
-            function move() {
-                lacinhosArr.forEach(l => {
-                    l.x += l.vx; l.y += l.vy;
-                    if(l.x <= 0 || l.x >= window.innerWidth - 40) l.vx *= -1;
-                    if(l.y <= 0 || l.y >= window.innerHeight - 40) l.vy *= -1;
-                    l.el.style.transform = `translate3d(${l.x}px, ${l.y}px, 0)`;
-                });
-                requestAnimationFrame(move);
-            }
+            for(let i=0; i<8; i++) { const div = document.createElement('div'); div.className = 'lacinho'; div.innerText = "🎀"; div.style.display = 'block'; document.body.appendChild(div); lacinhosArr.push({ el: div, x: Math.random()*window.innerWidth, y: Math.random()*window.innerHeight, vx: 2, vy: 2 }); }
+            function move() { lacinhosArr.forEach(l => { l.x += l.vx; l.y += l.vy; if(l.x <= 0 || l.x >= window.innerWidth - 40) l.vx *= -1; if(l.y <= 0 || l.y >= window.innerHeight - 40) l.vy *= -1; l.el.style.transform = `translate3d(${l.x}px, ${l.y}px, 0)`; }); requestAnimationFrame(move); }
             move();
         }
         setInterval(() => explode(Math.random()*canvasBg.width, Math.random()*canvasBg.height), 2000);
