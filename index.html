@@ -276,6 +276,69 @@
 
             setInterval(() => explode(Math.random()*window.innerWidth, Math.random()*window.innerHeight), 500);
         }
+                // Classe para o rastro de glitter
+        class Glitter {
+            constructor(x, y) {
+                this.x = x;
+                this.y = y;
+                this.size = Math.random() * 3 + 1;
+                this.speedX = (Math.random() - 0.5) * 2;
+                this.speedY = (Math.random() - 0.5) * 2;
+                this.color = `hsl(${Math.random() * 60 + 280}, 100%, 70%)`; // Tons de roxo/rosa brilhante
+                this.opacity = 1;
+            }
+            update() {
+                this.x += this.speedX;
+                this.y += this.speedY;
+                this.opacity -= 0.02;
+                if (this.size > 0.1) this.size -= 0.05;
+            }
+            draw() {
+                ctxBg.globalAlpha = this.opacity;
+                ctxBg.fillStyle = this.color;
+                ctxBg.shadowBlur = 10;
+                ctxBg.shadowColor = "white";
+                ctxBg.beginPath();
+                ctxBg.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctxBg.fill();
+                ctxBg.shadowBlur = 0; // Reseta o brilho para não afetar outros desenhos
+            }
+        }
+
+        let glitterArray = [];
+
+        // Captura o movimento do mouse
+        window.addEventListener('mousemove', (e) => {
+            for (let i = 0; i < 3; i++) {
+                glitterArray.push(new Glitter(e.clientX, e.clientY));
+            }
+            // Também dispara os corações aleatórios se clicar/mover
+            if(Math.random() > 0.9) explode(e.clientX, e.clientY);
+        });
+
+        // Captura o movimento do dedo no celular
+        window.addEventListener('touchmove', (e) => {
+            const touch = e.touches[0];
+            for (let i = 0; i < 3; i++) {
+                glitterArray.push(new Glitter(touch.clientX, touch.clientY));
+            }
+        });
+
+        // Modifique sua função animate() para incluir o glitter:
+        const originalAnimate = animate;
+        animate = function() {
+            originalAnimate(); // Chama o que já existia
+            for (let i = 0; i < glitterArray.length; i++) {
+                glitterArray[i].update();
+                glitterArray[i].draw();
+                if (glitterArray[i].opacity <= 0) {
+                    glitterArray.splice(i, 1);
+                    i--;
+                }
+            }
+            requestAnimationFrame(animate);
+        };
+        
 </script>
 </body>
 </html>
