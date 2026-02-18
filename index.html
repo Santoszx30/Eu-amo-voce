@@ -12,7 +12,7 @@
             --cor-azul: #00e5ff;
         }
 
-        /* Reset e Fundo Gradiente */
+        /* RESET E FUNDO */
         body, html {
             margin: 0; padding: 0; width: 100%; height: 100%;
             overflow: hidden; font-family: 'Poppins', sans-serif;
@@ -27,66 +27,70 @@
             100% { background-position: 0% 50%; }
         }
 
-        /* Canvas de Fundo (Corações e Brilho) */
-        #canvas-bg {
-            position: fixed; top: 0; left: 0;
-            width: 100vw; height: 100vh;
-            z-index: 1; pointer-events: none;
+        /* CANVASES */
+        #canvas-bg { position: fixed; top: 0; left: 0; z-index: 1; pointer-events: none; }
+        #canvas-transition { position: fixed; top: 0; left: 0; z-index: 20; display: none; pointer-events: none; }
+
+        /* BORRACHA VISUAL */
+        #eraser-tool {
+            position: fixed; width: 100px; height: 50px;
+            background: #f08080; border-radius: 8px;
+            border-bottom: 6px solid #cd5c5c; z-index: 100;
+            display: none; pointer-events: none;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.5);
         }
 
-        /* Gerenciamento de Páginas */
+        /* ESTRUTURA DE PÁGINAS */
         .page {
-            position: absolute;
-            width: 100%; height: 100%;
+            position: absolute; width: 100%; height: 100%;
             display: flex; justify-content: center; align-items: center;
-            z-index: 10;
+            z-index: 10; transition: opacity 1s;
         }
 
-        #page2 { display: none; opacity: 0; } /* Escondida por enquanto */
+        .container { text-align: center; color: white; padding: 20px; width: 90%; max-width: 900px; }
 
-        /* Estilos Página 1 */
-        .container { text-align: center; color: white; padding: 40px; max-width: 1000px; }
-        
+        /* PÁGINA 1 */
         h1 {
             font-family: 'Great Vibes', cursive;
-            font-size: clamp(3.5rem, 12vw, 6.5rem);
-            margin-bottom: 40px; color: #f0eaff;
-            text-shadow: 0 0 30px rgba(162, 85, 255, 0.8);
-            opacity: 0;
-            animation: fadeIn 3s forwards;
+            font-size: clamp(3.5rem, 10vw, 6rem);
+            margin-bottom: 30px; color: #f0eaff;
+            text-shadow: 0 0 30px var(--cor-roxo);
         }
 
-        #typing-text {
-            font-size: clamp(1.4rem, 5vw, 2.2rem);
-            line-height: 1.6;
-            min-height: 150px;
-            font-weight: 300;
-            text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.7);
-        }
+        #typing-text { font-size: clamp(1.2rem, 4vw, 2rem); line-height: 1.6; min-height: 120px; }
 
         .btn-next {
             margin-top: 30px; padding: 15px 40px;
             background: transparent; border: 2px solid var(--cor-azul);
             color: white; border-radius: 50px; cursor: pointer;
             font-size: 1.2rem; opacity: 0; transition: 0.5s;
-            box-shadow: 0 0 15px var(--cor-azul);
+            box-shadow: 0 0 15px var(--cor-azul); pointer-events: none;
         }
-
         .btn-next.show { opacity: 1; pointer-events: auto; }
 
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(30px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
+        /* PÁGINA 2: BAÚ */
+        #page2 { display: none; opacity: 0; }
+        .bau-tesouro { font-size: 150px; cursor: pointer; filter: drop-shadow(0 0 20px var(--cor-roxo)); transition: transform 0.2s; user-select: none; }
+        .frase-bau { font-family: 'Great Vibes', cursive; font-size: 2.8rem; margin-top: 100px; color: var(--cor-azul); text-shadow: 0 0 10px var(--cor-azul); }
 
-        .cursor { display: inline-block; width: 4px; background-color: var(--cor-azul); margin-left: 8px; animation: blink 0.7s infinite; }
-        @keyframes blink { 50% { opacity: 0; } }
+        /* SISTEMA DE FOTOS */
+        #photo-area { display: none; flex-direction: column; align-items: center; opacity: 0; transition: 1s; }
+        .foto-moldura {
+            width: clamp(250px, 50vw, 400px);
+            height: auto; border: 12px solid white;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.6);
+            border-radius: 4px; animation: photoEnter 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        @keyframes photoEnter { from { transform: scale(0.5) rotate(-5deg); opacity: 0; } to { transform: scale(1) rotate(0); opacity: 1; } }
+        .legenda { font-size: 1.4rem; margin-top: 20px; font-style: italic; color: #e0d5ff; max-width: 600px; }
 
     </style>
 </head>
 <body>
 
     <canvas id="canvas-bg"></canvas>
+    <canvas id="canvas-transition"></canvas>
+    <div id="eraser-tool"></div>
 
     <section id="page1" class="page">
         <div class="container">
@@ -97,105 +101,178 @@
     </section>
 
     <section id="page2" class="page">
-        <div class="container">
-            </div>
+        <div id="bau-container" class="container">
+            <div class="bau-tesouro" id="bau-click">📦</div>
+            <p class="frase-bau">Toque no baú para revelar nossos segredos...</p>
+        </div>
+
+        <div id="photo-area" class="container">
+            <img src="" id="img-display" class="foto-moldura">
+            <p id="legenda-display" class="legenda"></p>
+            <button id="btn-next-photo" class="btn-next show" style="opacity:1; pointer-events:auto;">Próxima ❤️</button>
+        </div>
     </section>
 
     <script>
-        const canvas = document.getElementById('canvas-bg');
-        const ctx = canvas.getContext('2d');
-        const typingElement = document.getElementById('typing-text');
-        const btnNext = document.getElementById('btn-to-page2');
+        const canvasBg = document.getElementById('canvas-bg');
+        const ctxBg = canvasBg.getContext('2d');
+        const canvasTrans = document.getElementById('canvas-transition');
+        const ctxTrans = canvasTrans.getContext('2d');
+        const eraserTool = document.getElementById('eraser-tool');
+        
+        const legendas = [
+            "Existem belezas que cansam os olhos, mas a sua... a sua descansa a minha alma.",
+            "Cada curva dos teus cachos é um caminho onde o meu olhar adora se perder.",
+            "Em qualquer multiverso, meus sentidos sempre me guiam até você.",
+            "Cada traço seu é uma obra de arte que o destino desenhou com perfeição.",
+            "O seu jeito doce faz tudo parecer um pouco mais leve.",
+            "Você não veste roupas, você veste personalidade. Única e irresistível.",
+            "A vista era bonita, mas perto de você, o horizonte é só um detalhe.",
+            "Perco o sentido do tempo. Quando te vejo, o resto do mundo vira ruído.",
+            "Seus olhos contam histórias que eu quero passar a vida inteira lendo.",
+            "Existe uma força em você que me incendeia e me domina sem esforço.",
+            "O som da sua risada é o meu refúgio favorito.",
+            "Dizem que o mundo dela é rosa, mas o meu mundo é você!",
+            "Não sei quem é mais fofa, você ou a Hello Kitty.",
+            "Eu te admiro por ser exatamente quem você é, de todas as formas.",
+            "Se o paraíso existisse, ele teria o formato exato desse seu sorriso definitivo."
+        ];
 
-        const textoExplica = "Pensei em mil formas de te dar algo único. Então, construí este lugar. Cada linha, cada cor e cada efeito foi colocado aqui pensando em você. Toque para descobrir.";
+        let currentPhoto = 0;
+        let particles = [];
 
         function resize() {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
+            canvasBg.width = canvasTrans.width = window.innerWidth;
+            canvasBg.height = canvasTrans.height = window.innerHeight;
         }
         window.addEventListener('resize', resize);
         resize();
 
-        // --- Sistema de Digitação ---
-        let charIdx = 0;
-        function typeWriter() {
-            if (charIdx < textoExplica.length) {
-                typingElement.innerHTML = textoExplica.substring(0, charIdx + 1) + '<span class="cursor">|</span>';
-                charIdx++;
-                setTimeout(typeWriter, 40);
-            } else {
-                document.querySelector('.cursor').style.display = 'none';
-                btnNext.classList.add('show');
-            }
-        }
-        setTimeout(typeWriter, 2500); // Inicia após o fade do título
-
-        // --- Sistema de Partículas (Corações e Rastro de Luz) ---
-        let particles = [];
+        // PARTÍCULAS (Corações e Brilho)
         class Particle {
             constructor(x, y, color, type) {
                 this.x = x; this.y = y; this.type = type; this.color = color;
-                this.opacity = 1;
-                this.size = type === 'heart' ? 0 : 3;
-                this.targetSize = type === 'heart' ? Math.random() * 20 + 15 : 3;
-                this.speedX = (Math.random() - 0.5) * 5;
-                this.speedY = (Math.random() - 0.5) * 5;
+                this.opacity = 1; this.size = type === 'heart' ? 0 : 3;
+                this.targetSize = type === 'heart' ? Math.random() * 20 + 10 : 3;
+                this.speedX = (Math.random() - 0.5) * 5; this.speedY = (Math.random() - 0.5) * 5;
             }
             update() {
                 this.x += this.speedX; this.y += this.speedY;
-                this.speedX *= 0.98; this.speedY *= 0.98;
-                if (this.type === 'heart' && this.size < this.targetSize) this.size += 1.2;
-                this.opacity -= 0.008;
+                if (this.type === 'heart' && this.size < this.targetSize) this.size += 1.5;
+                this.opacity -= 0.01;
             }
-            draw() {
+            draw(ctx) {
                 ctx.save(); ctx.globalAlpha = this.opacity; ctx.fillStyle = this.color;
                 if (this.type === 'heart') {
-                    const s = this.size; ctx.beginPath();
-                    ctx.moveTo(this.x, this.y);
-                    ctx.bezierCurveTo(this.x, this.y - s/2, this.x - s, this.y - s/2, this.x - s, this.y);
-                    ctx.bezierCurveTo(this.x - s, this.y + s, this.x, this.y + s*1.5, this.x, this.y + s*1.8);
-                    ctx.bezierCurveTo(this.x, this.y + s*1.5, this.x + s, this.y + s, this.x + s, this.y);
-                    ctx.bezierCurveTo(this.x + s, this.y - s/2, this.x, this.y - s/2, this.x, this.y);
-                    ctx.fill();
-                } else {
-                    ctx.beginPath(); ctx.arc(this.x, this.y, this.size, 0, Math.PI*2); ctx.fill();
-                }
+                    const s = this.size; ctx.beginPath(); ctx.moveTo(this.x, this.y);
+                    ctx.bezierCurveTo(this.x, this.y-s/2, this.x-s, this.y-s/2, this.x-s, this.y);
+                    ctx.bezierCurveTo(this.x-s, this.y+s, this.x, this.y+s*1.5, this.x, this.y+s*1.8);
+                    ctx.bezierCurveTo(this.x, this.y+s*1.5, this.x+s, this.y+s, this.x+s, this.y);
+                    ctx.bezierCurveTo(this.x+s, this.y-s/2, this.x, this.y-s/2, this.x, this.y); ctx.fill();
+                } else { ctx.beginPath(); ctx.arc(this.x, this.y, this.size, 0, Math.PI*2); ctx.fill(); }
                 ctx.restore();
             }
         }
 
+        function explode(x, y, color) {
+            for(let i=0; i<12; i++) particles.push(new Particle(x, y, color, 'heart'));
+        }
+
         function animate() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctxBg.clearRect(0, 0, canvasBg.width, canvasBg.height);
             particles.forEach((p, i) => {
-                p.update(); p.draw();
+                p.update(); p.draw(ctxBg);
                 if (p.opacity <= 0) particles.splice(i, 1);
             });
             requestAnimationFrame(animate);
         }
         animate();
 
-        // Corações nas bordas
         setInterval(() => {
             const side = Math.floor(Math.random() * 4);
             let x, y;
-            if (side === 0) { x = 30; y = Math.random() * canvas.height; }
-            else if (side === 1) { x = canvas.width - 30; y = Math.random() * canvas.height; }
-            else if (side === 2) { x = Math.random() * canvas.width; y = 30; }
-            else { x = Math.random() * canvas.width; y = canvas.height - 30; }
-            for(let i=0; i<2; i++) particles.push(new Particle(x, y, '#a255ff', 'heart'));
-        }, 600);
+            if (side === 0) { x = 30; y = Math.random() * canvasBg.height; }
+            else if (side === 1) { x = canvasBg.width - 30; y = Math.random() * canvasBg.height; }
+            else if (side === 2) { x = Math.random() * canvasBg.width; y = 30; }
+            else { x = Math.random() * canvasBg.width; y = canvasBg.height - 30; }
+            explode(x, y, Math.random() > 0.5 ? '#a255ff' : '#00e5ff');
+        }, 800);
 
-        // Toque de luz
         window.addEventListener('mousemove', (e) => {
             for(let i=0; i<2; i++) particles.push(new Particle(e.clientX, e.clientY, '#ffffff', 'light'));
         });
-        window.addEventListener('touchmove', (e) => {
-            const touch = e.touches[0];
-            for(let i=0; i<2; i++) particles.push(new Particle(touch.clientX, touch.clientY, '#ffffff', 'light'));
+
+        // DIGITAÇÃO PÁGINA 1
+        const texto1 = "Pensei em mil formas de te dar algo único. Então, construí este lugar. Cada linha, cada cor e cada efeito foi colocado aqui pensando em você. Toque para descobrir.";
+        let charIdx = 0;
+        function type() {
+            if (charIdx < texto1.length) {
+                document.getElementById('typing-text').innerHTML = texto1.substring(0, charIdx + 1) + '<span style="color:var(--cor-azul)">|</span>';
+                charIdx++; setTimeout(type, 40);
+            } else { document.getElementById('btn-to-page2').classList.add('show'); }
+        }
+        setTimeout(type, 2000);
+
+        // TRANSIÇÃO BORRACHA
+        document.getElementById('btn-to-page2').addEventListener('click', () => {
+            canvasTrans.style.display = 'block';
+            ctxTrans.fillStyle = '#0f051a';
+            ctxTrans.fillRect(0, 0, canvasTrans.width, canvasTrans.height);
+            
+            document.getElementById('page1').style.display = 'none';
+            document.getElementById('page2').style.display = 'flex';
+            setTimeout(() => { document.getElementById('page2').style.opacity = '1'; }, 100);
+
+            eraserTool.style.display = 'block';
+            let x = 0, y = 0, step = 70, dir = 1;
+
+            function autoErase() {
+                ctxTrans.globalCompositeOperation = 'destination-out';
+                ctxTrans.beginPath(); ctxTrans.arc(x, y, 100, 0, Math.PI*2); ctxTrans.fill();
+                eraserTool.style.left = (x - 50) + 'px';
+                eraserTool.style.top = (y - 25) + 'px';
+                x += step * dir;
+                if(x > canvasTrans.width || x < 0) { dir *= -1; y += 90; }
+                if(y < canvasTrans.height + 100) requestAnimationFrame(autoErase);
+                else { canvasTrans.style.display = 'none'; eraserTool.style.display = 'none'; }
+            }
+            autoErase();
         });
 
+        // LÓGICA DO BAÚ
+        let bauClicks = 0;
+        const bau = document.getElementById('bau-click');
+        bau.addEventListener('click', () => {
+            bauClicks++;
+            bau.style.transform = `scale(${1 + bauClicks * 0.08}) rotate(${bauClicks % 2 == 0 ? 5 : -5}deg)`;
+            explode(window.innerWidth/2, window.innerHeight/2, '#a255ff');
+
+            if(bauClicks >= 8) {
+                document.getElementById('bau-container').style.display = 'none';
+                const photoArea = document.getElementById('photo-area');
+                photoArea.style.display = 'flex';
+                setTimeout(() => { photoArea.style.opacity = '1'; }, 100);
+                updatePhoto();
+            }
+        });
+
+        // SISTEMA DE FOTOS
+        function updatePhoto() {
+            if(currentPhoto < 15) {
+                const img = document.getElementById('img-display');
+                img.src = `fotos/linda${currentPhoto + 1}.jpg`;
+                document.getElementById('legenda-display').innerText = legendas[currentPhoto];
+                explode(window.innerWidth/2, window.innerHeight/2, '#00e5ff');
+            } else {
+                document.getElementById('photo-area').innerHTML = "<h1>És o meu tudo! ❤️</h1>";
+            }
+        }
+
+        document.getElementById('btn-next-photo').addEventListener('click', () => {
+            currentPhoto++;
+            updatePhoto();
+        });
     </script>
 </body>
     </html>
-
-                
+    
