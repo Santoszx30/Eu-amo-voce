@@ -11,45 +11,43 @@
         body, html { 
             margin: 0; padding: 0; width: 100%; height: 100%; 
             overflow: hidden; font-family: 'Poppins', sans-serif; 
-            background: #0f051a; /* Cor base para evitar flashes */
+            background: #0f051a;
             background: linear-gradient(-45deg, #0f051a, #0a1a2e, #1a0515, #0a1a2e); 
             background-size: 400% 400%; 
             animation: gradientBG 15s ease infinite; 
         }
         
-        @keyframes gradientBG { 
-            0% { background-position: 0% 50%; } 
-            50% { background-position: 100% 50%; } 
-            100% { background-position: 0% 50%; } 
-        }
+        @keyframes gradientBG { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
 
-        /* Melhora performance de renderização */
-        canvas { 
-            position: fixed; top: 0; left: 0; z-index: 1; 
-            pointer-events: none; 
-            transform: translateZ(0); 
-            backface-visibility: hidden;
-        }
-
+        canvas { position: fixed; top: 0; left: 0; z-index: 1; pointer-events: none; transform: translateZ(0); }
         #canvas-transition { z-index: 20; display: none; }
-        #eraser-tool { position: fixed; width: 100px; height: 50px; background: #f08080; border-radius: 8px; border-bottom: 6px solid #cd5c5c; z-index: 100; display: none; pointer-events: none; box-shadow: 0 5px 15px rgba(0,0,0,0.5); }
+        #eraser-tool { position: fixed; width: 120px; height: 60px; background: #f08080; border-radius: 8px; border-bottom: 8px solid #cd5c5c; z-index: 100; display: none; pointer-events: none; box-shadow: 0 5px 20px rgba(0,0,0,0.6); }
         
         .page { position: absolute; width: 100%; height: 100%; display: flex; justify-content: center; align-items: center; z-index: 10; transition: opacity 0.8s ease-in-out; }
-        .container { text-align: center; color: white; padding: 20px; width: 90%; max-width: 900px; }
+        .container { text-align: center; color: white; padding: 20px; width: 95%; max-width: 1000px; }
         
-        h1, .final-msg { font-family: 'Great Vibes', cursive; font-size: clamp(3.5rem, 10vw, 6rem); margin-bottom: 30px; color: #f0eaff; text-shadow: 0 0 30px var(--cor-roxo); }
-        #typing-text { font-size: clamp(1.2rem, 4vw, 2rem); line-height: 1.6; min-height: 120px; }
+        h1, .final-msg { font-family: 'Great Vibes', cursive; font-size: clamp(4rem, 12vw, 7.5rem); margin-bottom: 30px; color: #f0eaff; text-shadow: 0 0 40px var(--cor-roxo); }
+        #typing-text, .legenda { font-size: clamp(1.6rem, 5vw, 2.5rem); line-height: 1.5; min-height: 140px; font-weight: 300; }
         
-        .btn-next { margin-top: 30px; padding: 15px 40px; background: transparent; border: 2px solid var(--cor-azul); color: white; border-radius: 50px; cursor: pointer; font-size: 1.2rem; opacity: 0; transition: 0.5s; box-shadow: 0 0 15px var(--cor-azul); pointer-events: none; }
-        .btn-next.show { opacity: 1; pointer-events: auto; }
+        .btn-next { 
+            margin-top: 40px; padding: 20px 50px; background: transparent; 
+            border: 2px solid var(--cor-azul); color: white; border-radius: 60px; 
+            cursor: pointer; font-size: 1.5rem; opacity: 0; transition: 0.5s; 
+            box-shadow: 0 0 20px var(--cor-azul); pointer-events: none; 
+            visibility: hidden;
+        }
+        .btn-next.show { opacity: 1; pointer-events: auto; visibility: visible; }
         
         #page2 { display: none; opacity: 0; }
-        .bau-tesouro { font-size: clamp(80px, 20vw, 150px); cursor: pointer; filter: drop-shadow(0 0 20px var(--cor-roxo)); transition: transform 0.2s; user-select: none; }
-        .frase-bau { font-family: 'Great Vibes', cursive; font-size: clamp(1.8rem, 5vw, 2.8rem); margin-top: 60px; color: var(--cor-azul); text-shadow: 0 0 10px var(--cor-azul); }
+        .bau-tesouro { font-size: clamp(120px, 30vw, 220px); cursor: pointer; filter: drop-shadow(0 0 30px var(--cor-roxo)); transition: transform 0.2s; user-select: none; }
+        .frase-bau { font-family: 'Great Vibes', cursive; font-size: clamp(2.5rem, 6vw, 3.5rem); margin-top: 80px; color: var(--cor-azul); text-shadow: 0 0 15px var(--cor-azul); }
         
-        #photo-area { display: none; flex-direction: column; align-items: center; transition: opacity 0.5s ease-in-out; }
-        .foto-moldura { width: clamp(250px, 50vw, 400px); height: auto; border: 12px solid white; box-shadow: 0 15px 40px rgba(0,0,0,0.6); border-radius: 4px; }
-        .legenda { font-size: clamp(1rem, 3vw, 1.4rem); margin-top: 20px; font-style: italic; color: #e0d5ff; max-width: 600px; min-height: 3em; }
+        #photo-area { display: none; flex-direction: column; align-items: center; }
+        .foto-moldura { width: clamp(300px, 65vw, 550px); height: auto; border: 15px solid white; box-shadow: 0 20px 50px rgba(0,0,0,0.7); border-radius: 4px; transition: opacity 0.5s; }
+        .legenda { margin-top: 30px; font-style: italic; color: #e0d5ff; max-width: 800px; }
+        
+        .cursor { color: var(--cor-azul); animation: blink 0.8s infinite; }
+        @keyframes blink { 50% { opacity: 0; } }
     </style>
 </head>
 <body>
@@ -73,11 +71,9 @@
         </div>
 
         <div id="photo-area" class="container">
-            <div id="fade-wrapper" style="transition: opacity 0.5s;">
-                <img src="" id="img-display" class="foto-moldura">
-                <p id="legenda-display" class="legenda"></p>
-            </div>
-            <button id="btn-next-photo" class="btn-next show" style="opacity:1; pointer-events:auto;">Próxima ❤️</button>
+            <img src="" id="img-display" class="foto-moldura">
+            <div id="legenda-display" class="legenda"></div>
+            <button id="btn-next-photo" class="btn-next">Próxima ❤️</button>
         </div>
     </section>
 
@@ -87,7 +83,6 @@
         const canvasTrans = document.getElementById('canvas-transition');
         const ctxTrans = canvasTrans.getContext('2d');
         const eraserTool = document.getElementById('eraser-tool');
-        const fadeWrapper = document.getElementById('fade-wrapper');
         
         const legendas = [
             "Existem belezas que cansam os olhos, mas a sua... a sua descansa a minha alma.",
@@ -109,7 +104,7 @@
 
         let currentPhoto = 0;
         let particles = [];
-        const MAX_PARTICLES = 100; // Evita travamentos limitando o número de objetos
+        const MAX_PARTICLES = 120;
 
         function resize() {
             canvasBg.width = canvasTrans.width = window.innerWidth;
@@ -122,16 +117,15 @@
             constructor(x, y, color, type) {
                 this.x = x; this.y = y; this.type = type; this.color = color;
                 this.opacity = 1; 
-                this.size = type === 'heart' ? 2 : 2;
-                this.targetSize = type === 'heart' ? Math.random() * 12 + 10 : 3;
-                this.vx = (Math.random() - 0.5) * 3;
-                this.vy = (Math.random() - 0.5) * 3;
+                this.size = type === 'heart' ? 3 : 2; // Corações maiores
+                this.targetSize = type === 'heart' ? Math.random() * 18 + 15 : 4;
+                this.vx = (Math.random() - 0.5) * 3.5;
+                this.vy = (Math.random() - 0.5) * 3.5;
             }
             update() {
-                this.x += this.vx; 
-                this.y += this.vy;
-                if (this.type === 'heart' && this.size < this.targetSize) this.size += 0.5;
-                this.opacity -= 0.012;
+                this.x += this.vx; this.y += this.vy;
+                if (this.type === 'heart' && this.size < this.targetSize) this.size += 0.6;
+                this.opacity -= 0.01;
             }
             draw() {
                 ctxBg.globalAlpha = this.opacity;
@@ -139,7 +133,6 @@
                 if (this.type === 'heart') {
                     const s = this.size;
                     ctxBg.beginPath();
-                    // Desenho otimizado do coração
                     ctxBg.moveTo(this.x, this.y);
                     ctxBg.bezierCurveTo(this.x, this.y-s/1.5, this.x-s, this.y-s/1.5, this.x-s, this.y);
                     ctxBg.bezierCurveTo(this.x-s, this.y+s/1.5, this.x, this.y+s, this.x, this.y+s*1.3);
@@ -147,58 +140,53 @@
                     ctxBg.bezierCurveTo(this.x+s, this.y-s/1.5, this.x, this.y-s/1.5, this.x, this.y);
                     ctxBg.fill();
                 } else {
-                    ctxBg.beginPath(); 
-                    ctxBg.arc(this.x, this.y, this.size, 0, Math.PI*2); 
-                    ctxBg.fill();
+                    ctxBg.beginPath(); ctxBg.arc(this.x, this.y, this.size, 0, Math.PI*2); ctxBg.fill();
                 }
             }
         }
 
         function animate() {
-            // Limpeza rápida do canvas
             ctxBg.clearRect(0, 0, canvasBg.width, canvasBg.height);
-            
             for(let i = particles.length - 1; i >= 0; i--) {
-                const p = particles[i];
-                p.update();
-                p.draw();
-                if(p.opacity <= 0) particles.splice(i, 1);
+                particles[i].update();
+                particles[i].draw();
+                if(particles[i].opacity <= 0) particles.splice(i, 1);
             }
             requestAnimationFrame(animate);
         }
         animate();
 
         function explode(x, y) {
-            if (particles.length > MAX_PARTICLES) return; // Proteção contra lag
             const colors = ['#a255ff', '#00e5ff', '#ffffff'];
-            for(let i=0; i<8; i++) {
-                particles.push(new Particle(x, y, colors[Math.floor(Math.random()*3)], 'heart'));
-            }
+            for(let i=0; i<12; i++) particles.push(new Particle(x, y, colors[Math.floor(Math.random()*3)], 'heart'));
         }
 
-        // Corações ambiente mais espaçados para performance
-        setInterval(() => {
-            explode(Math.random()*canvasBg.width, Math.random() < 0.5 ? 20 : canvasBg.height-20);
-        }, 1000);
-
-        window.addEventListener('mousemove', (e) => {
-            if (particles.length < MAX_PARTICLES) {
-                particles.push(new Particle(e.clientX, e.clientY, '#ffffff', 'light'));
+        function typeEffect(element, text, button, callback) {
+            let i = 0;
+            button.classList.remove('show');
+            element.innerHTML = "";
+            function step() {
+                if (i < text.length) {
+                    element.innerHTML = text.substring(0, i + 1) + '<span class="cursor">|</span>';
+                    i++;
+                    setTimeout(step, 45);
+                } else {
+                    element.innerHTML = text; // Remove o cursor no fim
+                    button.classList.add('show');
+                    if (callback) callback();
+                }
             }
-        });
-
-        // PÁGINA 1 - Digitação
-        let charIdx = 0;
-        const texto1 = "Pensei em mil formas de te dar algo único. Então, construí este lugar. Cada linha, cada cor e cada efeito foi colocado aqui pensando em você. Toque para descobrir.";
-        function type() {
-            if (charIdx < texto1.length) {
-                document.getElementById('typing-text').innerHTML = texto1.substring(0, charIdx+1) + '<span style="color:var(--cor-azul)">|</span>';
-                charIdx++; setTimeout(type, 40);
-            } else { document.getElementById('btn-to-page2').classList.add('show'); }
+            step();
         }
-        setTimeout(type, 2000);
 
-        // TRANSIÇÃO BORRACHA
+        // PÁGINA 1
+        setTimeout(() => {
+            typeEffect(document.getElementById('typing-text'), 
+            "Pensei em mil formas de te dar algo único. Então, construí este lugar. Cada linha, cada cor e cada efeito foi colocado aqui pensando em você. Toque para descobrir.", 
+            document.getElementById('btn-to-page2'));
+        }, 1500);
+
+        // TRANSIÇÃO
         document.getElementById('btn-to-page2').addEventListener('click', function() {
             canvasTrans.style.display = 'block';
             ctxTrans.fillStyle = '#0f051a';
@@ -208,15 +196,14 @@
             setTimeout(() => document.getElementById('page2').style.opacity = '1', 100);
             
             eraserTool.style.display = 'block';
-            let x=0, y=0, step=85, dir=1;
-            
+            let x=0, y=0, step=90, dir=1;
             function autoErase() {
                 ctxTrans.globalCompositeOperation = 'destination-out';
-                ctxTrans.beginPath(); ctxTrans.arc(x, y, 110, 0, Math.PI*2); ctxTrans.fill();
-                eraserTool.style.left = (x-50)+'px'; eraserTool.style.top = (y-25)+'px';
+                ctxTrans.beginPath(); ctxTrans.arc(x, y, 130, 0, Math.PI*2); ctxTrans.fill();
+                eraserTool.style.left = (x-60)+'px'; eraserTool.style.top = (y-30)+'px';
                 x += step * dir;
-                if(x > canvasTrans.width || x < 0) { dir *= -1; y += 100; }
-                if(y < canvasTrans.height+120) requestAnimationFrame(autoErase);
+                if(x > canvasTrans.width || x < 0) { dir *= -1; y += 110; }
+                if(y < canvasTrans.height+150) requestAnimationFrame(autoErase);
                 else { canvasTrans.style.display = 'none'; eraserTool.style.display = 'none'; }
             }
             autoErase();
@@ -226,30 +213,33 @@
         let bauClicks = 0;
         document.getElementById('bau-click').addEventListener('click', function() {
             bauClicks++;
-            this.style.transform = `scale(${1 + bauClicks*0.1}) rotate(${bauClicks%2==0?5:-5}deg)`;
+            this.style.transform = `scale(${1 + bauClicks*0.12}) rotate(${bauClicks%2==0?7:-7}deg)`;
             explode(window.innerWidth/2, window.innerHeight/2);
             if(bauClicks >= 8) {
                 document.getElementById('bau-container').style.display = 'none';
                 document.getElementById('photo-area').style.display = 'flex';
-                setTimeout(() => document.getElementById('photo-area').style.opacity = '1', 100);
                 updatePhoto();
             }
         });
 
-        // FOTOS COM FADE
+        // SISTEMA DE FOTOS
         function updatePhoto() {
+            const img = document.getElementById('img-display');
+            const legendaArea = document.getElementById('legenda-display');
+            const nextBtn = document.getElementById('btn-next-photo');
+
             if(currentPhoto < 15) {
-                fadeWrapper.style.opacity = 0;
+                img.style.opacity = 0;
                 setTimeout(() => {
-                    document.getElementById('img-display').src = `fotos/linda${currentPhoto + 1}.jpg`;
-                    document.getElementById('legenda-display').innerText = legendas[currentPhoto];
-                    fadeWrapper.style.opacity = 1;
+                    img.src = `fotos/linda${currentPhoto + 1}.jpg`;
+                    img.style.opacity = 1;
                     explode(window.innerWidth/2, window.innerHeight/2);
+                    typeEffect(legendaArea, legendas[currentPhoto], nextBtn);
                 }, 500);
             } else {
                 document.getElementById('photo-area').innerHTML = `
                     <h1 class="final-msg">Você é tudo para mim 💜</h1>
-                    <button class="btn-next show" style="opacity:1; pointer-events:auto;" onclick="window.location.href='proxima_pagina.html'">Continuar Jornada ✨</button>
+                    <button class="btn-next show" style="opacity:1; pointer-events:auto;" onclick="window.location.href='proxima.html'">Continuar Jornada ✨</button>
                 `;
             }
         }
@@ -258,7 +248,9 @@
             currentPhoto++;
             updatePhoto();
         });
+
+        setInterval(() => explode(Math.random()*canvasBg.width, Math.random()*canvasBg.height), 1500);
+        window.addEventListener('mousemove', (e) => particles.push(new Particle(e.clientX, e.clientY, '#ffffff', 'light')));
     </script>
 </body>
-    </html>
-                
+</html>
