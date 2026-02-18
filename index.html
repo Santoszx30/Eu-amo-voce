@@ -261,11 +261,21 @@
                         typeEffect(document.getElementById('legenda-display'), legendas[currentPhoto], document.getElementById('btn-next-photo'));
                     }, 400);
                 };
-            } else {
-                document.getElementById('photo-area').innerHTML = `<h1 class="final-msg">Você é tudo para mim 💜</h1><button class="btn-next show" style="opacity:1; pointer-events:auto;" onclick="irParaQuiz()">Ir para o Quiz ✨</button>`;
-            }
+            // Substitua o 'else' da função updatePhoto por este:
+} else {
+    document.getElementById('photo-area').innerHTML = `
+        <h1 class="final-msg">Você é tudo para mim 💜</h1>
+        <div id="intro-quiz-text" class="legenda" style="min-height: 100px; margin-bottom: 20px;"></div>
+        <button id="btn-start-quiz" class="btn-next">Estou Pronta! ✨</button>
+    `;
+    
+    const introTexto = "Agora, um pequeno desafio... Preparei um quiz para ver se você presta atenção nos nossos detalhes. Acerte para provar que é a dona do meu coração! (Dica: sua nota define meu nível de carinho hoje 👀)";
+    
+    typeEffect(document.getElementById('intro-quiz-text'), introTexto, document.getElementById('btn-start-quiz'), () => {
+        document.getElementById('btn-start-quiz').onclick = irParaQuiz;
+    });
         }
-        document.getElementById('btn-next-photo').addEventListener('click', () => { currentPhoto++; updatePhoto(); });
+        
 
         function irParaQuiz() {
             document.getElementById('page2').style.display = 'none'; document.getElementById('page3').style.display = 'flex';
@@ -273,6 +283,8 @@
         }
 
         let ptAtual = 0;
+let acertos = 0; // Adicionamos o contador aqui
+
 function mostrarPergunta() {
     const data = perguntas[ptAtual];
     document.getElementById('quiz-progresso').innerText = `Pergunta ${ptAtual + 1} de ${perguntas.length}`;
@@ -285,11 +297,10 @@ function mostrarPergunta() {
             btn.className = 'btn-quiz';
             btn.innerText = opt;
             
-            // Define de qual lado o botão vem (intercalado)
+            // Entrada intercalada
             btn.classList.add(idx % 2 === 0 ? 'sair-esquerda' : 'sair-direita');
             box.appendChild(btn);
 
-            // Pequeno delay para eles entrarem um por um
             setTimeout(() => {
                 btn.classList.remove('sair-esquerda', 'sair-direita');
             }, 100 * idx);
@@ -298,15 +309,16 @@ function mostrarPergunta() {
                 const botoes = document.querySelectorAll('.btn-quiz');
                 botoes.forEach(b => b.style.pointerEvents = 'none');
 
-                // Lógica de acerto/erro
+                // Lógica de acerto/erro com contador
                 if(idx === data.resp) { 
                     btn.classList.add('correto'); 
+                    acertos++; // <--- Contando o acerto
                     explode(window.innerWidth/2, window.innerHeight/2); 
                 } else { 
                     btn.classList.add('errado'); 
                 }
 
-                // Espera um pouco e faz sumir intercalado
+                // Saída intercalada
                 setTimeout(() => {
                     botoes.forEach((b, i) => {
                         b.classList.add(i % 2 === 0 ? 'sair-esquerda' : 'sair-direita');
@@ -317,14 +329,42 @@ function mostrarPergunta() {
                         if(ptAtual < perguntas.length) {
                             mostrarPergunta();
                         } else {
-                            document.getElementById('page3').innerHTML = "<h1>Parabéns meu amor! ❤️</h1>";
+                            // Chama a função de resultado que criamos
+                            exibirResultadoFinal();
                         }
-                    }, 600); // Tempo da animação de saída
+                    }, 600);
                 }, 1000);
             };
         });
     });
+}
+
+function exibirResultadoFinal() {
+    const total = perguntas.length;
+    const erros = total - acertos;
+    let classificacao = "";
+    
+    // Suas frases de classificação
+    if (acertos <= 3) classificacao = "Você não me ama 😔";
+    else if (acertos <= 6) classificacao = "Foi bem, mas podia me conhecer melhor né chata? 🙄";
+    else classificacao = "Você foi muito bem amorzinho, a melhor namorada do mundo 💜";
+
+    document.getElementById('page3').innerHTML = `
+        <div class="container">
+            <h1 class="final-msg" style="font-size: 3.5rem;">Resultado</h1>
+            <div class="legenda" style="font-size: 1.8rem; margin-bottom: 20px;">
+                Acertos: ${acertos} | Erros: ${erros}<br><br>
+                <span style="color: var(--cor-rosa); font-weight: bold;">${classificacao}</span>
+            </div>
+            <button class="btn-next show" style="opacity:1; pointer-events:auto;" onclick="location.reload()">Recomeçar ❤️</button>
+        </div>
+    `;
+    
+    // Chuva de corações e laços infinita no final
+    initLacinhos(); 
+    setInterval(() => explode(Math.random()*window.innerWidth, Math.random()*window.innerHeight), 500);
         }
+        
         
 
         const lacinhosArr = [];
