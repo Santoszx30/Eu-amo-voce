@@ -21,7 +21,7 @@
 
         canvas { position: fixed; top: 0; left: 0; z-index: 1; pointer-events: none; transform: translateZ(0); }
         #canvas-transition { z-index: 20; display: none; }
-        #eraser-tool { position: fixed; width: 120px; height: 60px; background: #f08080; border-radius: 8px; border-bottom: 8px solid #cd5c5c; z-index: 100; display: none; pointer-events: none; box-shadow: 0 5px 20px rgba(0,0,0,0.6); }
+        #eraser-tool { position: fixed; width: 130px; height: 65px; background: #f08080; border-radius: 8px; border-bottom: 8px solid #cd5c5c; z-index: 100; display: none; pointer-events: none; box-shadow: 0 5px 20px rgba(0,0,0,0.6); }
         
         .page { position: absolute; width: 100%; height: 100%; display: flex; justify-content: center; align-items: center; z-index: 10; transition: opacity 0.8s ease-in-out; }
         .container { text-align: center; color: white; padding: 20px; width: 95%; max-width: 1000px; }
@@ -43,7 +43,7 @@
         .frase-bau { font-family: 'Great Vibes', cursive; font-size: clamp(2.5rem, 6vw, 3.5rem); margin-top: 80px; color: var(--cor-azul); text-shadow: 0 0 15px var(--cor-azul); }
         
         #photo-area { display: none; flex-direction: column; align-items: center; }
-        .foto-moldura { width: clamp(300px, 65vw, 550px); height: auto; border: 15px solid white; box-shadow: 0 20px 50px rgba(0,0,0,0.7); border-radius: 4px; transition: opacity 0.5s; }
+        .foto-moldura { width: clamp(300px, 65vw, 550px); height: auto; border: 15px solid white; box-shadow: 0 20px 50px rgba(0,0,0,0.7); border-radius: 4px; transition: opacity 0.6s ease-in-out; opacity: 0; }
         .legenda { margin-top: 30px; font-style: italic; color: #e0d5ff; max-width: 800px; }
         
         .cursor { color: var(--cor-azul); animation: blink 0.8s infinite; }
@@ -97,8 +97,8 @@
             "Existe uma força em você que me incendeia e me domina sem esforço.",
             "O som da sua risada é o meu refúgio favorito.",
             "Dizem que o mundo dela é rosa, mas o meu mundo é você!",
-            "Não sei quem é mais fofa, você ou a Hello Kitty.",
-            "Eu te admiro por ser exatamente quem você é, de todas as formas.",
+            "Você tem esse brilho icônico e esse charme que me faz pensar: a Hello Kitty teria inveja de tanta fofura.",
+            "Não é só o laço ou as cores, é esse seu jeito doce e marcante que te faz a minha Hello Kitty da vida real.",
             "Se o paraíso existisse, ele teria o formato exato desse seu sorriso definitivo."
         ];
 
@@ -117,10 +117,10 @@
             constructor(x, y, color, type) {
                 this.x = x; this.y = y; this.type = type; this.color = color;
                 this.opacity = 1; 
-                this.size = type === 'heart' ? 3 : 2; // Corações maiores
-                this.targetSize = type === 'heart' ? Math.random() * 18 + 15 : 4;
-                this.vx = (Math.random() - 0.5) * 3.5;
-                this.vy = (Math.random() - 0.5) * 3.5;
+                this.size = type === 'heart' ? 4 : 2; 
+                this.targetSize = type === 'heart' ? Math.random() * 20 + 15 : 4;
+                this.vx = (Math.random() - 0.5) * 4;
+                this.vy = (Math.random() - 0.5) * 4;
             }
             update() {
                 this.x += this.vx; this.y += this.vy;
@@ -158,7 +158,7 @@
 
         function explode(x, y) {
             const colors = ['#a255ff', '#00e5ff', '#ffffff'];
-            for(let i=0; i<12; i++) particles.push(new Particle(x, y, colors[Math.floor(Math.random()*3)], 'heart'));
+            for(let i=0; i<15; i++) particles.push(new Particle(x, y, colors[Math.floor(Math.random()*3)], 'heart'));
         }
 
         function typeEffect(element, text, button, callback) {
@@ -171,7 +171,7 @@
                     i++;
                     setTimeout(step, 45);
                 } else {
-                    element.innerHTML = text; // Remove o cursor no fim
+                    element.innerHTML = text;
                     button.classList.add('show');
                     if (callback) callback();
                 }
@@ -196,11 +196,11 @@
             setTimeout(() => document.getElementById('page2').style.opacity = '1', 100);
             
             eraserTool.style.display = 'block';
-            let x=0, y=0, step=90, dir=1;
+            let x=0, y=0, step=100, dir=1;
             function autoErase() {
                 ctxTrans.globalCompositeOperation = 'destination-out';
-                ctxTrans.beginPath(); ctxTrans.arc(x, y, 130, 0, Math.PI*2); ctxTrans.fill();
-                eraserTool.style.left = (x-60)+'px'; eraserTool.style.top = (y-30)+'px';
+                ctxTrans.beginPath(); ctxTrans.arc(x, y, 140, 0, Math.PI*2); ctxTrans.fill();
+                eraserTool.style.left = (x-65)+'px'; eraserTool.style.top = (y-32)+'px';
                 x += step * dir;
                 if(x > canvasTrans.width || x < 0) { dir *= -1; y += 110; }
                 if(y < canvasTrans.height+150) requestAnimationFrame(autoErase);
@@ -222,20 +222,28 @@
             }
         });
 
-        // SISTEMA DE FOTOS
+        // SISTEMA DE FOTOS SEM PISCAR
         function updatePhoto() {
             const img = document.getElementById('img-display');
             const legendaArea = document.getElementById('legenda-display');
             const nextBtn = document.getElementById('btn-next-photo');
 
             if(currentPhoto < 15) {
+                // 1. Esconde a imagem atual suavemente
                 img.style.opacity = 0;
-                setTimeout(() => {
-                    img.src = `fotos/linda${currentPhoto + 1}.jpg`;
-                    img.style.opacity = 1;
-                    explode(window.innerWidth/2, window.innerHeight/2);
-                    typeEffect(legendaArea, legendas[currentPhoto], nextBtn);
-                }, 500);
+                
+                // 2. Pre-carregamento da próxima imagem
+                const tempImg = new Image();
+                tempImg.src = `fotos/linda${currentPhoto + 1}.jpg`;
+                
+                tempImg.onload = () => {
+                    setTimeout(() => {
+                        img.src = tempImg.src;
+                        img.style.opacity = 1;
+                        explode(window.innerWidth/2, window.innerHeight/2);
+                        typeEffect(legendaArea, legendas[currentPhoto], nextBtn);
+                    }, 400); // Pequeno atraso para o fade-out completar
+                };
             } else {
                 document.getElementById('photo-area').innerHTML = `
                     <h1 class="final-msg">Você é tudo para mim 💜</h1>
@@ -249,8 +257,9 @@
             updatePhoto();
         });
 
-        setInterval(() => explode(Math.random()*canvasBg.width, Math.random()*canvasBg.height), 1500);
+        setInterval(() => explode(Math.random()*canvasBg.width, Math.random()*canvasBg.height), 2000);
         window.addEventListener('mousemove', (e) => particles.push(new Particle(e.clientX, e.clientY, '#ffffff', 'light')));
     </script>
 </body>
-</html>
+    </html>
+    
