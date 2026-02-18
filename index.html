@@ -39,14 +39,26 @@
         
         .correto { background: #2ecc71 !important; }
         .errado { background: #e74c3c !important; }
-         .sair-esquerda { transform: translateX(-150vw) rotate(-15deg); opacity: 0; }
-        .sair-direita { transform: translateX(150vw) rotate(15deg); opacity: 0; }
-        
-        /* Certifique-se que o btn-quiz tem a transição configurada */
-        .btn-quiz { 
-            /* ... seus outros estilos ... */
-            transition: transform 0.6s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.5s, background 0.3s; 
-        }
+         .btn-quiz { 
+    padding: 18px; 
+    font-size: 1.2rem; 
+    font-weight: 600; 
+    background: rgba(255, 255, 255, 0.05); 
+    border: 2px solid rgba(255, 255, 255, 0.2); 
+    color: white; 
+    border-radius: 20px; 
+    cursor: pointer; 
+    /* Use 'transform' em vez de 'all' para economizar CPU */
+    transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.4s, background 0.3s;
+    will-change: transform, opacity; 
+}
+
+.sair-esquerda { transform: translate3d(-100vw, 0, 0) rotate(-10deg); opacity: 0; }
+.sair-direita { transform: translate3d(100vw, 0, 0) rotate(10deg); opacity: 0; }
+
+/* Dica de ouro: remova o backdrop-filter se o lag persistir no celular */
+.container { backdrop-filter: none; background: rgba(0, 0, 0, 0.6); }
+                   
         
         .lacinho { position: fixed; font-size: 25px; pointer-events: none; z-index: 2; display: block; user-select: none; opacity: 0.7; }
         .cursor { color: var(--cor-azul); animation: blink 0.8s infinite; }
@@ -200,21 +212,59 @@
             }
         }
 
-        function animate() {
+                function animate() {
             ctxBg.clearRect(0, 0, canvasBg.width, canvasBg.height);
-            for(let i = particles.length - 1; i >= 0; i--) { particles[i].update(); particles[i].draw(); if(particles[i].opacity <= 0) particles.splice(i, 1); }
-            for(let i = glitterArray.length - 1; i >= 0; i--) { glitterArray[i].update(); glitterArray[i].draw(); if(glitterArray[i].opacity <= 0) glitterArray.splice(i, 1); }
+            
+            // Limite de segurança para não travar: máximo 100 partículas de cada
+            if (particles.length > 100) particles.shift();
+            if (glitterArray.length > 100) glitterArray.shift();
+
+            for(let i = particles.length - 1; i >= 0; i--) { 
+                particles[i].update(); 
+                particles[i].draw(); 
+                if(particles[i].opacity <= 0) particles.splice(i, 1); 
+            }
+
+            for(let i = glitterArray.length - 1; i >= 0; i--) {
+                glitterArray[i].update();
+                glitterArray[i].draw();
+                if (glitterArray[i].opacity <= 0) glitterArray.splice(i, 1);
+            }
+            
             requestAnimationFrame(animate);
         }
-        animate();
+        
 
         function explode(x, y) {
             const colors = ['#a255ff', '#00e5ff', '#ffffff', '#ff7eb9'];
             for(let i=0; i<12; i++) particles.push(new Particle(x, y, colors[Math.floor(Math.random()*colors.length)], 'heart'));
         }
+        // Substitui a lógica de movimento por esta (mais leve):
+        let lastX = 0;
+        let lastY = 0;
 
-        window.addEventListener('mousemove', (e) => { for(let i=0; i<3; i++) glitterArray.push(new Glitter(e.clientX, e.clientY)); });
-        window.addEventListener('touchmove', (e) => { const touch = e.touches[0]; for(let i=0; i<3; i++) glitterArray.push(new Glitter(touch.clientX, touch.clientY)); });
+        window.addEventListener('mousemove', (e) => {
+            const dist = Math.hypot(e.clientX - lastX, e.clientY - lastY);
+            // Só cria glitter se o movimento for maior que 5 pixels
+            if (dist > 5) {
+                glitterArray.push(new Glitter(e.clientX, e.clientY));
+                lastX = e.clientX;
+                lastY = e.clientY;
+            }
+            // Coração raro ao mover
+            if(Math.random() > 0.99) explode(e.clientX, e.clientY);
+        });
+
+        window.addEventListener('touchmove', (e) => {
+            const touch = e.touches[0];
+            const dist = Math.hypot(touch.clientX - lastX, touch.clientY - lastY);
+            if (dist > 5) {
+                glitterArray.push(new Glitter(touch.clientX, touch.clientY));
+                lastX = touch.clientX;
+                lastY = touch.clientY;
+            }
+        });
+        
         window.addEventListener('click', (e) => explode(e.clientX, e.clientY));
 
         const lacinhosArr = [];
